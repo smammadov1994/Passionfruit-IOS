@@ -176,4 +176,4 @@ Supabase project's public key in [`site/config.js`](site/config.js).
 ## Status
 
 Pre-launch. The app and server are complete enough to run a date end to end between two phones.
-The waitlist is open for New York City.
+The launch page is live for New York City.
