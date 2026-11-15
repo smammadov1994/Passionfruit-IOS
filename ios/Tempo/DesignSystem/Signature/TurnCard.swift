@@ -4,9 +4,9 @@ import SwiftUI
 
 /// The Turn Card: the icebreaker overlay, styled like a prompt card. A WHITE card (radius 16,
 /// the one soft shadow) with an eyebrow, the question in 24 pt serif and a two-sided chess-clock
-/// bar; the active half fills accent and drains against `turnEndsAt`. A black "Pass" capsule
-/// appears only on my turn. Drag the card down to tuck it into a small white chip; tap the chip
-/// to bring it back. It never touches audio or video.
+/// bar; the active half fills accent and drains against `turnEndsAt`. A black "Done" capsule
+/// appears only on my turn. Drag the card down to tuck it into a small white chip (Done stays
+/// beside it on my turn); tap the chip to bring it back. It never touches audio or video.
 ///
 /// Place it at the bottom of the call screen, above the control bar.
 ///
@@ -53,7 +53,7 @@ struct TurnCard: View {
     var body: some View {
         ZStack(alignment: .bottom) {
             if isCollapsed {
-                chip
+                collapsedRow
                     .transition(AnyTransition.tempoPop(reduceMotion: reduceMotion))
             } else {
                 card
@@ -135,22 +135,43 @@ struct TurnCard: View {
     }
 
     private var passButton: some View {
+        doneButton(compact: false)
+    }
+
+    /// "Done": I have said my piece, over to the other person. Full width in the card, a small
+    /// capsule beside the chip when the card is tucked away.
+    private func doneButton(compact: Bool) -> some View {
         Button(action: pass) {
             HStack(spacing: TempoSpacing.xs) {
-                Text("Pass")
+                Text("Done")
                 Image(systemName: "arrow.right")
                     .imageScale(Image.Scale.small)
                     .accessibilityHidden(true)
             }
             .tempoText(.button)
             .foregroundStyle(Color.tempo.onAccent)
-            .frame(maxWidth: .infinity, minHeight: TempoSize.buttonRegular)
+            .padding(.horizontal, compact ? TempoSpacing.md : 0)
+            .frame(maxWidth: compact ? nil : .infinity, minHeight: compact ? TempoSize.hitTarget : TempoSize.buttonRegular)
             .background { Capsule().fill(Color.tempo.textPrimary) }
             .contentShape(Capsule())
         }
         .buttonStyle(TempoPressStyle(scale: 0.97))
-        .accessibilityLabel(Text("Pass"))
+        .accessibilityLabel(Text("Done"))
         .accessibilityHint(Text("Hands the question to \(partnerName)"))
+    }
+
+    // MARK: Collapsed
+
+    /// The card tucked away: the chip that brings it back and, on my turn, Done still in reach.
+    private var collapsedRow: some View {
+        HStack(spacing: TempoSpacing.xs) {
+            chip
+            if isMyTurn {
+                doneButton(compact: true)
+                    .transition(AnyTransition.tempoPop(reduceMotion: reduceMotion))
+            }
+        }
+        .animation(Animation.tempo.standard(reduceMotion: reduceMotion), value: isMyTurn)
     }
 
     // MARK: Chip

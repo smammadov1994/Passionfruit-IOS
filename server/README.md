@@ -80,7 +80,9 @@ All variables are validated at startup (`src/config.ts`); a bad value stops the 
 | `BLOB_STORE` | `local` | `local` or `s3` |
 | `UPLOAD_DIR` | `./uploads` | Photo directory for the local blob store |
 | `S3_BUCKET`, `S3_PUBLIC_BASE_URL`, `S3_REGION`, `S3_ENDPOINT`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY` | unset | S3-compatible storage (see below) |
-| `DATE_DURATION_SEC` | `240` | Date length |
+| `DATE_DURATION_SEC` | `120` | Date length |
+| `MATCH_ON_FULL_DATE` | `1` | Both staying to the end of the date is a match, no yes/no vote. `0` brings the vote back |
+| `QUESTIONS_PER_DATE` | `0` | Optional cap on questions; `0` = no cap |
 | `TURN_DURATION_SEC` | `30` | Icebreaker turn length |
 | `DECISION_WINDOW_SEC` | `20` | Yes/No window |
 | `FREE_DAILY_DATES` | `5` | Free daily cap |

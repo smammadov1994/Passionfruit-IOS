@@ -51,10 +51,12 @@ const EnvSchema = z.object({
   S3_ACCESS_KEY_ID: optionalString,
   S3_SECRET_ACCESS_KEY: optionalString,
 
-  DATE_DURATION_SEC: z.coerce.number().positive().default(240),
+  DATE_DURATION_SEC: z.coerce.number().positive().default(120),
   TURN_DURATION_SEC: z.coerce.number().positive().default(30),
   DECISION_WINDOW_SEC: z.coerce.number().positive().default(20),
   CHECKPOINT_WINDOW_SEC: z.coerce.number().min(0).default(10),
+  QUESTIONS_PER_DATE: z.coerce.number().int().min(0).default(0),
+  MATCH_ON_FULL_DATE: z.coerce.number().int().min(0).max(1).default(1),
   FREE_DAILY_DATES: z.coerce.number().int().min(0).default(5),
   FRAME_SAMPLE_INTERVAL_SEC: z.coerce.number().positive().default(3),
   READY_TIMEOUT_SEC: z.coerce.number().positive().default(8),
@@ -125,6 +127,10 @@ export interface AppConfig {
   decisionWindowSec: number;
   /** Seconds both people get, after the first question, to vote on carrying on. 0 turns the checkpoint off. */
   checkpointWindowSec: number;
+  /** Questions in one date; answering the last one ends it like the clock does. 0 = no limit (the default). */
+  questionsPerDate: number;
+  /** Two people who both stay to the end of the date match at once, with no yes/no vote. */
+  matchOnFullDate: boolean;
   freeDailyDates: number;
   frameSampleIntervalSec: number;
   readyTimeoutSec: number;
@@ -226,6 +232,8 @@ export function loadConfig(source: Record<string, string | undefined> = process.
     turnDurationSec: e.TURN_DURATION_SEC,
     decisionWindowSec: e.DECISION_WINDOW_SEC,
     checkpointWindowSec: e.CHECKPOINT_WINDOW_SEC,
+    questionsPerDate: e.QUESTIONS_PER_DATE,
+    matchOnFullDate: e.MATCH_ON_FULL_DATE === 1,
     freeDailyDates: e.FREE_DAILY_DATES,
     frameSampleIntervalSec: e.FRAME_SAMPLE_INTERVAL_SEC,
     readyTimeoutSec: e.READY_TIMEOUT_SEC,

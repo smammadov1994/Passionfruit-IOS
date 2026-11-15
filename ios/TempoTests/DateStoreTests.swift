@@ -643,11 +643,11 @@ final class DateStoreTests: XCTestCase {
         XCTAssertTrue(resumed)
         XCTAssertEqual(dates.phase, .live)
         XCTAssertNotNil(dates.endsAt, "The clock runs again")
-        let deciding = await waitUntil(timeout: 10) {
-            if case .deciding = dates.phase { return true }
+        let matched = await waitUntil(timeout: 10) {
+            if case .matched = dates.phase { return true }
             return false
         }
-        XCTAssertTrue(deciding, "Expected the date to run on to the yes/no screen, got \(dates.phase)")
+        XCTAssertTrue(matched, "Expected the date to run to the end and match, got \(dates.phase)")
         dates.goOffline()
     }
 
@@ -682,6 +682,7 @@ final class DateStoreTests: XCTestCase {
         config.pairingDelayMax = 0.1
         config.partnerLeftProbability = 0
         config.partnerYesProbability = 1
+        config.matchOnFullDate = false
         let environment = AppEnvironment.demo(signedIn: true, onboarded: true, persist: false, config: config)
         let dates = environment.dates
 
@@ -706,5 +707,30 @@ final class DateStoreTests: XCTestCase {
         XCTAssertTrue(matched, "Expected a match when both say yes, got \(dates.phase)")
         dates.goOffline()
         XCTAssertEqual(dates.phase, .idle)
+    }
+
+    func testStayingForTheWholeDateIsAMatchWithNoVote() async throws {
+        var config = DemoConfig()
+        config.autoScript = true
+        config.latency = 0
+        config.dateDurationSec = 1
+        config.turnDurationSec = 1
+        config.checkpointWindowSec = 0
+        config.pairingDelayMin = 0.05
+        config.pairingDelayMax = 0.1
+        config.partnerLeftProbability = 0
+        let environment = AppEnvironment.demo(signedIn: true, onboarded: true, persist: false, config: config)
+        let dates = environment.dates
+
+        await dates.startSearching()
+        var sawVote: Bool = false
+        let matched = await waitUntil(timeout: 12) {
+            if case .deciding = dates.phase { sawVote = true }
+            if case .matched = dates.phase { return true }
+            return false
+        }
+        XCTAssertTrue(matched, "Expected an instant match at the end of the date, got \(dates.phase)")
+        XCTAssertFalse(sawVote)
+        dates.goOffline()
     }
 }

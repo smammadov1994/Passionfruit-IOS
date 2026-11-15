@@ -8,6 +8,8 @@ struct DemoConfig: Sendable, Equatable {
     var decisionWindowSec: Int = 20
     /// Seconds to vote at the checkpoint after the first question. 0 = no checkpoint.
     var checkpointWindowSec: Int = 10
+    /// Staying to the end of the date is a match, with no yes/no vote (as on the server).
+    var matchOnFullDate: Bool = true
     var freeDailyDates: Int = 5
     var frameSampleIntervalSec: Double = 3
     var pairingDelayMin: Double = 2

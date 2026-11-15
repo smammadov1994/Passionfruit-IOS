@@ -60,7 +60,6 @@ struct DateLiveView: View {
             isCameraOff: dateStore.isCameraOff,
             onToggleMic: { dateStore.toggleMic() },
             onToggleCamera: { dateStore.toggleCamera() },
-            onFlip: { dateStore.flipCamera() },
             onReport: onReport,
             onLeave: { dateStore.leaveDate() }
         )

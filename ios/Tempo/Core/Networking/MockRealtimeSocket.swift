@@ -306,6 +306,15 @@ final class MockRealtimeSocket: RealtimeSocket {
             }
         }
 
+        // Both stayed to the end: a match at once, no vote.
+        if config.matchOnFullDate {
+            active = nil
+            emit(.dateEnded(DateEnded(dateId: dateId, reason: .timer, decisionDeadline: Date(), matched: true)))
+            let match: Match = world.makeMatch(with: partner)
+            emit(.dateResult(DateResult(dateId: dateId, outcome: .match, match: match)))
+            return
+        }
+
         // Timer ended: both decide privately.
         let deadline: Date = Date().addingTimeInterval(Double(config.decisionWindowSec))
         emit(.dateEnded(DateEnded(dateId: dateId, reason: .timer, decisionDeadline: deadline)))

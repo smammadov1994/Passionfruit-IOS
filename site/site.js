@@ -74,6 +74,7 @@ function washSVG(color, seed) {
 const WASH = { blush: '#F3B3A2', sage: '#A9D2B8', butter: '#F2D98A', sky: '#A9C6E8', lilac: '#C5B4E3' };
 
 /* ───────── Hero: two people who spring toward each other ───────── */
+let mergeMeet = () => {};
 function initMeet() {
   const meet = $('#meet'), stage = $('#meetStage');
   const blobs = $$('.blob', stage).map((el, i) => {
@@ -82,7 +83,8 @@ function initMeet() {
     return { el, base, x: new Spring(base.x, 60, 9), y: new Spring(base.y, 60, 9), s: new Spring(1, 200, 18), drag: null };
   });
   let W = stage.offsetWidth, heroH = innerHeight;
-  let px = 0, py = 0, pull = 0, holdUntil = 0, mutual = false;
+  let px = 0, py = 0, pull = 0, holdUntil = 0, mutual = false, merged = false;
+  mergeMeet = () => { merged = true; for (const b of blobs) { b.drag = null; b.x.k = b.y.k = 60; b.x.c = b.y.c = 9; } };
   const measure = () => { W = stage.offsetWidth; heroH = $('.hero').offsetHeight; };
   new ResizeObserver(measure).observe(stage);
 
@@ -146,7 +148,8 @@ function initMeet() {
     const breathe = Math.sin(now / 1700) * 0.012;
     blobs.forEach((b, i) => {
       const dir = i ? -1 : 1;
-      if (!b.drag) {
+      if (merged) { b.x.t = 0; b.y.t = 0; b.s.t = 0.78; } // signed up: the two become one
+      else if (!b.drag) {
         b.x.t = b.base.x * near + dir * px * 0.022;
         b.y.t = b.base.y * near + dir * (py * 0.022 + breathe);
       }
@@ -492,6 +495,93 @@ function initBoroughs() {
   });
 }
 
+/* ───────── After sign-up: the two washes become New York City ─────────
+   Simplified borough outlines as [longitude, latitude]. Dots are one per person on the list,
+   placed inside that person's borough. The list stores a ZIP code, never an address, so a dot
+   shows the borough someone is in and nothing finer. */
+const NYC_SHAPES = {
+  'The Bronx': { color: WASH.sky, ink: '#5E86BD', rings: [[[-73.933, 40.882], [-73.912, 40.915], [-73.855, 40.905], [-73.825, 40.890], [-73.783, 40.880], [-73.780, 40.845], [-73.800, 40.815], [-73.840, 40.805], [-73.880, 40.800], [-73.910, 40.795], [-73.932, 40.808], [-73.933, 40.835], [-73.922, 40.860], [-73.910, 40.873]]] },
+  Manhattan: { color: WASH.blush, ink: '#D9694C', rings: [[[-74.019, 40.700], [-74.013, 40.716], [-74.010, 40.740], [-73.995, 40.775], [-73.960, 40.830], [-73.935, 40.877], [-73.912, 40.872], [-73.930, 40.845], [-73.934, 40.810], [-73.928, 40.795], [-73.942, 40.776], [-73.960, 40.755], [-73.971, 40.740], [-73.972, 40.725], [-73.975, 40.710], [-73.997, 40.707]]] },
+  Queens: { color: WASH.butter, ink: '#C99A2E', rings: [
+    [[-73.962, 40.738], [-73.938, 40.778], [-73.912, 40.790], [-73.875, 40.785], [-73.850, 40.800], [-73.790, 40.797], [-73.752, 40.780], [-73.702, 40.752], [-73.708, 40.726], [-73.728, 40.680], [-73.742, 40.640], [-73.768, 40.618], [-73.822, 40.640], [-73.857, 40.648], [-73.868, 40.694], [-73.903, 40.690], [-73.928, 40.727]],
+    [[-73.745, 40.598], [-73.800, 40.585], [-73.870, 40.572], [-73.938, 40.552], [-73.940, 40.562], [-73.870, 40.584], [-73.800, 40.598], [-73.750, 40.610]],
+  ] },
+  Brooklyn: { color: WASH.sage, ink: '#3F9B70', rings: [[[-73.962, 40.738], [-73.928, 40.727], [-73.903, 40.690], [-73.868, 40.694], [-73.857, 40.648], [-73.880, 40.625], [-73.900, 40.600], [-73.935, 40.585], [-73.940, 40.575], [-74.000, 40.570], [-74.012, 40.580], [-74.035, 40.610], [-74.040, 40.625], [-74.025, 40.650], [-74.015, 40.665], [-74.018, 40.678], [-73.998, 40.700], [-73.970, 40.708], [-73.962, 40.720]]] },
+  'Staten Island': { color: WASH.lilac, ink: '#8C72C4', rings: [[[-74.075, 40.645], [-74.055, 40.605], [-74.070, 40.590], [-74.110, 40.555], [-74.150, 40.530], [-74.215, 40.500], [-74.250, 40.498], [-74.255, 40.515], [-74.235, 40.555], [-74.205, 40.590], [-74.200, 40.630], [-74.180, 40.645], [-74.130, 40.642], [-74.090, 40.648]]] },
+};
+const MAP_SPAN = 0.4245; // degrees of latitude the 280-unit drawing area covers
+const project = ([lon, lat]) => [10 + ((lon + 74.26) * 0.758 / MAP_SPAN) * 280, 10 + ((40.917 - lat) / MAP_SPAN) * 280];
+for (const shape of Object.values(NYC_SHAPES)) shape.rings = shape.rings.map((ring) => ring.map(project));
+
+function inRing(ring, x, y) {
+  let inside = false;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    const [xi, yi] = ring[i], [xj, yj] = ring[j];
+    if ((yi > y) !== (yj > y) && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) inside = !inside;
+  }
+  return inside;
+}
+function seeded(seed) { // small repeatable generator, so the same list always draws the same map
+  let a = seed >>> 0;
+  return () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+}
+function pointsIn(shape, count, seed) {
+  const rnd = seeded(seed), all = shape.rings.flat(), out = [];
+  const xs = all.map((p) => p[0]), ys = all.map((p) => p[1]);
+  const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+  for (let tries = 0; out.length < count && tries < count * 60; tries++) {
+    const x = x0 + rnd() * (x1 - x0), y = y0 + rnd() * (y1 - y0);
+    if (shape.rings.some((ring) => inRing(ring, x, y))) out.push([x, y]);
+  }
+  return out;
+}
+
+const MAP_DOTS_MAX = 140; // per borough; past this the map would turn solid
+let mapState = null; // { borough, zip } once this visitor has joined
+function renderMap(stats) {
+  if (!mapState) return;
+  const meet = $('#meet'), stage = $('#meetStage');
+  let map = $('#nycMap');
+  if (!map) {
+    map = document.createElement('div');
+    map.id = 'nycMap'; map.className = 'nyc-map';
+    stage.insertBefore(map, $('#motes'));
+  }
+  const names = Object.keys(NYC_SHAPES);
+  const land = names.map((name, i) => {
+    const sh = NYC_SHAPES[name];
+    const d = sh.rings.map((ring) => 'M' + ring.map((p) => p.map((v) => v.toFixed(1)).join(' ')).join('L') + 'Z').join('');
+    return `<path d="${d}" fill="${sh.color}" stroke="${sh.color}" stroke-width="5" stroke-linejoin="round" filter="url(#nycTorn${i % 2})" class="${name === mapState.borough ? 'mine' : ''}"/>`;
+  }).join('');
+  let dots = '', order = 0;
+  names.forEach((name, i) => {
+    const sh = NYC_SHAPES[name];
+    const others = Math.max(0, (stats?.boroughs?.[name] ?? 0) - (name === mapState.borough ? 1 : 0));
+    for (const [x, y] of pointsIn(sh, Math.min(others, MAP_DOTS_MAX), 101 + i * 977)) {
+      const r = 1.5 + ((x * 7 + y * 13) % 10) / 9;
+      dots += `<circle class="dot" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(2)}" fill="${sh.ink}" style="--d:${(600 + (order++ % 60) * 28)}ms"/>`;
+    }
+  });
+  const [mx, my] = pointsIn(NYC_SHAPES[mapState.borough], 1, Number(mapState.zip) || 7)[0] ?? [150, 150];
+  const anchor = mx > 232 ? 'end' : 'start', lx = mx + (mx > 232 ? -8 : 8);
+  map.innerHTML = `<svg viewBox="0 0 300 300" role="img" aria-label="Map of New York City with a dot for each person on the list"><defs>
+    <filter id="nycTorn0" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="3" seed="12"/><feDisplacementMap in="SourceGraphic" scale="9" xChannelSelector="R" yChannelSelector="G"/><feGaussianBlur stdDeviation=".7"/></filter>
+    <filter id="nycTorn1" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".04" numOctaves="3" seed="41"/><feDisplacementMap in="SourceGraphic" scale="8" xChannelSelector="G" yChannelSelector="B"/><feGaussianBlur stdDeviation=".7"/></filter>
+    </defs><g class="land">${land}</g>${dots}
+    <circle class="you" cx="${mx.toFixed(1)}" cy="${my.toFixed(1)}" r="4.2"/>
+    <text class="you-label" x="${lx.toFixed(1)}" y="${(my + 3.6).toFixed(1)}" text-anchor="${anchor}">You</text></svg>`;
+
+  const total = stats?.total ?? 0, others = Math.max(0, total - 1);
+  $('[data-cap=map]').textContent = !stats ? `You’re on the map, in ${mapState.borough}.`
+    : others === 0 ? 'You’re the first dot on the map.'
+    : `You and ${others.toLocaleString('en-US')} other${others === 1 ? '' : 's'} across the five boroughs.`;
+  if (!meet.classList.contains('mapped')) {
+    mergeMeet();
+    void map.offsetWidth; // start the entrance from its hidden state
+    meet.classList.add('mapped');
+  }
+}
+
 /* ───────── Waitlist ───────── */
 const KEY = 'tempo.waitlist';
 const read = () => { try { return JSON.parse(localStorage.getItem(KEY)); } catch { return null; } };
@@ -521,7 +611,10 @@ const api = {
   },
 };
 
+let lastStats = null;
 function renderStats(stats, mine) {
+  if (stats) lastStats = stats;
+  renderMap(lastStats);
   for (const li of $$('#boroughs li')) {
     const n = stats?.boroughs?.[li.dataset.b];
     const out = $('[data-count]', li);
@@ -534,6 +627,8 @@ function renderStats(stats, mine) {
 
 function showJoined(result, focusIn) {
   const { borough, position, boroughPosition, already } = result;
+  mapState = { borough, zip: result.zip };
+  renderMap(lastStats);
   for (const form of $$('[data-join]')) form.hidden = true;
   for (const box of $$('[data-joined]')) {
     box.hidden = false;
@@ -597,9 +692,12 @@ function initWaitlist() {
           if (data.error === 'email') { email.setAttribute('aria-invalid', 'true'); email.focus(); }
           return say(data.message ?? 'That did not go through. Try again.', 'err');
         }
-        save({ borough: data.borough, position: data.position, boroughPosition: data.boroughPosition });
+        const mine = { borough: data.borough, position: data.position, boroughPosition: data.boroughPosition, zip: zip.value };
+        save(mine);
+        showJoined({ ...data, ...mine }, form.parentElement);
         renderStats(data.stats, data.borough);
-        showJoined(data, form.parentElement);
+        const stage = $('#meetStage').getBoundingClientRect();
+        if (stage.top < 0 || stage.bottom > innerHeight) $('#meetStage').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
       } catch {
         say('We could not reach the list. Check your connection and try again.', 'err');
       } finally {

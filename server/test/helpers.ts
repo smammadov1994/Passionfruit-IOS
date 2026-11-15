@@ -28,6 +28,10 @@ export function testConfig(overrides: Partial<AppConfig> = {}): AppConfig {
     DECISION_WINDOW_SEC: '0.6',
     // Off by default so existing flows run straight through; the checkpoint tests turn it on.
     CHECKPOINT_WINDOW_SEC: '0',
+    // No limit by default so existing flows run on the clock; the question-limit test sets it.
+    QUESTIONS_PER_DATE: '0',
+    // Off by default so the yes/no decision flows are still covered; the full-date test turns it on.
+    MATCH_ON_FULL_DATE: '0',
     READY_TIMEOUT_SEC: '0.4',
     RECONNECT_GRACE_SEC: '0.3',
     DECISION_GRACE_MS: '40',

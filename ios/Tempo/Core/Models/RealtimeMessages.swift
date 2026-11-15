@@ -214,11 +214,15 @@ struct DateEnded: Codable, Sendable, Equatable {
     var reason: DateEndReason
     /// Present only when `reason == .timer`.
     var decisionDeadline: Date?
+    /// True when both stayed for the whole date: they match at once, there is no vote, and the
+    /// result follows immediately.
+    var matched: Bool?
 
-    init(dateId: String, reason: DateEndReason, decisionDeadline: Date? = nil) {
+    init(dateId: String, reason: DateEndReason, decisionDeadline: Date? = nil, matched: Bool? = nil) {
         self.dateId = dateId
         self.reason = reason
         self.decisionDeadline = decisionDeadline
+        self.matched = matched
     }
 }
 

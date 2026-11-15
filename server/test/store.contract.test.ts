@@ -30,7 +30,7 @@ const implementations: Array<[string, () => Promise<Store>]> = [
     'PgStore (PGlite)',
     async () => {
       const db = pgliteQueryable(new PGlite());
-      expect(await runMigrations(db)).toEqual(['001_init.sql', '002_date_decisions.sql', '003_row_level_security.sql', '004_waitlist.sql']);
+      expect(await runMigrations(db)).toEqual(['001_init.sql', '002_date_decisions.sql', '003_row_level_security.sql', '004_waitlist.sql', '005_waitlist_public.sql']);
       expect(await runMigrations(db)).toEqual([]); // idempotent
       return new PgStore(db);
     },

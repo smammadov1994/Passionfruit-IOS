@@ -60,7 +60,7 @@ export type ServerMessage =
   | { type: 'date.checkpoint'; dateId: string; deadline: string }
   /** Both voted to carry on. The date clock was paused; `endsAt` is the new end. */
   | { type: 'date.resumed'; dateId: string; endsAt: string }
-  | { type: 'date.ended'; dateId: string; reason: DateEndReason; decisionDeadline?: string }
+  | { type: 'date.ended'; dateId: string; reason: DateEndReason; decisionDeadline?: string; matched?: boolean }
   | { type: 'date.result'; dateId: string; outcome: 'match' | 'no_match'; match?: WireMatch }
   | {
       type: 'moderation.action';

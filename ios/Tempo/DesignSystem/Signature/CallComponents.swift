@@ -151,7 +151,8 @@ struct SelfViewPiP<Content: View>: View {
 // MARK: - CallControlBar
 
 /// The in-call controls as one white capsule (hairline, the one soft shadow) with outlined
-/// near-black icons: mic, camera, flip, report, and Leave. A control that is off fills black.
+/// near-black icons: mic, camera, flip (only when `onFlip` is given; a date stays on the selfie
+/// camera), report, and Leave. A control that is off fills black.
 /// Leave is a red filled circle with a white icon, always visible, and acts at once (no confirmation).
 ///
 ///     CallControlBar(isMicMuted: store.isMicMuted, isCameraOff: store.isCameraOff,
@@ -162,7 +163,7 @@ struct CallControlBar: View {
     private let isCameraOff: Bool
     private let onToggleMic: () -> Void
     private let onToggleCamera: () -> Void
-    private let onFlip: () -> Void
+    private let onFlip: (() -> Void)?
     private let onReport: () -> Void
     private let onLeave: () -> Void
 
@@ -175,7 +176,7 @@ struct CallControlBar: View {
         isCameraOff: Bool,
         onToggleMic: @escaping () -> Void,
         onToggleCamera: @escaping () -> Void,
-        onFlip: @escaping () -> Void,
+        onFlip: (() -> Void)? = nil,
         onReport: @escaping () -> Void,
         onLeave: @escaping () -> Void
     ) {
@@ -208,13 +209,15 @@ struct CallControlBar: View {
                 size: controlSize,
                 action: onToggleCamera
             )
-            IconCircleButton(
-                systemImage: "arrow.triangle.2.circlepath.camera",
-                accessibilityLabel: "Flip camera",
-                kind: IconCircleButtonKind.plain,
-                size: controlSize,
-                action: onFlip
-            )
+            if let onFlip {
+                IconCircleButton(
+                    systemImage: "arrow.triangle.2.circlepath.camera",
+                    accessibilityLabel: "Flip camera",
+                    kind: IconCircleButtonKind.plain,
+                    size: controlSize,
+                    action: onFlip
+                )
+            }
             IconCircleButton(
                 systemImage: "flag",
                 accessibilityLabel: "Report",

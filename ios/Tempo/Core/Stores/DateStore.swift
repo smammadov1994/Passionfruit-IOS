@@ -745,6 +745,13 @@ final class DateStore {
             // cameras are still on, so frames keep being checked; only audio and transcripts
             // stop. The connection closes with the result (or on leaving).
             quietCallMedia()
+            if ended.matched == true {
+                // Both stayed to the end: no vote. The match itself arrives in the next message.
+                myDecision = .yes
+                phase = .awaitingResult(partner: endedPartner)
+                scheduleResultTimeout(dateId: ended.dateId, deadline: Date(), partner: endedPartner)
+                return
+            }
             var deadline: Date = Date().addingTimeInterval(config.decisionWindow)
             if let serverDeadline = ended.decisionDeadline {
                 deadline = clock.local(serverDeadline)

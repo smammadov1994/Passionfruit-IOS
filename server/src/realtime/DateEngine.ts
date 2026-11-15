@@ -63,6 +63,8 @@ export interface DateEngineDeps {
     | 'turnDurationSec'
     | 'decisionWindowSec'
     | 'checkpointWindowSec'
+    | 'questionsPerDate'
+    | 'matchOnFullDate'
     | 'readyTimeoutSec'
     | 'reconnectGraceSec'
     | 'decisionGraceMs'
@@ -467,6 +469,12 @@ export class DateEngine {
     } else {
       session.turnPhase = 0;
       session.questionIndex += 1;
+      // An optional cap on questions ends the date the same way the clock does.
+      const limit = this.deps.config.questionsPerDate;
+      if (limit > 0 && session.questionIndex >= limit) {
+        this.timerEnded(session);
+        return;
+      }
       // Both have answered the first question: pause and let each decide whether to carry on.
       if (session.checkpoint === 'pending') {
         this.openCheckpoint(session);
@@ -525,8 +533,34 @@ export class DateEngine {
     this.close(session, 'checkpoint', 'no_match');
   }
 
+  /**
+   * The two stayed for the whole date and neither left: they match at once. Sent as a timer end
+   * flagged `matched` (so the app skips the decision screen), followed by the result.
+   */
+  private completeAsMatch(session: Session): void {
+    if (session.state !== 'live') return;
+    this.clearTimers(session);
+    session.state = 'deciding';
+    session.currentTurn = null;
+    session.decisionDeadline = this.deps.clock.now();
+    session.decisions.set(session.caller.userId, 'yes');
+    session.decisions.set(session.callee.userId, 'yes');
+    this.both(session, {
+      type: 'date.ended',
+      dateId: session.id,
+      reason: 'timer',
+      decisionDeadline: iso(session.decisionDeadline),
+      matched: true,
+    });
+    this.finalize(session);
+  }
+
   private timerEnded(session: Session): void {
     if (session.state !== 'live') return;
+    if (this.deps.config.matchOnFullDate) {
+      this.completeAsMatch(session);
+      return;
+    }
     const { config, clock } = this.deps;
     this.clearTimers(session);
     session.state = 'deciding';

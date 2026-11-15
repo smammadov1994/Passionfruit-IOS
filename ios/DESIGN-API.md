@@ -339,7 +339,7 @@ A white floating capsule: small accent arc + "3:12". Amber and softly pulsing un
 TurnCard(question: String, questionNumber: Int, myName: String, partnerName: String, isMyTurn: Bool,
          turnEndsAt: Date, turnDuration: TimeInterval, onPass: @escaping () -> Void, isCollapsed: Binding<Bool>)
 ```
-A white prompt card (radius 16, floating): eyebrow "QUESTION 3", the question in 24 pt serif, the chess-clock bar with names under each half, a black "Pass" capsule on your turn. Drag down to tuck it into a white chip.
+A white prompt card (radius 16, floating): eyebrow "QUESTION 3", the question in 24 pt serif, the chess-clock bar with names under each half, a black "Done" capsule on your turn. Drag down to tuck it into a white chip; on your turn "Done" stays beside the chip. Omit `onFlip` on `CallControlBar` to hide the flip control (dates stay on the selfie camera).
 
 ```swift
 VerdictPad(partnerName: String, deadline: Date, totalWindow: TimeInterval,
@@ -366,7 +366,7 @@ SelfViewPiP(initialCorner: PiPCorner = .topTrailing, size: CGSize = TempoSize.pi
             topInset: CGFloat = 0, bottomInset: CGFloat = 0, isCameraOff: Bool = false, @ViewBuilder content: () -> Content)
 enum PiPCorner { case topLeading, topTrailing, bottomLeading, bottomTrailing }
 CallControlBar(isMicMuted: Bool, isCameraOff: Bool, onToggleMic: @escaping () -> Void, onToggleCamera: @escaping () -> Void,
-               onFlip: @escaping () -> Void, onReport: @escaping () -> Void, onLeave: @escaping () -> Void)
+               onFlip: (() -> Void)? = nil, onReport: @escaping () -> Void, onLeave: @escaping () -> Void)
 VideoScrim(topHeight: CGFloat = 160, bottomHeight: CGFloat = 260, strength: Double = 0.35)
 ModerationWarningBanner(title: String = "Keep it respectful", message: String, onDismiss: (() -> Void)? = nil)
 ```

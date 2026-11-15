@@ -229,7 +229,7 @@ describe('environment validation', () => {
   it('applies spec defaults', () => {
     const c = loadConfig(base);
     expect(c).toMatchObject({
-      dateDurationSec: 240,
+      dateDurationSec: 120,
       turnDurationSec: 30,
       decisionWindowSec: 20,
       freeDailyDates: 5,

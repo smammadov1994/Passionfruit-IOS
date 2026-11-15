@@ -56,7 +56,7 @@ struct AppConfig: Codable, Sendable, Equatable {
 
     /// Used only until the first successful `GET /v1/config` (values from SPEC section 1).
     static let fallback = AppConfig(
-        dateDurationSec: 240,
+        dateDurationSec: 120,
         turnDurationSec: 30,
         decisionWindowSec: 20,
         freeDailyDates: 5,

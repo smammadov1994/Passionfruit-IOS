@@ -396,7 +396,7 @@ struct IcebreakerState: Sendable, Equatable {
 }
 ```
 
-Show "Pass" only when `dateStore.icebreaker?.isMyTurn == true`. Hide/show the card with `dateStore.isIcebreakerHidden`.
+Show "Done" (hands the turn over) only when `dateStore.icebreaker?.isMyTurn == true`. Hide/show the card with `dateStore.isIcebreakerHidden`.
 
 ---
 
