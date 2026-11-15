@@ -81,6 +81,8 @@ const BUDDY_FACE = `<svg class="face" viewBox="-150 -150 300 300" aria-hidden="t
   <g class="eyes"><g class="blink"><circle cx="-29" cy="-12" r="10" fill="#33292F"/><circle cx="29" cy="-12" r="10" fill="#33292F"/></g></g>
   <path class="mouth" d="M-19 22Q0 42 19 22" fill="none" stroke="#33292F" stroke-width="7" stroke-linecap="round"/></svg>`;
 
+const buddySVG = () => washSVG('#F2B98C', 33).replace('<svg ', '<svg class="body" ') + BUDDY_FACE;
+
 /* ───────── Hero: two people who spring toward each other ───────── */
 let mergeMeet = () => {};
 function initMeet() {
@@ -93,13 +95,23 @@ function initMeet() {
   // The one the two become: a single wash that opens its eyes, like the match screen in the app.
   const buddy = document.createElement('div');
   buddy.className = 'buddy';
-  buddy.innerHTML = washSVG('#F2B98C', 33).replace('<svg ', '<svg class="body" ') + BUDDY_FACE;
+  buddy.innerHTML = buddySVG();
   stage.insertBefore(buddy, $('#motes'));
   const grow = new Spring(0.6, 170, 13);
-  let W = stage.offsetWidth, centre = 0;
+  let W = stage.offsetWidth;
   let px = 0, py = 0, pull = 0, holdUntil = 0, mutual = false, merged = false;
   mergeMeet = () => { merged = true; for (const b of blobs) { b.drag = null; b.x.k = b.y.k = 60; b.x.c = b.y.c = 9; } };
-  const measure = () => { W = stage.offsetWidth; };
+  const pin = $('#heroPin'), hero = $('.hero'), hold = $('#heroHold');
+  let pinStart = 0, pinLen = 1;
+  const measure = () => {
+    W = stage.offsetWidth;
+    // A hero taller than the window sticks once its bottom edge reaches the bottom of the window.
+    const over = Math.max(0, hero.offsetHeight - innerHeight);
+    hero.style.setProperty('--pin-top', `${-over}px`);
+    pinStart = pin.offsetTop + over; pinLen = hold.offsetHeight;
+  };
+  new ResizeObserver(measure).observe(hero);
+  addEventListener('resize', measure);
   new ResizeObserver(measure).observe(stage);
 
   const draw = () => {
@@ -159,8 +171,7 @@ function initMeet() {
 
   tickers.add((dt, now) => {
     if (scrollDirty) { // the pull starts once the stage is well inside the window, so a phone sees them meet too
-      centre = stage.getBoundingClientRect().top + scrollY + W / 2;
-      pull = clamp((scrollY - Math.max(0, centre - innerHeight * 0.78)) / ((innerHeight || 1) * 0.3)) || 0;
+      pull = clamp((scrollY - pinStart) / (pinLen * 0.55 || 1)) || 0; // they have met a little past halfway through the hold
     }
     const holding = now < holdUntil;
     const near = holding ? 0.4 : 1 - 0.68 * pull; // scrolling draws them together
@@ -761,6 +772,7 @@ $$('[data-wash]').forEach((el, i) => {
   el.innerHTML = washSVG(WASH[el.dataset.wash], 33 + i * 9);
   if ('stretch' in el.dataset) $('svg', el).setAttribute('preserveAspectRatio', 'none'); // wash spread behind a line of type
 });
+$$('[data-buddy]').forEach((el) => { el.innerHTML = buddySVG(); });
 const nav = $('#nav');
 tickers.add(() => { if (scrollDirty) nav.classList.toggle('stuck', scrollY > 8); });
 initSkyline();

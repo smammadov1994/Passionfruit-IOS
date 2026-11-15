@@ -28,6 +28,7 @@
 <main id="main">
 
 <!-- ───────── Hero ───────── -->
+<div class="hero-pin" id="heroPin">
 <section class="hero" id="top">
   <canvas class="skyline" id="skyline" role="img" aria-label="The Manhattan skyline painted in soft watercolor"></canvas>
   <div class="hero-copy">
@@ -65,6 +66,8 @@
     <p class="meet-cap" id="meetCap" aria-live="off"><span data-cap="apart">Two people, online at the same moment. Drag them together.</span><span data-cap="mutual">It’s mutual.</span><span data-cap="map"></span></p>
   </div>
 </section>
+<div class="hero-hold" id="heroHold" aria-hidden="true"></div>
+</div>
 
 <!-- ───────── Statement ───────── -->
 <section class="say" aria-label="Why Passionfruit">
@@ -109,9 +112,15 @@
           </div>
         </div>
         <div class="shot" data-shot="3">
-          <div class="scene mut" role="img" aria-label="Two watercolor washes overlapping, with the words It’s mutual">
-            <div class="sw sw-4" data-wash="blush"></div><div class="sw sw-5" data-wash="sage"></div>
-            <p class="mut-t">It’s mutual.</p><p class="mut-s">You both said yes.</p>
+          <div class="chat" role="img" aria-label="A chat with Maya opened by a match: two short messages and a Call again button">
+            <div class="verdict-wash vw-a" data-wash="sky"></div><div class="verdict-wash vw-b" data-wash="blush"></div>
+            <div class="chat-card">
+              <div class="chat-head"><span class="dot-guy" data-buddy></span><span><b>Maya</b><i>Matched just now</i></span></div>
+              <p class="msg them">That went fast.</p>
+              <p class="msg me">Same time tomorrow?</p>
+              <p class="msg them">Yes. Call me.</p>
+              <span class="chat-call">Call again</span>
+            </div>
           </div>
         </div>
       </div>
