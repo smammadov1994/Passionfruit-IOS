@@ -55,7 +55,7 @@ h3{font-size:19px;line-height:1.300;font-weight:600;letter-spacing:-.01em}
 /* the hero holds still while the two washes meet: it sticks for the height of .hero-hold */
 .hero-pin{position:relative}
 .hero-pin .hero{position:sticky;top:var(--pin-top,0px)}
-.hero-hold{height:70svh}
+.hero-hold{height:170svh}
 .hero{min-height:100svh;padding:calc(var(--nav) + 4px) var(--gutter) 48px;display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);grid-template-rows:auto 1fr;gap:clamp(20px,3.500vh,44px) clamp(24px,4vw,72px);align-items:center}
 .skyline{grid-column:1/-1;display:block;width:calc(100% + 2*var(--gutter));margin:0 calc(var(--gutter)*-1);height:clamp(140px,23vh,260px);mix-blend-mode:multiply}
 h1{position:relative;z-index:0;width:fit-content;font-size:clamp(44px,6.200vw,100px);font-weight:300;line-height:1.02;letter-spacing:-.03em;margin-bottom:28px}
@@ -113,8 +113,8 @@ h1 .line>span{display:inline-block;will-change:transform}
 @keyframes blink{0%,95%,100%{transform:none}97.500%{transform:scaleY(.08)}}
 .meet.mutual .blob{opacity:0;transition:opacity .5s var(--ease) .1s}
 .meet.mutual .buddy{opacity:1;transition:opacity .5s var(--ease) .1s}
-.meet.mutual .buddy .eyes{transform:none;transition:transform .45s cubic-bezier(.3,1.6,.45,1) .65s}
-.meet.mutual .buddy .mouth{opacity:1;transition:opacity .4s var(--ease) .8s}
+.meet.mutual .buddy .eyes{transform:none;transition:transform .45s cubic-bezier(.3,1.6,.45,1) .4s}
+.meet.mutual .buddy .mouth{opacity:1;transition:opacity .4s var(--ease) .55s}
 .meet.mapped .blob{opacity:0;pointer-events:none}
 .meet.mapped .buddy{opacity:0;transition:opacity .9s var(--ease) .35s}
 .nyc-map{position:absolute;inset:-4%;opacity:0;transform:scale(.55) rotate(-6deg);transition:opacity .9s var(--ease) .5s,transform 1.300s cubic-bezier(.3,1.35,.45,1) .5s}

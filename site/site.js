@@ -171,7 +171,7 @@ function initMeet() {
 
   tickers.add((dt, now) => {
     if (scrollDirty) { // the pull starts once the stage is well inside the window, so a phone sees them meet too
-      pull = clamp((scrollY - pinStart) / (pinLen * 0.55 || 1)) || 0; // they have met a little past halfway through the hold
+      pull = clamp((scrollY - pinStart) / (pinLen * 0.3 || 1)) || 0; // they have met in the first quarter of the hold; the rest is for watching
     }
     const holding = now < holdUntil;
     const near = holding ? 0.4 : 1 - 0.68 * pull; // scrolling draws them together
