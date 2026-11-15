@@ -84,7 +84,8 @@ const BUDDY_FACE = `<svg class="face" viewBox="-150 -150 300 300" aria-hidden="t
 const buddySVG = () => washSVG('#F2B98C', 33).replace('<svg ', '<svg class="body" ') + BUDDY_FACE;
 
 /* ───────── Hero: two people who spring toward each other ───────── */
-let mergeMeet = () => {};
+let mapReady = false;      // the map is drawn and may take the stage
+let playJoin = () => {};   // just signed up: the two meet, become one, then the map
 function initMeet() {
   const meet = $('#meet'), stage = $('#meetStage');
   const blobs = $$('.blob', stage).map((el, i) => {
@@ -99,8 +100,9 @@ function initMeet() {
   stage.insertBefore(buddy, $('#motes'));
   const grow = new Spring(0.6, 170, 13);
   let W = stage.offsetWidth;
-  let px = 0, py = 0, pull = 0, holdUntil = 0, mutual = false, merged = false;
-  mergeMeet = () => { merged = true; for (const b of blobs) { b.drag = null; b.x.k = b.y.k = 60; b.x.c = b.y.c = 9; } };
+  let px = 0, py = 0, pull = 0, held = 0, holdUntil = 0, mutual = false, merged = false;
+  let joinAt = 0, forced = false; // a fresh sign-up plays the whole sequence on its own, then keeps the map up
+  playJoin = () => { joinAt = performance.now(); };
   const pin = $('#heroPin'), hero = $('.hero'), hold = $('#heroHold');
   let pinStart = 0, pinLen = 1;
   const measure = () => {
@@ -171,8 +173,17 @@ function initMeet() {
 
   tickers.add((dt, now) => {
     if (scrollDirty) { // the pull starts once the stage is well inside the window, so a phone sees them meet too
-      pull = clamp((scrollY - pinStart) / (pinLen * 0.3 || 1)) || 0; // they have met in the first quarter of the hold; the rest is for watching
+      held = clamp((scrollY - pinStart) / (pinLen || 1)) || 0; // how far through the hold
+      pull = clamp(held / 0.3); // they have met in the first third of it; the rest is for watching
     }
+    // Someone on the list gets one more act: the character gives way to the map of who else is on it.
+    const joining = joinAt > 0 && now - joinAt < 2300;
+    if (joinAt > 0 && !joining) forced = true;
+    const onMap = mapReady && (forced || held > 0.55);
+    const together = onMap || joining;
+    if (together && !merged) for (const b of blobs) { b.drag = null; b.x.k = b.y.k = 60; b.x.c = b.y.c = 9; }
+    merged = together;
+    if (onMap !== meet.classList.contains('mapped')) meet.classList.toggle('mapped', onMap);
     const holding = now < holdUntil;
     const near = holding ? 0.4 : 1 - 0.68 * pull; // scrolling draws them together
     const breathe = Math.sin(now / 1700) * 0.012;
@@ -635,11 +646,8 @@ function renderMap(stats) {
   $('[data-cap=map]').textContent = !stats ? `You’re on the map, in ${mapState.borough}.`
     : others === 0 ? 'You’re the first dot on the map.'
     : `You and ${others.toLocaleString('en-US')} other${others === 1 ? '' : 's'} across the five boroughs.`;
-  if (!meet.classList.contains('mapped')) {
-    mergeMeet();
-    void map.offsetWidth; // start the entrance from its hidden state
-    meet.classList.add('mapped');
-  }
+  mapReady = true; // initMeet brings it on: after the two have become one
+  if (reduce) meet.classList.add('mapped');
 }
 
 /* ───────── Waitlist ───────── */
@@ -755,6 +763,7 @@ function initWaitlist() {
         const mine = { borough: data.borough, position: data.position, boroughPosition: data.boroughPosition, zip: zip.value };
         save(mine);
         showJoined({ ...data, ...mine }, form.parentElement);
+        playJoin();
         renderStats(data.stats, data.borough);
         const stage = $('#meetStage').getBoundingClientRect();
         if (stage.top < 0 || stage.bottom > innerHeight) $('#meetStage').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
