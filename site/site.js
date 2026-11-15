@@ -536,6 +536,46 @@ function pointsIn(shape, count, seed) {
   return out;
 }
 
+// The harbour behind the map: a glassy blue blob with white and blue streaks drifting through it.
+function initWater(el) {
+  const cv = $('canvas', el), ctx = cv.getContext('2d');
+  const INK = ['#FFFFFF', '#FFFFFF', '#F2F9FE', '#9CCBF0', '#6DAEE3'];
+  const drops = Array.from({ length: 120 }, (_, i) => ({
+    x: Math.random(), y: Math.random(), vx: 0, vy: 0, phase: Math.random() * 6.283,
+    speed: 0.035 + Math.random() * 0.07, r: 0.9 + Math.random() ** 2 * 2.6,
+    color: INK[i % INK.length], a: 0.5 + Math.random() * 0.45,
+  }));
+  let t = 0;
+  const step = (dt) => {
+    t += dt;
+    for (const d of drops) { // a slow current that bends like water around a hull
+      const ang = 0.3 + Math.sin(d.y * 7 + t * 0.45 + d.phase * 0.25) * 0.75 + Math.cos(d.x * 5 - t * 0.3) * 0.45;
+      d.vx = Math.cos(ang) * d.speed; d.vy = Math.sin(ang) * d.speed * 0.7;
+      d.x = (d.x + d.vx * dt + 1.2) % 1.2; d.y = (d.y + d.vy * dt + 1.2) % 1.2; // wraps just off the edge
+    }
+  };
+  let size = null;
+  size = fitCanvas(cv, () => paint());
+  function paint() {
+    if (!size) return;
+    const r = cv.getBoundingClientRect();
+    if (r.bottom < -100 || r.top > innerHeight + 100) return;
+    const { w, h, dpr } = size;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+    ctx.lineCap = 'round';
+    for (const d of drops) {
+      const x = (d.x - 0.1) * w, y = (d.y - 0.1) * h;
+      ctx.globalAlpha = d.a; ctx.strokeStyle = d.color; ctx.lineWidth = d.r * 2;
+      ctx.beginPath(); ctx.moveTo(x - d.vx * w * 0.5, y - d.vy * h * 0.5); ctx.lineTo(x, y); ctx.stroke();
+    }
+  }
+  step(0);
+  if (reduce) { paint(); return; }
+  tickers.add(step);
+  painters.add(paint);
+}
+
 const MAP_DOTS_MAX = 140; // per borough; past this the map would turn solid
 let mapState = null; // { borough, zip } once this visitor has joined
 function renderMap(stats) {
@@ -545,7 +585,12 @@ function renderMap(stats) {
   if (!map) {
     map = document.createElement('div');
     map.id = 'nycMap'; map.className = 'nyc-map';
+    const water = document.createElement('div');
+    water.className = 'water';
+    water.innerHTML = '<canvas></canvas>';
+    stage.insertBefore(water, $('#motes'));
     stage.insertBefore(map, $('#motes'));
+    initWater(water);
   }
   const names = Object.keys(NYC_SHAPES);
   const land = names.map((name, i) => {
@@ -562,12 +607,18 @@ function renderMap(stats) {
       dots += `<circle class="dot" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(2)}" fill="${sh.ink}" style="--d:${(600 + (order++ % 60) * 28)}ms"/>`;
     }
   });
+  const names_ = names.map((name) => { // a name on each borough; Manhattan is too thin, so its name sits in the Hudson
+    const ring = NYC_SHAPES[name].rings[0];
+    const cx = ring.reduce((a, p) => a + p[0], 0) / ring.length, cy = ring.reduce((a, p) => a + p[1], 0) / ring.length;
+    const side = name === 'Manhattan';
+    return `<text class="b-label${name === mapState.borough ? ' mine' : ''}" x="${(side ? cx - 13 : cx).toFixed(1)}" y="${(cy + 2.5).toFixed(1)}" text-anchor="${side ? 'end' : 'middle'}">${name}</text>`;
+  }).join('');
   const [mx, my] = pointsIn(NYC_SHAPES[mapState.borough], 1, Number(mapState.zip) || 7)[0] ?? [150, 150];
   const anchor = mx > 232 ? 'end' : 'start', lx = mx + (mx > 232 ? -8 : 8);
   map.innerHTML = `<svg viewBox="0 0 300 300" role="img" aria-label="Map of New York City with a dot for each person on the list"><defs>
     <filter id="nycTorn0" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="3" seed="12"/><feDisplacementMap in="SourceGraphic" scale="9" xChannelSelector="R" yChannelSelector="G"/><feGaussianBlur stdDeviation=".7"/></filter>
     <filter id="nycTorn1" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".04" numOctaves="3" seed="41"/><feDisplacementMap in="SourceGraphic" scale="8" xChannelSelector="G" yChannelSelector="B"/><feGaussianBlur stdDeviation=".7"/></filter>
-    </defs><g class="land">${land}</g>${dots}
+    </defs><g class="land">${land}</g>${names_}${dots}
     <circle class="you" cx="${mx.toFixed(1)}" cy="${my.toFixed(1)}" r="4.2"/>
     <text class="you-label" x="${lx.toFixed(1)}" y="${(my + 3.6).toFixed(1)}" text-anchor="${anchor}">You</text></svg>`;
 
@@ -590,8 +641,8 @@ const save = (v) => { try { localStorage.setItem(KEY, JSON.stringify(v)); } catc
 // Two back ends with one shape. With a public Supabase key (static hosting) the form calls the
 // database functions directly; without one it talks to the local server in serve.mjs.
 // Both resolve to { ok, error?, message?, borough, position, boroughPosition, already, stats }.
-const hosted = Boolean(SUPABASE_KEY);
 const local = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
+const hosted = Boolean(SUPABASE_KEY) && !local; // on your own machine serve.mjs answers instead
 async function rpc(fn, args = {}) {
   const headers = { 'content-type': 'application/json', apikey: SUPABASE_KEY };
   if (!SUPABASE_KEY.startsWith('sb_')) headers.authorization = `Bearer ${SUPABASE_KEY}`; // older JWT-style keys
