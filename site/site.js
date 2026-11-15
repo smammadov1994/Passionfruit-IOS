@@ -73,6 +73,14 @@ function washSVG(color, seed) {
 }
 const WASH = { blush: '#F3B3A2', sage: '#A9D2B8', butter: '#F2D98A', sky: '#A9C6E8', lilac: '#C5B4E3' };
 
+// The face of the app's little characters: two dot eyes, a smile, rosy cheeks, one highlight.
+const BUDDY_FACE = `<svg class="face" viewBox="-150 -150 300 300" aria-hidden="true">
+  <rect x="-62" y="-66" width="50" height="16" rx="8" fill="#fff" opacity=".8" transform="rotate(-28 -37 -58)"/>
+  <circle cx="-58" cy="-28" r="4.5" fill="#fff" opacity=".75"/>
+  <circle cx="-50" cy="16" r="13" fill="#E4532F" opacity=".26"/><circle cx="50" cy="16" r="13" fill="#E4532F" opacity=".26"/>
+  <g class="eyes"><g class="blink"><circle cx="-29" cy="-12" r="10" fill="#33292F"/><circle cx="29" cy="-12" r="10" fill="#33292F"/></g></g>
+  <path class="mouth" d="M-19 22Q0 42 19 22" fill="none" stroke="#33292F" stroke-width="7" stroke-linecap="round"/></svg>`;
+
 /* ───────── Hero: two people who spring toward each other ───────── */
 let mergeMeet = () => {};
 function initMeet() {
@@ -82,14 +90,22 @@ function initMeet() {
     const base = i ? { x: 0.21, y: 0.06 } : { x: -0.21, y: -0.05 };
     return { el, base, x: new Spring(base.x, 60, 9), y: new Spring(base.y, 60, 9), s: new Spring(1, 200, 18), drag: null };
   });
-  let W = stage.offsetWidth, heroH = innerHeight;
+  // The one the two become: a single wash that opens its eyes, like the match screen in the app.
+  const buddy = document.createElement('div');
+  buddy.className = 'buddy';
+  buddy.innerHTML = washSVG('#F2B98C', 33).replace('<svg ', '<svg class="body" ') + BUDDY_FACE;
+  stage.insertBefore(buddy, $('#motes'));
+  const grow = new Spring(0.6, 170, 13);
+  let W = stage.offsetWidth, centre = 0;
   let px = 0, py = 0, pull = 0, holdUntil = 0, mutual = false, merged = false;
   mergeMeet = () => { merged = true; for (const b of blobs) { b.drag = null; b.x.k = b.y.k = 60; b.x.c = b.y.c = 9; } };
-  const measure = () => { W = stage.offsetWidth; heroH = $('.hero').offsetHeight; };
+  const measure = () => { W = stage.offsetWidth; };
   new ResizeObserver(measure).observe(stage);
 
   const draw = () => {
     for (const b of blobs) b.el.style.transform = `translate3d(${b.x.x * W}px,${b.y.x * W}px,0) scale(${b.s.x})`;
+    const bob = Math.sin(performance.now() / 450) * 0.012;
+    buddy.style.transform = `translate3d(${(blobs[0].x.x + blobs[1].x.x) / 2 * W}px,${((blobs[0].y.x + blobs[1].y.x) / 2 + bob) * W}px,0) scale(${grow.x})`;
   };
   if (reduce) { draw(); return; }
 
@@ -142,7 +158,10 @@ function initMeet() {
   }
 
   tickers.add((dt, now) => {
-    if (scrollDirty) pull = clamp(scrollY / ((heroH || innerHeight || 1) * 0.6)) || 0;
+    if (scrollDirty) { // the pull starts once the stage is well inside the window, so a phone sees them meet too
+      centre = stage.getBoundingClientRect().top + scrollY + W / 2;
+      pull = clamp((scrollY - Math.max(0, centre - innerHeight * 0.78)) / ((innerHeight || 1) * 0.3)) || 0;
+    }
     const holding = now < holdUntil;
     const near = holding ? 0.4 : 1 - 0.68 * pull; // scrolling draws them together
     const breathe = Math.sin(now / 1700) * 0.012;
@@ -155,6 +174,7 @@ function initMeet() {
       }
       b.x.step(dt); b.y.step(dt); b.s.step(dt);
     });
+    grow.t = mutual ? 1 : 0.6; grow.step(dt);
     const d = Math.hypot(blobs[0].x.x - blobs[1].x.x, blobs[0].y.x - blobs[1].y.x);
     const next = mutual ? d < 0.3 : d < 0.22;
     if (next !== mutual) {
@@ -596,7 +616,7 @@ function renderMap(stats) {
   map.innerHTML = `<svg viewBox="0 0 300 300" role="img" aria-label="Map of New York City with a dot for each person on the list"><defs>
     <filter id="nycTorn0" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="3" seed="12"/><feDisplacementMap in="SourceGraphic" scale="9" xChannelSelector="R" yChannelSelector="G"/><feGaussianBlur stdDeviation=".7"/></filter>
     <filter id="nycTorn1" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".04" numOctaves="3" seed="41"/><feDisplacementMap in="SourceGraphic" scale="8" xChannelSelector="G" yChannelSelector="B"/><feGaussianBlur stdDeviation=".7"/></filter>
-    </defs><g class="land">${land}</g>${names_}${dots}
+    </defs><g class="under">${land}</g><g class="land">${land}</g>${names_}${dots}
     <circle class="you" cx="${mx.toFixed(1)}" cy="${my.toFixed(1)}" r="4.2"/>
     <text class="you-label" x="${lx.toFixed(1)}" y="${(my + 3.6).toFixed(1)}" text-anchor="${anchor}">You</text></svg>`;
 

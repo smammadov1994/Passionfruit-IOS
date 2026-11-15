@@ -97,11 +97,26 @@ h1 .line>span{display:inline-block;will-change:transform}
 .meet.mutual [data-cap=apart]{opacity:0;transform:translateY(-8px)}
 .meet.mutual [data-cap=mutual]{opacity:1;transform:none}
 /* after sign-up: the washes merge and New York City takes their place */
-.blob{transition:opacity .9s var(--ease) .35s}
+.blob{transition:opacity .45s var(--ease)}
+/* together, the two washes become one little character */
+.buddy{position:absolute;left:50%;top:50%;width:54%;aspect-ratio:1;margin:-27% 0 0 -27%;pointer-events:none;opacity:0;will-change:transform;transition:opacity .3s var(--ease)}
+.buddy svg{position:absolute;inset:-22%;width:144%;height:144%;overflow:visible}
+.buddy .body{mix-blend-mode:multiply}
+.buddy .eyes,.buddy .blink{transform-box:fill-box;transform-origin:center}
+.buddy .eyes{transform:scaleY(.06);transition:transform .2s var(--ease)}
+.buddy .blink{animation:blink 4.200s linear infinite}
+.buddy .mouth{opacity:0;transition:opacity .2s var(--ease)}
+@keyframes blink{0%,95%,100%{transform:none}97.500%{transform:scaleY(.08)}}
+.meet.mutual .blob{opacity:0;transition:opacity .5s var(--ease) .1s}
+.meet.mutual .buddy{opacity:1;transition:opacity .5s var(--ease) .1s}
+.meet.mutual .buddy .eyes{transform:none;transition:transform .45s cubic-bezier(.3,1.6,.45,1) .65s}
+.meet.mutual .buddy .mouth{opacity:1;transition:opacity .4s var(--ease) .8s}
 .meet.mapped .blob{opacity:0;pointer-events:none}
+.meet.mapped .buddy{opacity:0;transition:opacity .9s var(--ease) .35s}
 .nyc-map{position:absolute;inset:-4%;opacity:0;transform:scale(.55) rotate(-6deg);transition:opacity .9s var(--ease) .5s,transform 1.300s cubic-bezier(.3,1.35,.45,1) .5s}
 .meet.mapped .nyc-map{opacity:1;transform:none}
 .nyc-map svg{width:100%;height:100%;overflow:visible}
+.nyc-map .under path{fill:var(--paper);stroke:var(--paper)} /* paper under each borough, so the waves stay behind the land */
 .nyc-map .land{mix-blend-mode:multiply}
 .nyc-map .land path{opacity:.62}
 .nyc-map .land path.mine{opacity:.92}
@@ -262,7 +277,7 @@ h1 .line>span{display:inline-block;will-change:transform}
   .live,.shot.on .vyes,.sw,.go-btn,.nyc-map .you{animation:none}
   .meet.mapped .nyc-map .dot{animation:none;opacity:.85}
   .blob,.nyc-map,.water,.motes{transition:none}
-  .wave{animation:none}
+  .wave,.buddy .blink{animation:none}
   .shot{transition:none}
   .say-text .w{opacity:1}
 }
