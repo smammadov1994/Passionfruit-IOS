@@ -536,44 +536,23 @@ function pointsIn(shape, count, seed) {
   return out;
 }
 
-// The harbour behind the map: a glassy blue blob with white and blue streaks drifting through it.
-function initWater(el) {
-  const cv = $('canvas', el), ctx = cv.getContext('2d');
-  const INK = ['#FFFFFF', '#FFFFFF', '#F2F9FE', '#9CCBF0', '#6DAEE3'];
-  const drops = Array.from({ length: 120 }, (_, i) => ({
-    x: Math.random(), y: Math.random(), vx: 0, vy: 0, phase: Math.random() * 6.283,
-    speed: 0.035 + Math.random() * 0.07, r: 0.9 + Math.random() ** 2 * 2.6,
-    color: INK[i % INK.length], a: 0.5 + Math.random() * 0.45,
-  }));
-  let t = 0;
-  const step = (dt) => {
-    t += dt;
-    for (const d of drops) { // a slow current that bends like water around a hull
-      const ang = 0.3 + Math.sin(d.y * 7 + t * 0.45 + d.phase * 0.25) * 0.75 + Math.cos(d.x * 5 - t * 0.3) * 0.45;
-      d.vx = Math.cos(ang) * d.speed; d.vy = Math.sin(ang) * d.speed * 0.7;
-      d.x = (d.x + d.vx * dt + 1.2) % 1.2; d.y = (d.y + d.vy * dt + 1.2) % 1.2; // wraps just off the edge
-    }
+// Behind the map: soft white waves, layered like sheets of modelling clay, sliding past each
+// other and fading into the paper at the edges.
+function wavesSVG() {
+  const rows = [ // y of the crest, height of the swell, seconds per loop, direction, fill
+    [36, 9, 46, 1, '#FFFFFF'], [84, 11, 34, -1, '#F4F8FC'], [132, 10, 40, 1, '#FFFFFF'],
+    [180, 12, 30, -1, '#EEF4FA'], [228, 10, 38, 1, '#FFFFFF'], [272, 9, 44, -1, '#F2F7FB'],
+  ];
+  const band = ([y, amp, secs, dir, fill], n) => {
+    let d = `M-300 ${y}`;
+    for (let x = -300; x < 600; x += 150) d += `q37.5 ${-amp} 75 0t75 0`; // one swell every 150 units
+    d += `V${y + 90}H-300Z`;
+    return `<g class="wave" style="--secs:${secs}s;--to:${dir * 300}px"><path d="${d}" fill="${fill}" filter="url(#clay)"/></g>`;
   };
-  let size = null;
-  size = fitCanvas(cv, () => paint());
-  function paint() {
-    if (!size) return;
-    const r = cv.getBoundingClientRect();
-    if (r.bottom < -100 || r.top > innerHeight + 100) return;
-    const { w, h, dpr } = size;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, w, h);
-    ctx.lineCap = 'round';
-    for (const d of drops) {
-      const x = (d.x - 0.1) * w, y = (d.y - 0.1) * h;
-      ctx.globalAlpha = d.a; ctx.strokeStyle = d.color; ctx.lineWidth = d.r * 2;
-      ctx.beginPath(); ctx.moveTo(x - d.vx * w * 0.5, y - d.vy * h * 0.5); ctx.lineTo(x, y); ctx.stroke();
-    }
-  }
-  step(0);
-  if (reduce) { paint(); return; }
-  tickers.add(step);
-  painters.add(paint);
+  return `<svg viewBox="0 0 300 300" preserveAspectRatio="none" aria-hidden="true"><defs>
+    <filter id="clay" x="-5%" y="-30%" width="110%" height="160%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="-2.5" stdDeviation="3" flood-color="#7E9CC2" flood-opacity=".2"/>
+    </filter></defs>${rows.map(band).join('')}</svg>`;
 }
 
 const MAP_DOTS_MAX = 140; // per borough; past this the map would turn solid
@@ -587,10 +566,9 @@ function renderMap(stats) {
     map.id = 'nycMap'; map.className = 'nyc-map';
     const water = document.createElement('div');
     water.className = 'water';
-    water.innerHTML = '<canvas></canvas>';
+    water.innerHTML = wavesSVG();
     stage.insertBefore(water, $('#motes'));
     stage.insertBefore(map, $('#motes'));
-    initWater(water);
   }
   const names = Object.keys(NYC_SHAPES);
   const land = names.map((name, i) => {
