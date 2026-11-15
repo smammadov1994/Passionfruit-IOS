@@ -1,0 +1,20 @@
+/** User-facing strings the server sends. Kept together so tone can be reviewed in one place. */
+export const COPY = {
+  moderationWarnSexual: "Let's keep it respectful. Sexual language isn't allowed here; if it happens again the date will end.",
+  moderationEndSexual: 'This date was ended because of repeated sexual language.',
+  moderationEndNudity: 'This date was ended because nudity is not allowed.',
+  suspendedPendingReview: 'Your account is paused while we review recent safety violations.',
+  suspendedUntil: 'Your account is paused for now.',
+  onboardingIncomplete: 'Finish your profile before going online.',
+  underage: 'You need to be 18 or older to use this app.',
+  alreadyInDate: "You're already in a date.",
+  inCall: "You're on a call right now.",
+  notInDate: 'That date is no longer active.',
+  notYourTurn: "It isn't your turn.",
+  badMessage: 'That message was not understood.',
+  internal: 'Something went wrong on our side.',
+  partnerOffline: "They're not online right now.",
+  partnerBusy: "They're busy right now.",
+  callNotFound: 'That call is no longer active.',
+  matchNotFound: 'That match no longer exists.',
+} as const;

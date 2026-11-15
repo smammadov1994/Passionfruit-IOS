@@ -1,0 +1,40 @@
+{
+  "name": "tempo-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "tsx watch --env-file-if-exists=.env src/index.ts",
+    "db:up": "docker start tempo-pg 2>/dev/null || docker run -d --name tempo-pg -e POSTGRES_PASSWORD=tempo-local-dev -e POSTGRES_DB=tempo -p 127.0.0.1:5434:5432 -v tempo-pg-data:/var/lib/postgresql/data postgres:16-alpine",
+    "db:down": "docker stop tempo-pg",
+    "db:use-supabase": "sh scripts/use-supabase.sh",
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/index.js",
+    "migrate": "tsx --env-file-if-exists=.env src/store/migrate.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "sim": "tsx scripts/sim.ts",
+    "partner": "tsx scripts/partner.ts"
+  },
+  "dependencies": {
+    "@fastify/cors": "^11.4.3",
+    "@fastify/websocket": "^11.3.7",
+    "fastify": "^5.12.8",
+    "jose": "^6.2.17",
+    "pg": "^8.23.1",
+    "ws": "^8.23.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.16",
+    "@types/node": "^22.20.5",
+    "@types/pg": "^8.23.1",
+    "@types/ws": "^8.18.2",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vitest": "^5.1.0"
+  }
+}

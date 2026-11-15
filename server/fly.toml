@@ -1,0 +1,49 @@
+# Fly.io deployment of the Passionfruit API. One always-on machine: live dates run over WebSockets
+# and the queue lives in memory, so it must not scale to zero or to more than one instance.
+#
+# First time:   fly launch --copy-config --no-deploy   (creates the app; keep this file)
+#               fly volumes create uploads --region sjc --size 1
+#               sh scripts/fly-secrets.sh               (JWT secret and database address from .env)
+#               fly deploy
+# The iOS Release build points at https://<app>.fly.dev (TEMPO_API_BASE_URL in ios/project.yml).
+
+app = "passionfruit-api"
+primary_region = "sjc"   # San Jose: closest Fly region to the Supabase database in us-west-2
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  NODE_ENV = "production"
+  PORT = "8080"
+  TRUST_PROXY = "1"
+  PUBLIC_BASE_URL = "https://passionfruit-api.fly.dev"
+  APPLE_BUNDLE_ID = "com.seymur.passionfruit"
+  APPLE_ROOT_CA_PATH = "/app/certs/AppleRootCA-G3.pem"
+  DATABASE_SSL = "1"
+  DATABASE_SSL_CA_PATH = "/app/certs/supabase-ca.crt"
+  BLOB_STORE = "local"
+  UPLOAD_DIR = "/app/uploads"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "off"
+  auto_start_machines = true
+  min_machines_running = 1
+
+  [[http_service.checks]]
+    interval = "15s"
+    timeout = "3s"
+    grace_period = "15s"
+    method = "GET"
+    path = "/health"
+
+# Profile photos. Without this volume they would vanish on every deploy.
+[mounts]
+  source = "uploads"
+  destination = "/app/uploads"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"

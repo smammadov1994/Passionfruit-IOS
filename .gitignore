@@ -1,0 +1,27 @@
+# Secrets and local config
+.env
+.env.*
+!.env.example
+*.p8
+*.p12
+*.mobileprovision
+supabase-password.txt
+
+# Dependencies and build output
+node_modules/
+dist/
+ios/build/
+marketing/out/
+*.log
+xcuserdata/
+*.xcuserstate
+DerivedData/
+
+# Local data
+server/uploads/
+site/data/
+
+# Machine and tool files
+.DS_Store
+.claude/
+.mcp.json

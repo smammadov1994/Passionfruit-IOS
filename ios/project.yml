@@ -1,0 +1,152 @@
+name: Tempo
+
+options:
+  bundleIdPrefix: com.seymur
+  deploymentTarget:
+    iOS: "18.0"
+  createIntermediateGroups: true
+  developmentLanguage: en
+  groupSortPosition: top
+
+configs:
+  Debug: debug
+  Release: release
+
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    SWIFT_STRICT_CONCURRENCY: targeted
+    IPHONEOS_DEPLOYMENT_TARGET: "18.0"
+    MARKETING_VERSION: "1.0.0"
+    TEMPO_BRAND_NAME: Passionfruit
+    CURRENT_PROJECT_VERSION: "2"
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+
+packages:
+  WebRTC:
+    url: https://github.com/stasel/WebRTC
+    from: 125.0.0
+
+fileGroups:
+  - Tempo.storekit
+  - README.md
+  - CORE-API.md
+  - DESIGN-API.md
+
+targets:
+  Tempo:
+    type: application
+    platform: iOS
+    deploymentTarget: "18.0"
+    sources:
+      - path: Tempo
+        excludes:
+          - "**/*.md"
+    dependencies:
+      - package: WebRTC
+        product: WebRTC
+    info:
+      path: Tempo/App/Info.plist
+      properties:
+        CFBundleDisplayName: $(TEMPO_BRAND_NAME)
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        LSRequiresIPhoneOS: true
+        UILaunchScreen: {}
+        # The SwiftUI App lifecycle is scene-based: without a scene manifest UIKit falls back to
+        # the legacy window path and nothing is shown.
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+        UIUserInterfaceStyle: Light
+        UIRequiresFullScreen: true
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        UIBackgroundModes:
+          - audio
+          - remote-notification
+        NSCameraUsageDescription: $(TEMPO_BRAND_NAME) uses your camera for live video dates. Frames from your own camera are checked automatically to keep dates safe.
+        NSMicrophoneUsageDescription: $(TEMPO_BRAND_NAME) uses your microphone so the person you are on a date with can hear you.
+        NSSpeechRecognitionUsageDescription: $(TEMPO_BRAND_NAME) transcribes what you say on this device during dates and checks the text to keep dates free of sexual harassment. Audio never leaves your phone for this.
+        NSCalendarsWriteOnlyAccessUsageDescription: $(TEMPO_BRAND_NAME) adds a date to your calendar when you ask a match's agent to. It never reads your calendar.
+        NSLocationWhenInUseUsageDescription: $(TEMPO_BRAND_NAME) uses your location once to show your city and to find people near you.
+        TempoAPIBaseURL: $(TEMPO_API_BASE_URL)
+        ITSAppUsesNonExemptEncryption: false
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
+    entitlements:
+      path: Tempo/App/Tempo.entitlements
+      properties:
+        com.apple.developer.applesignin:
+          - Default
+        aps-environment: development
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.seymur.passionfruit
+        PRODUCT_NAME: Tempo
+        TARGETED_DEVICE_FAMILY: "1"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        # The design system reads colors by name. Generated symbols are off because the `mint`
+        # color set would otherwise collide with SwiftUI's own `Color.mint`.
+        ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS: NO
+        ENABLE_PREVIEWS: YES
+        SWIFT_EMIT_LOC_STRINGS: YES
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: S6P2U4F8US
+      configs:
+        Debug:
+          TEMPO_API_BASE_URL: "http://localhost:8080"
+          SWIFT_ACTIVE_COMPILATION_CONDITIONS: DEBUG
+          SWIFT_OPTIMIZATION_LEVEL: "-Onone"
+        Release:
+          # The Fly.io app in ../server/fly.toml. Change both together.
+          TEMPO_API_BASE_URL: "https://passionfruit-api.fly.dev"
+          SWIFT_OPTIMIZATION_LEVEL: "-O"
+
+  TempoTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "18.0"
+    sources:
+      - path: TempoTests
+    dependencies:
+      - target: Tempo
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.seymur.passionfruit.tests
+        GENERATE_INFOPLIST_FILE: YES
+
+schemes:
+  Tempo:
+    build:
+      targets:
+        Tempo: all
+        TempoTests: [test]
+    run:
+      config: Debug
+      storeKitConfiguration: Tempo.storekit
+      commandLineArguments:
+        "-demo": true
+        "-live": false
+    test:
+      config: Debug
+      targets:
+        - TempoTests
+    profile:
+      config: Release
+    analyze:
+      config: Debug
+    archive:
+      config: Release
+  # The same app against the real server in ../server (see README section 3).
+  # `-allowNoVideo` keeps a date going when video cannot connect, which is always the case in the
+  # Simulator and with `npm run partner`. Untick it in the scheme when testing on two real phones.
+  Tempo Live:
+    build:
+      targets:
+        Tempo: all
+    run:
+      config: Debug
+      storeKitConfiguration: Tempo.storekit
+      commandLineArguments:
+        "-live": true
+        "-allowNoVideo": true
