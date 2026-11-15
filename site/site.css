@@ -46,7 +46,8 @@ h3{font-size:19px;line-height:1.300;font-weight:600;letter-spacing:-.01em}
 .nav{position:fixed;inset:0 0 auto 0;z-index:50;height:var(--nav);display:flex;align-items:center;gap:16px;padding:0 var(--gutter);background:var(--paper);border-bottom:1px solid transparent;transition:border-color .2s}
 .nav.stuck{border-color:var(--hair)}
 .wordmark{font-size:27px;font-weight:400;letter-spacing:-.025em;line-height:1}
-.nav .wordmark{min-height:44px;display:inline-flex;align-items:center}
+.nav .wordmark{min-height:44px;display:inline-flex;align-items:center;gap:4px}
+.wordmark .logo{width:54px;height:54px;margin:-8px -6px -4px -12px}
 .city{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:14px;font-weight:500;color:var(--ink2)}
 .live{width:8px;height:8px;border-radius:50%;background:var(--yes);animation:live 2.400s ease-in-out infinite}
 @keyframes live{50%{opacity:.35}}
