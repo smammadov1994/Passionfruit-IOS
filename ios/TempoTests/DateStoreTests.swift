@@ -614,7 +614,7 @@ final class DateStoreTests: XCTestCase {
         var config = DemoConfig()
         config.autoScript = true
         config.latency = 0
-        config.dateDurationSec = 4
+        config.dateDurationSec = 8
         config.turnDurationSec = 1
         config.checkpointWindowSec = 3
         config.decisionWindowSec = 5

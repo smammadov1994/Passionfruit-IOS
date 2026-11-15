@@ -17,7 +17,7 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%;scroll-padding-top:calc(var(--nav) + 16px)}
-html{overflow-x:clip}
+html{overflow-x:clip;overscroll-behavior-x:none}
 section,header,footer{overflow-x:clip} /* nothing may push the page sideways */
 @supports not (overflow:clip){html,body{overflow-x:hidden}}
 body{background:var(--paper);color:var(--ink);font:16px/1.600 var(--ui);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:clip}
@@ -73,7 +73,7 @@ h1 .line>span{display:inline-block;will-change:transform}
 .hint{grid-column:1/-1;font-size:14px;color:var(--ink2);min-height:22px}
 .hint.err{color:var(--danger)}
 .hint.ok{color:var(--yes)}
-.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.hp{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);opacity:0;pointer-events:none}
 .joined{max-width:620px;padding:24px 26px;border-radius:20px;background:var(--white);border:1px solid var(--hair);box-shadow:var(--float)}
 .joined:focus{outline:0}
 .joined h3{font-size:clamp(28px,3vw,40px);line-height:1.050;margin-bottom:8px}
@@ -89,7 +89,8 @@ h1 .line>span{display:inline-block;will-change:transform}
 .blob{position:absolute;left:50%;top:50%;width:58%;aspect-ratio:1;margin:-29% 0 0 -29%;cursor:grab;will-change:transform;touch-action:none;-webkit-user-select:none;user-select:none}
 .blob:active{cursor:grabbing}
 .blob svg{position:absolute;inset:-22%;width:144%;height:144%;overflow:visible;pointer-events:none;mix-blend-mode:multiply}
-.motes{position:absolute;left:-18%;top:-18%;width:136%;height:136%;pointer-events:none;mix-blend-mode:multiply}
+/* never wider than the screen, so it cannot push the page sideways on a phone */
+.motes{position:absolute;left:50%;top:-18%;width:min(136%,100vw);height:136%;transform:translateX(-50%);pointer-events:none;mix-blend-mode:multiply}
 .meet-cap{position:relative;text-align:center;font-size:15px;color:var(--ink2);min-height:44px;margin-top:4px}
 .meet-cap span{position:absolute;inset:0 0 auto;transition:opacity .4s var(--ease),transform .4s var(--ease)}
 .meet-cap [data-cap=mutual]{font-size:34px;line-height:1.100;color:var(--ink);opacity:0;transform:translateY(8px)}
