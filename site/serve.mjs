@@ -64,7 +64,8 @@ async function join(req, res) {
 }
 
 async function serveFile(req, res, pathname) {
-  const rel = pathname === '/' ? 'index.html' : decodeURIComponent(pathname.slice(1));
+  let rel = pathname === '/' ? 'index.html' : decodeURIComponent(pathname.slice(1));
+  if (!path.extname(rel)) rel += '.html'; // /privacy serves privacy.html, the way GitHub Pages does
   const file = path.resolve(ROOT, rel);
   if (!file.startsWith(ROOT + path.sep) || file.startsWith(DATA) || ['serve.mjs', 'store.mjs'].includes(path.basename(file))) {
     res.writeHead(404).end('Not found');

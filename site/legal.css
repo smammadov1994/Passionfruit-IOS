@@ -1,0 +1,29 @@
+/* Plain reading pages: privacy, terms, community rules, support. Uses the tokens and nav from site.css. */
+.doc{max-width:720px;margin:0 auto;padding:calc(var(--nav) + 56px) var(--gutter) 96px}
+.doc .label{font:600 14px/1 var(--ui);color:var(--accent-tx);margin-bottom:14px}
+.doc h1{font-size:clamp(40px,6vw,64px);line-height:1.050;margin-bottom:14px}
+.doc .when{color:var(--ink3);font-size:15px;margin-bottom:40px}
+.doc .short{padding:20px 22px;border-radius:20px;background:var(--white);border:1px solid var(--hair);margin-bottom:44px}
+.doc .short h2{font:600 16px/1.300 var(--ui);letter-spacing:0;margin:0 0 10px}
+.doc h2{font-size:clamp(26px,3vw,32px);line-height:1.150;margin:48px 0 14px}
+.doc h3{font:600 17px/1.350 var(--ui);margin:26px 0 6px}
+.doc p,.doc li{font-size:17px;line-height:1.650;color:var(--ink2)}
+.doc p{margin-bottom:14px}
+.doc ul,.doc ol{margin:0 0 16px 22px}
+.doc ul{list-style:disc}
+.doc ol{list-style:decimal}
+.doc li{margin-bottom:8px;padding-left:4px}
+.doc b,.doc strong{color:var(--ink);font-weight:600}
+.doc a{color:var(--accent-tx);text-decoration:underline;text-underline-offset:3px}
+.doc a.mail{display:inline-flex;align-items:center;min-height:44px;font-weight:600}
+.doc table{width:100%;border-collapse:collapse;margin:8px 0 20px;font-size:16px}
+.doc th,.doc td{text-align:left;vertical-align:top;padding:12px 12px 12px 0;border-bottom:1px solid var(--hair);color:var(--ink2);line-height:1.500}
+.doc th{font:600 14px/1.300 var(--ui);color:var(--ink)}
+.doc td:first-child{color:var(--ink);font-weight:600;width:34%}
+.doc .steps li{margin-bottom:12px}
+.foot nav{display:flex;flex-wrap:wrap;gap:6px 20px}
+.foot nav a{display:inline-flex;align-items:center;min-height:44px;text-decoration:underline;text-underline-offset:3px}
+@media (max-width:640px){
+  .doc{padding-top:calc(var(--nav) + 36px)}
+  .doc td:first-child{width:40%}
+}

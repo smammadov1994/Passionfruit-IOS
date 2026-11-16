@@ -1,12 +1,11 @@
 import Foundation
 
-/// Every external link the app opens lives here. The https URLs are placeholders until the real
-/// pages exist; replace them in this one place.
+/// Every external link the app opens lives here. The pages are part of the launch site (`site/`).
 enum LegalLinks {
-    static let privacyPolicy: String = "https://tempo.example/privacy"
-    static let terms: String = "https://tempo.example/terms"
-    static let communityGuidelines: String = "https://tempo.example/community"
-    static let support: String = "https://tempo.example/support"
+    static let privacyPolicy: String = "https://passionfruitdating.com/privacy"
+    static let terms: String = "https://passionfruitdating.com/terms"
+    static let communityGuidelines: String = "https://passionfruitdating.com/community"
+    static let support: String = "https://passionfruitdating.com/support"
     /// Apple's page for managing App Store subscriptions.
     static let manageSubscription: String = "https://apps.apple.com/account/subscriptions"
 
