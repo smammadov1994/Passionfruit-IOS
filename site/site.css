@@ -118,7 +118,7 @@ h1 .line>span{display:inline-block;will-change:transform}
 .meet.mutual .buddy .mouth{opacity:1;transition:opacity .4s var(--ease) .55s}
 .meet.mapped .blob{opacity:0;pointer-events:none}
 .meet.mapped .buddy{opacity:0;transition:opacity .9s var(--ease) .35s}
-.nyc-map{position:absolute;inset:-4%;opacity:0;transform:scale(.55) rotate(-6deg);transition:opacity .9s var(--ease) .5s,transform 1.300s cubic-bezier(.3,1.35,.45,1) .5s}
+.nyc-map{position:absolute;inset:-4%;will-change:transform,opacity;opacity:0;transform:scale(.55) rotate(-6deg);transition:opacity .9s var(--ease) .5s,transform 1.300s cubic-bezier(.3,1.35,.45,1) .5s}
 .meet.mapped .nyc-map{opacity:1;transform:none}
 .nyc-map svg{width:100%;height:100%;overflow:visible}
 .nyc-map .under path{fill:var(--paper);stroke:var(--paper)} /* paper under each borough, so the waves stay behind the land */
@@ -132,7 +132,7 @@ h1 .line>span{display:inline-block;will-change:transform}
 .meet.mapped .water{opacity:1}
 @media (max-width:900px){.water{inset:-14% -5%}} /* stays inside the screen on a phone */
 .water svg{width:100%;height:100%}
-.wave{animation:wave var(--secs) linear infinite}
+.wave{position:absolute;inset:0 -50%;will-change:transform;animation:wave var(--secs) linear infinite}
 @keyframes wave{to{transform:translateX(var(--to))}}
 .nyc-map .dot{opacity:0;transform-box:fill-box;transform-origin:center}
 .meet.mapped .nyc-map .dot{animation:dot .7s cubic-bezier(.3,1.5,.45,1) var(--d) both}
@@ -263,6 +263,12 @@ h1 .line>span{display:inline-block;will-change:transform}
 .js [data-rise]{opacity:0;will-change:transform,opacity}
 .js h1 .line>span{transform:translateY(110%)}
 
+/* Phones: effects that cost a redraw every frame are swapped for ones the screen can simply slide and fade. */
+@media (max-width:900px),(pointer:coarse){
+  .blob svg,.buddy .body,.dot-guy .body,.motes{mix-blend-mode:normal}
+  .blob,.buddy{backface-visibility:hidden}
+  .shot{filter:none;transform:scale(1.02);transition:opacity .45s var(--ease),transform .6s var(--ease)}
+}
 @media (max-width:900px){
   .hero{grid-template-columns:1fr;grid-template-rows:none;align-items:start;padding-bottom:32px}
   .meet-stage{max-width:380px}

@@ -88,10 +88,14 @@ let mapReady = false;      // the map is drawn and may take the stage
 let playJoin = () => {};   // just signed up: the two meet, become one, then the map
 function initMeet() {
   const meet = $('#meet'), stage = $('#meetStage');
+  const CORAL = '#F08F7A';
+  // On a touch screen the washes follow the scroll without the bounce: a flick moves the page far faster than a wheel does.
+  const touch = matchMedia('(pointer:coarse)').matches;
+  const LOOSE = touch ? 14 : 9;
   const blobs = $$('.blob', stage).map((el, i) => {
-    el.innerHTML = washSVG(i ? WASH.sage : WASH.blush, i ? 21 : 8);
+    el.innerHTML = washSVG(i ? WASH.butter : CORAL, i ? 21 : 8); // coral and butter: together they make the character's peach
     const base = i ? { x: 0.21, y: 0.06 } : { x: -0.21, y: -0.05 };
-    return { el, base, x: new Spring(base.x, 60, 9), y: new Spring(base.y, 60, 9), s: new Spring(1, 200, 18), drag: null };
+    return { el, base, x: new Spring(base.x, 60, LOOSE), y: new Spring(base.y, 60, LOOSE), s: new Spring(1, 200, 18), drag: null };
   });
   // The one the two become: a single wash that opens its eyes, like the match screen in the app.
   const buddy = document.createElement('div');
@@ -101,14 +105,19 @@ function initMeet() {
   const grow = new Spring(0.6, 170, 13);
   let W = stage.offsetWidth;
   let px = 0, py = 0, pull = 0, held = 0, holdUntil = 0, mutual = false, merged = false;
+  let flipped = 0, onScreen = true;
   let joinAt = 0, forced = false; // a fresh sign-up plays the whole sequence on its own, then keeps the map up
   playJoin = () => { joinAt = performance.now(); };
   const pin = $('#heroPin'), hero = $('.hero'), hold = $('#heroHold');
   let pinStart = 0, pinLen = 1;
+  const probe = document.createElement('div'); // as tall as the window with the browser's bars showing
+  probe.style.cssText = 'position:fixed;left:0;top:0;width:0;height:100svh;visibility:hidden;pointer-events:none';
+  document.body.appendChild(probe);
   const measure = () => {
     W = stage.offsetWidth;
     // A hero taller than the window sticks once its bottom edge reaches the bottom of the window.
-    const over = Math.max(0, hero.offsetHeight - innerHeight);
+    // Measured with svh, not innerHeight: on a phone innerHeight changes mid-scroll as the address bar hides, and the hero would jump.
+    const over = Math.max(0, hero.offsetHeight - (probe.offsetHeight || innerHeight));
     hero.style.setProperty('--pin-top', `${-over}px`);
     pinStart = pin.offsetTop + over; pinLen = hold.offsetHeight;
   };
@@ -126,8 +135,8 @@ function initMeet() {
   // Pigment specks: each one is on a spring to a slow orbit around its person.
   const cv = $('#motes'), ctx = cv.getContext('2d'), size = fitCanvas(cv);
   const mouse = { x: -9999, y: -9999 };
-  const INKS = [['#E4532F', '#F08A6E', '#F3B3A2', '#F2D98A', '#F3B3A2'], ['#1F8A5B', '#6DB58F', '#A9D2B8', '#A9C6E8', '#C5B4E3']];
-  const motes = Array.from({ length: innerWidth < 700 ? 150 : 280 }, (_, i) => {
+  const INKS = [['#E4532F', '#F08A6E', '#F08F7A', '#F3B3A2', '#F6C59A'], ['#D9A441', '#EFC25E', '#F2D98A', '#F6C59A', '#F3B3A2']];
+  const motes = Array.from({ length: innerWidth < 700 ? 110 : 280 }, (_, i) => {
     const owner = i % 2, far = Math.random() ** 1.7;
     return {
       owner, ang: Math.random() * Math.PI * 2, rad: 0.06 + far * 0.4, sq: 0.8 + Math.random() * 0.35,
@@ -163,7 +172,7 @@ function initMeet() {
     const release = () => {
       if (!b.drag) return;
       b.drag = null;
-      b.x.k = b.y.k = 60; b.x.c = b.y.c = 9; // loose again, so it overshoots on the way home
+      b.x.k = b.y.k = 60; b.x.c = b.y.c = LOOSE; // loose again, so it overshoots on the way home
       b.s.t = 1;
       if (mutual) holdUntil = performance.now() + 2600;
     };
@@ -173,6 +182,8 @@ function initMeet() {
 
   tickers.add((dt, now) => {
     if (scrollDirty) { // the pull starts once the stage is well inside the window, so a phone sees them meet too
+      const r = stage.getBoundingClientRect();
+      onScreen = r.bottom > -120 && r.top < innerHeight + 120;
       held = clamp((scrollY - pinStart) / (pinLen || 1)) || 0; // how far through the hold
       pull = clamp(held / 0.3); // they have met in the first third of it; the rest is for watching
     }
@@ -181,7 +192,7 @@ function initMeet() {
     if (joinAt > 0 && !joining) forced = true;
     const onMap = mapReady && (forced || held > 0.55);
     const together = onMap || joining;
-    if (together && !merged) for (const b of blobs) { b.drag = null; b.x.k = b.y.k = 60; b.x.c = b.y.c = 9; }
+    if (together && !merged) for (const b of blobs) { b.drag = null; b.x.k = b.y.k = 60; b.x.c = b.y.c = LOOSE; }
     merged = together;
     if (onMap !== meet.classList.contains('mapped')) meet.classList.toggle('mapped', onMap);
     const holding = now < holdUntil;
@@ -198,8 +209,12 @@ function initMeet() {
     });
     grow.t = mutual ? 1 : 0.6; grow.step(dt);
     const d = Math.hypot(blobs[0].x.x - blobs[1].x.x, blobs[0].y.x - blobs[1].y.x);
-    const next = mutual ? d < 0.3 : d < 0.22;
-    if (next !== mutual) {
+    // In the hand (dragged, just let go, or signed up) it goes by how close they are. Otherwise by how far the page
+    // has scrolled, with a wide gap between on and off and a short rest after each change, so it never flickers.
+    const handled = holding || merged || blobs.some((b) => b.drag);
+    const next = handled ? (mutual ? d < 0.3 : d < 0.22) : (mutual ? pull > 0.5 : pull > 0.8);
+    if (next !== mutual && now - flipped > 450) {
+      flipped = now;
       mutual = next;
       meet.classList.toggle('mutual', mutual);
       if (mutual) for (const m of motes) { // a small burst when they meet
@@ -207,6 +222,7 @@ function initMeet() {
         m.vx += Math.cos(a) * f; m.vy += Math.sin(a) * f;
       }
     }
+    if (!onScreen || meet.classList.contains('mapped')) return;
     for (const m of motes) {
       m.ang += m.w * dt;
       const b = blobs[m.owner], o = blobs[1 - m.owner];
@@ -585,16 +601,15 @@ function wavesSVG() {
     [36, 9, 46, 1, '#FFFFFF'], [84, 11, 34, -1, '#F4F8FC'], [132, 10, 40, 1, '#FFFFFF'],
     [180, 12, 30, -1, '#EEF4FA'], [228, 10, 38, 1, '#FFFFFF'], [272, 9, 44, -1, '#F2F7FB'],
   ];
-  const band = ([y, amp, secs, dir, fill], n) => {
-    let d = `M-300 ${y}`;
-    for (let x = -300; x < 600; x += 150) d += `q37.5 ${-amp} 75 0t75 0`; // one swell every 150 units
-    d += `V${y + 90}H-300Z`;
-    return `<g class="wave" style="--secs:${secs}s;--to:${dir * 300}px"><path d="${d}" fill="${fill}" filter="url(#clay)"/></g>`;
-  };
-  return `<svg viewBox="0 0 300 300" preserveAspectRatio="none" aria-hidden="true"><defs>
-    <filter id="clay" x="-5%" y="-30%" width="110%" height="160%" color-interpolation-filters="sRGB">
-      <feDropShadow dx="0" dy="-2.5" stdDeviation="3" flood-color="#7E9CC2" flood-opacity=".2"/>
-    </filter></defs>${rows.map(band).join('')}</svg>`;
+  // Each band is twice the stage wide and slides by one swell (a quarter of its width), which loops without a seam.
+  return rows.map(([y, amp, secs, dir, fill], n) => {
+    let d = `M-150 ${y}`;
+    for (let x = -150; x < 450; x += 150) d += `q37.5 ${-amp} 75 0t75 0`;
+    d += `V${y + 90}H-150Z`;
+    return `<div class="wave" style="--secs:${secs}s;--to:${dir * 25}%"><svg viewBox="-150 0 600 300" preserveAspectRatio="none" aria-hidden="true"><defs>
+      <filter id="clay${n}" x="-5%" y="-30%" width="110%" height="160%" color-interpolation-filters="sRGB"><feDropShadow dx="0" dy="-2.5" stdDeviation="3" flood-color="#7E9CC2" flood-opacity=".2"/></filter>
+      </defs><path d="${d}" fill="${fill}" filter="url(#clay${n})"/></svg></div>`;
+  }).join('');
 }
 
 const MAP_DOTS_MAX = 140; // per borough; past this the map would turn solid
