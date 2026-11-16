@@ -10,14 +10,14 @@
 </p>
 
 <p align="center">
-  <a href="https://smammadov1994.github.io/Passionfruit-IOS/"><b>Join the waitlist</b></a>
+  <a href="https://passionfruitdating.com/"><b>Join the waitlist</b></a>
   &nbsp;·&nbsp; <a href="#how-a-date-works">How a date works</a>
   &nbsp;·&nbsp; <a href="#run-it">Run it</a>
   &nbsp;·&nbsp; <a href="#what-is-in-this-repository">What is in here</a>
 </p>
 
 <p align="center">
-  <a href="https://smammadov1994.github.io/Passionfruit-IOS/">
+  <a href="https://passionfruitdating.com/">
     <img src="docs/readme/site-hero.png" alt="The Passionfruit launch page: a watercolor Manhattan skyline above the headline Four minutes, face to face, with the waitlist form">
   </a>
 </p>
@@ -154,7 +154,7 @@ Then open http://localhost:4174. Run this way, sign-ups are written to a local f
 
 ## The launch page and waitlist
 
-Live at **https://smammadov1994.github.io/Passionfruit-IOS/**. Every push to `main` that touches
+Live at **https://passionfruitdating.com/**. Every push to `main` that touches
 `site/` publishes it again through [`.github/workflows/pages.yml`](.github/workflows/pages.yml).
 
 - The skyline is drawn on a canvas, one watercolor building at a time, and each building sits on
