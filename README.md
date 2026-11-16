@@ -5,7 +5,7 @@
 <h1 align="center">Passionfruit</h1>
 
 <p align="center">
-  <b>Four minutes, face to face.</b><br>
+  <b>Ninety seconds, face to face.</b><br>
   Live video speed dating for iPhone, opening in New York City first.
 </p>
 
@@ -18,7 +18,7 @@
 
 <p align="center">
   <a href="https://passionfruitdating.com/">
-    <img src="docs/readme/site-hero.png" alt="The Passionfruit launch page: a watercolor Manhattan skyline above the headline Four minutes, face to face, with the waitlist form">
+    <img src="docs/readme/site-hero.png" alt="The Passionfruit launch page: a watercolor Manhattan skyline above the headline Ninety seconds, face to face, with the waitlist form">
   </a>
 </p>
 
@@ -27,7 +27,7 @@
 Most dating apps are an inbox. Passionfruit is a room.
 
 You go online and you are paired with someone compatible who is online at the same moment. You
-talk on video for four minutes. When the clock runs out you each answer yes or no in private.
+talk on video for 90 seconds. When the clock runs out you each answer yes or no in private.
 Two yeses make a match and open a chat. Anything else, and you are both back in the queue without
 anyone knowing who said what.
 
@@ -54,7 +54,7 @@ anyone knowing who said what.
     <td>
       <ol>
         <li><b>Go online.</b> One button. The server pairs you with someone whose filters you fit and who fits yours.</li>
-        <li><b>Talk for four minutes.</b> Video goes directly between the two phones. Either of you can leave at any moment.</li>
+        <li><b>Talk for 90 seconds.</b> Video goes directly between the two phones. Either of you can leave at any moment.</li>
         <li><b>Take turns, if you like.</b> An optional icebreaker card gives each of you 30 seconds on the same question, like a chess clock. Hide it whenever you want.</li>
         <li><b>Answer in private.</b> Yes or no, within 20 seconds. No answer counts as no.</li>
         <li><b>Match or move on.</b> Two yeses open a chat, with a button to call again. Otherwise you are back in the queue.</li>
@@ -162,7 +162,7 @@ Live at **https://passionfruitdating.com/**. Every push to `main` that touches
 - The two washes in the hero can be dragged together. They are surrounded by particles that
   scatter when the washes meet.
 - Further down, a pinned stage plays through one date as you scroll, with the clock counting
-  down from 4:00.
+  down from 1:30.
 - The waitlist only accepts ZIP codes in the five boroughs. The form tells you your borough as
   you type and, once you join, your place in line for that borough and for the city.
 

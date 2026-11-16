@@ -361,6 +361,7 @@ function initSay() {
 }
 
 /* ───────── The date: sticky stage, four chapters, a clock that drains with scroll ───────── */
+const DATE_SECONDS = 90; // how long a date lasts in the app (DATE_DURATION_SEC on the server)
 function initDate() {
   const stage = $('#stage'), stepsEl = $('#steps');
   const steps = $$('.step', stepsEl), shots = $$('.shot', stage);
@@ -418,13 +419,13 @@ function initDate() {
       if (reduce) q.snap(q.t);
     }
     q.step(dt);
-    const left = Math.round(240 * (1 - clamp(q.x)));
+    const left = Math.round(DATE_SECONDS * (1 - clamp(q.x)));
     const text = `${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}`;
     if (text !== shown) {
       shown = text;
       num.textContent = text;
-      arc.style.transform = `scaleX(${left / 240})`;
-      clock.classList.toggle('low', left <= 30);
+      arc.style.transform = `scaleX(${left / DATE_SECONDS})`;
+      clock.classList.toggle('low', left <= 15);
     }
   });
 }
