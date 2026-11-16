@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/readme/icon.png" width="128" alt="Passionfruit app icon: a watercolor passionfruit">
+  <img src="docs/readme/icon.png" width="128" alt="Passionfruit app icon: a passionfruit cut in half, with a stem and a leaf">
 </p>
 
 <h1 align="center">Passionfruit</h1>

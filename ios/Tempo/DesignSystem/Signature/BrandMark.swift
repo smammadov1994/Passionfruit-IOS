@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// The Passionfruit mark: two thin washes, rose and blue, mixing into purple, with a leaf. The
-/// same drawing as the app icon. Use it wherever the brand needs a small sign; never a stock symbol.
+/// The Passionfruit mark: the fruit cut in half, a wine rind around golden pulp and eight seeds,
+/// with a stem and a leaf. The same drawing as the app icon. Use it wherever the brand needs a small sign; never a stock symbol.
 ///
 ///     BrandMark(size: 18)
 struct BrandMark: View {
