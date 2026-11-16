@@ -88,24 +88,21 @@ let mapReady = false;      // the map is drawn and may take the stage
 let playJoin = () => {};   // just signed up: the two meet, become one, then the map
 function initMeet() {
   const meet = $('#meet'), stage = $('#meetStage');
-  const CORAL = '#F08F7A';
-  // On a touch screen the washes follow the scroll without the bounce: a flick moves the page far faster than a wheel does.
-  const touch = matchMedia('(pointer:coarse)').matches;
-  const LOOSE = touch ? 14 : 9;
+  // A wash as a picture: the browser paints its torn edge once and from then on only slides and fades it.
+  const washImg = (color, seed) => `<img alt="" draggable="false" src="data:image/svg+xml;utf8,${encodeURIComponent(washSVG(color, seed).replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" '))}">`;
+  // Coral and butter: together they make the character's peach.
   const blobs = $$('.blob', stage).map((el, i) => {
-    el.innerHTML = washSVG(i ? WASH.butter : CORAL, i ? 21 : 8); // coral and butter: together they make the character's peach
+    el.innerHTML = washImg(i ? WASH.butter : '#F08F7A', i ? 21 : 8);
     const base = i ? { x: 0.21, y: 0.06 } : { x: -0.21, y: -0.05 };
-    return { el, base, x: new Spring(base.x, 60, LOOSE), y: new Spring(base.y, 60, LOOSE), s: new Spring(1, 200, 18), drag: null };
+    return { el, base, x: base.x, y: base.y };
   });
   // The one the two become: a single wash that opens its eyes, like the match screen in the app.
   const buddy = document.createElement('div');
   buddy.className = 'buddy';
-  buddy.innerHTML = buddySVG();
-  stage.insertBefore(buddy, $('#motes'));
-  const grow = new Spring(0.6, 170, 13);
-  let W = stage.offsetWidth;
-  let px = 0, py = 0, pull = 0, held = 0, holdUntil = 0, mutual = false, merged = false;
-  let flipped = 0, onScreen = true;
+  buddy.innerHTML = washImg('#F2B98C', 33) + BUDDY_FACE;
+  stage.appendChild(buddy);
+
+  let W = stage.offsetWidth, pull = 0, held = 0, near = 1, grow = 0.6, mutual = false, flipped = 0;
   let joinAt = 0, forced = false; // a fresh sign-up plays the whole sequence on its own, then keeps the map up
   playJoin = () => { joinAt = performance.now(); };
   const pin = $('#heroPin'), hero = $('.hero'), hold = $('#heroHold');
@@ -126,64 +123,14 @@ function initMeet() {
   new ResizeObserver(measure).observe(stage);
 
   const draw = () => {
-    for (const b of blobs) b.el.style.transform = `translate3d(${b.x.x * W}px,${b.y.x * W}px,0) scale(${b.s.x})`;
-    const bob = Math.sin(performance.now() / 450) * 0.012;
-    buddy.style.transform = `translate3d(${(blobs[0].x.x + blobs[1].x.x) / 2 * W}px,${((blobs[0].y.x + blobs[1].y.x) / 2 + bob) * W}px,0) scale(${grow.x})`;
+    for (const b of blobs) b.el.style.transform = `translate3d(${(b.x * W).toFixed(1)}px,${(b.y * W).toFixed(1)}px,0)`;
+    buddy.style.transform = `scale(${grow.toFixed(3)})`;
   };
   if (reduce) { draw(); return; }
 
-  // Pigment specks: each one is on a spring to a slow orbit around its person.
-  const cv = $('#motes'), ctx = cv.getContext('2d'), size = fitCanvas(cv);
-  const mouse = { x: -9999, y: -9999 };
-  const INKS = [['#E4532F', '#F08A6E', '#F08F7A', '#F3B3A2', '#F6C59A'], ['#D9A441', '#EFC25E', '#F2D98A', '#F6C59A', '#F3B3A2']];
-  const motes = Array.from({ length: innerWidth < 700 ? 110 : 280 }, (_, i) => {
-    const owner = i % 2, far = Math.random() ** 1.7;
-    return {
-      owner, ang: Math.random() * Math.PI * 2, rad: 0.06 + far * 0.4, sq: 0.8 + Math.random() * 0.35,
-      w: (Math.random() < 0.5 ? -1 : 1) * (0.08 + Math.random() * 0.5) * (1.2 - far),
-      k: 14 + Math.random() * 50, c: 3.500 + Math.random() * 4,
-      r: 0.7 + Math.random() ** 2 * 3.400, a: 0.35 + Math.random() * 0.55,
-      color: INKS[owner][Math.floor(Math.random() * 5)],
-      x: (Math.random() - 0.5) * W * 2, y: (Math.random() - 0.5) * W * 2, vx: 0, vy: 0,
-    };
-  });
-
-  addEventListener('pointermove', (e) => {
-    if (!innerWidth || !innerHeight) return;
-    px = clamp((e.clientX / innerWidth) * 2 - 1, -1, 1) || 0;
-    py = clamp((e.clientY / innerHeight) * 2 - 1, -1, 1) || 0;
-  }, { passive: true });
-
-  for (const b of blobs) {
-    b.el.addEventListener('pointerdown', (e) => {
-      const r = stage.getBoundingClientRect();
-      b.drag = { ox: (e.clientX - r.left) / W - 0.5 - b.x.x, oy: (e.clientY - r.top) / W - 0.5 - b.y.x };
-      b.el.setPointerCapture(e.pointerId);
-      b.x.k = b.y.k = 320; b.x.c = b.y.c = 26;
-      b.s.t = 1.06;
-      e.preventDefault();
-    });
-    b.el.addEventListener('pointermove', (e) => {
-      if (!b.drag) return;
-      const r = stage.getBoundingClientRect();
-      b.x.t = clamp((e.clientX - r.left) / W - 0.5 - b.drag.ox, -0.42, 0.42);
-      b.y.t = clamp((e.clientY - r.top) / W - 0.5 - b.drag.oy, -0.42, 0.42);
-    });
-    const release = () => {
-      if (!b.drag) return;
-      b.drag = null;
-      b.x.k = b.y.k = 60; b.x.c = b.y.c = LOOSE; // loose again, so it overshoots on the way home
-      b.s.t = 1;
-      if (mutual) holdUntil = performance.now() + 2600;
-    };
-    b.el.addEventListener('pointerup', release);
-    b.el.addEventListener('pointercancel', release);
-  }
-
+  // One motion, driven by the scroll: the two slide toward the middle, and past a point they are one.
   tickers.add((dt, now) => {
-    if (scrollDirty) { // the pull starts once the stage is well inside the window, so a phone sees them meet too
-      const r = stage.getBoundingClientRect();
-      onScreen = r.bottom > -120 && r.top < innerHeight + 120;
+    if (scrollDirty) {
       held = clamp((scrollY - pinStart) / (pinLen || 1)) || 0; // how far through the hold
       pull = clamp(held / 0.3); // they have met in the first third of it; the rest is for watching
     }
@@ -191,72 +138,17 @@ function initMeet() {
     const joining = joinAt > 0 && now - joinAt < 2300;
     if (joinAt > 0 && !joining) forced = true;
     const onMap = mapReady && (forced || held > 0.55);
-    const together = onMap || joining;
-    if (together && !merged) for (const b of blobs) { b.drag = null; b.x.k = b.y.k = 60; b.x.c = b.y.c = LOOSE; }
-    merged = together;
     if (onMap !== meet.classList.contains('mapped')) meet.classList.toggle('mapped', onMap);
-    const holding = now < holdUntil;
-    const near = holding ? 0.4 : 1 - 0.68 * pull; // scrolling draws them together
-    const breathe = Math.sin(now / 1700) * 0.012;
-    blobs.forEach((b, i) => {
-      const dir = i ? -1 : 1;
-      if (merged) { b.x.t = 0; b.y.t = 0; b.s.t = 0.78; } // signed up: the two become one
-      else if (!b.drag) {
-        b.x.t = b.base.x * near + dir * px * 0.022;
-        b.y.t = b.base.y * near + dir * (py * 0.022 + breathe);
-      }
-      b.x.step(dt); b.y.step(dt); b.s.step(dt);
-    });
-    grow.t = mutual ? 1 : 0.6; grow.step(dt);
-    const d = Math.hypot(blobs[0].x.x - blobs[1].x.x, blobs[0].y.x - blobs[1].y.x);
-    // In the hand (dragged, just let go, or signed up) it goes by how close they are. Otherwise by how far the page
-    // has scrolled, with a wide gap between on and off and a short rest after each change, so it never flickers.
-    const handled = holding || merged || blobs.some((b) => b.drag);
-    const next = handled ? (mutual ? d < 0.3 : d < 0.22) : (mutual ? pull > 0.5 : pull > 0.8);
-    if (next !== mutual && now - flipped > 450) {
-      flipped = now;
-      mutual = next;
-      meet.classList.toggle('mutual', mutual);
-      if (mutual) for (const m of motes) { // a small burst when they meet
-        const a = Math.random() * Math.PI * 2, f = 120 + Math.random() * 260;
-        m.vx += Math.cos(a) * f; m.vy += Math.sin(a) * f;
-      }
-    }
-    if (!onScreen || meet.classList.contains('mapped')) return;
-    for (const m of motes) {
-      m.ang += m.w * dt;
-      const b = blobs[m.owner], o = blobs[1 - m.owner];
-      const mix = mutual ? 0.5 : 0; // together, both swarms orbit the midpoint
-      const cx = (b.x.x + (o.x.x - b.x.x) * mix) * W, cy = (b.y.x + (o.y.x - b.y.x) * mix) * W;
-      const rad = m.rad * W * (mutual ? 1.18 : 1);
-      let fx = m.k * (cx + Math.cos(m.ang) * rad - m.x) - m.c * m.vx;
-      let fy = m.k * (cy + Math.sin(m.ang) * rad * m.sq - m.y) - m.c * m.vy;
-      const dx = m.x - mouse.x, dy = m.y - mouse.y, d2 = dx * dx + dy * dy;
-      if (d2 < 8100 && d2 > 0.01) { // the pointer pushes specks aside
-        const dd = Math.sqrt(d2), f = (1 - dd / 90) * 2600;
-        fx += (dx / dd) * f; fy += (dy / dd) * f;
-      }
-      m.vx += fx * dt; m.vy += fy * dt;
-      m.x += m.vx * dt; m.y += m.vy * dt;
-    }
+    const together = onMap || joining;
+    // A wide gap between on and off, and a short rest after each change, so a fast flick never makes it flicker.
+    const next = together || (mutual ? pull > 0.5 : pull > 0.8);
+    if (next !== mutual && now - flipped > 450) { flipped = now; mutual = next; meet.classList.toggle('mutual', mutual); }
+    const ease = 1 - Math.exp(-dt * 12); // follows the scroll closely, without a bounce
+    near += ((together || mutual ? 0 : 1 - pull) - near) * ease;
+    grow += ((mutual ? 1 : 0.6) - grow) * ease;
+    for (const b of blobs) { b.x = b.base.x * near; b.y = b.base.y * near; }
   });
-
-  painters.add(() => {
-    draw();
-    const r = stage.getBoundingClientRect();
-    if (r.bottom < -100 || r.top > innerHeight + 100) return;
-    mouse.x = pointer.x - r.left - W / 2; mouse.y = pointer.y - r.top - W / 2;
-    const { w, h, dpr } = size;
-    ctx.setTransform(dpr, 0, 0, dpr, (w / 2) * dpr, (h / 2) * dpr);
-    ctx.clearRect(-w / 2, -h / 2, w, h);
-    for (const m of motes) {
-      ctx.globalAlpha = m.a;
-      ctx.fillStyle = m.color;
-      ctx.beginPath();
-      ctx.arc(m.x, m.y, m.r, 0, Math.PI * 2);
-      ctx.fill();
-    }
-  });
+  painters.add(draw);
 }
 
 /* ───────── Manhattan skyline: watercolor buildings on springs, driven by scroll ───────── */
@@ -624,8 +516,8 @@ function renderMap(stats) {
     const water = document.createElement('div');
     water.className = 'water';
     water.innerHTML = wavesSVG();
-    stage.insertBefore(water, $('#motes'));
-    stage.insertBefore(map, $('#motes'));
+    stage.appendChild(water);
+    stage.appendChild(map);
   }
   const names = Object.keys(NYC_SHAPES);
   const land = names.map((name, i) => {

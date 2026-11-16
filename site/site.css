@@ -91,11 +91,9 @@ h1 .line>span{display:inline-block;will-change:transform}
 /* two people */
 .meet{position:relative;justify-self:stretch}
 .meet-stage{position:relative;aspect-ratio:1;width:100%;max-width:560px;margin:0 auto;touch-action:pan-y}
-.blob{position:absolute;left:50%;top:50%;width:58%;aspect-ratio:1;margin:-29% 0 0 -29%;cursor:grab;will-change:transform;touch-action:none;-webkit-user-select:none;user-select:none}
-.blob:active{cursor:grabbing}
-.blob svg{position:absolute;inset:-22%;width:144%;height:144%;overflow:visible;pointer-events:none;mix-blend-mode:multiply}
+.blob{position:absolute;left:50%;top:50%;width:58%;aspect-ratio:1;margin:-29% 0 0 -29%;will-change:transform,opacity;pointer-events:none}
+.blob img,.buddy img{position:absolute;inset:-22%;width:144%;height:144%;max-width:none;pointer-events:none;-webkit-user-select:none;user-select:none}
 /* never wider than the screen, so it cannot push the page sideways on a phone */
-.motes{position:absolute;left:50%;top:-18%;width:min(136%,100vw);height:136%;transform:translateX(-50%);pointer-events:none;mix-blend-mode:multiply}
 .meet-cap{position:relative;text-align:center;font-size:15px;color:var(--ink2);min-height:44px;margin-top:4px}
 .meet-cap span{position:absolute;inset:0 0 auto;transition:opacity .4s var(--ease),transform .4s var(--ease)}
 .meet-cap [data-cap=mutual]{font-size:34px;line-height:1.100;color:var(--ink);opacity:0;transform:translateY(8px)}
@@ -106,7 +104,6 @@ h1 .line>span{display:inline-block;will-change:transform}
 /* together, the two washes become one little character */
 .buddy{position:absolute;left:50%;top:50%;width:54%;aspect-ratio:1;margin:-27% 0 0 -27%;pointer-events:none;opacity:0;will-change:transform;transition:opacity .3s var(--ease)}
 .buddy svg{position:absolute;inset:-22%;width:144%;height:144%;overflow:visible}
-.buddy .body{mix-blend-mode:multiply}
 .buddy .eyes,.buddy .blink{transform-box:fill-box;transform-origin:center}
 .buddy .eyes{transform:scaleY(.06);transition:transform .2s var(--ease)}
 .buddy .blink{animation:blink 4.200s linear infinite}
@@ -125,9 +122,6 @@ h1 .line>span{display:inline-block;will-change:transform}
 .nyc-map .land{mix-blend-mode:multiply}
 .nyc-map .land path{opacity:.62}
 .nyc-map .land path.mine{opacity:.92}
-/* the swarm leaves; water takes its place behind the city */
-.motes{transition:opacity .8s var(--ease)}
-.meet.mapped .motes{opacity:0}
 .water{position:absolute;inset:-14%;opacity:0;transition:opacity 1.200s var(--ease) .3s;-webkit-mask-image:radial-gradient(closest-side,#000 48%,transparent 100%);mask-image:radial-gradient(closest-side,#000 48%,transparent 100%)}
 .meet.mapped .water{opacity:1}
 @media (max-width:900px){.water{inset:-14% -5%}} /* stays inside the screen on a phone */
@@ -265,8 +259,7 @@ h1 .line>span{display:inline-block;will-change:transform}
 
 /* Phones: effects that cost a redraw every frame are swapped for ones the screen can simply slide and fade. */
 @media (max-width:900px),(pointer:coarse){
-  .blob svg,.buddy .body,.dot-guy .body,.motes{mix-blend-mode:normal}
-  .blob,.buddy{backface-visibility:hidden}
+  .dot-guy .body{mix-blend-mode:normal}
   .shot{filter:none;transform:scale(1.02);transition:opacity .45s var(--ease),transform .6s var(--ease)}
 }
 @media (max-width:900px){
@@ -298,7 +291,7 @@ h1 .line>span{display:inline-block;will-change:transform}
 @media (prefers-reduced-motion:reduce){
   .live,.shot.on .vyes,.sw,.go-btn,.nyc-map .you{animation:none}
   .meet.mapped .nyc-map .dot{animation:none;opacity:.85}
-  .blob,.nyc-map,.water,.motes{transition:none}
+  .blob,.nyc-map,.water{transition:none}
   .wave,.buddy .blink{animation:none}
   .hero-hold{display:none}
   .dot-guy,.dot-guy .blink{animation:none}
