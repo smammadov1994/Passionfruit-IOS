@@ -50,7 +50,12 @@ function frame(now) {
   last = now;
   // fixed small sub-steps: springs stay stable and keep real-time speed at any frame rate
   const n = Math.max(1, Math.ceil(dt / 0.008));
-  for (const fn of tickers) for (let i = 0; i < n; i++) fn(dt / n, now);
+  // Scroll-driven measuring happens on the first sub-step only. Otherwise every sub-step measured the page again
+  // right after the last one had changed it, which made a phone re-lay-out the page many times a frame and
+  // shook whatever was stuck to the top of the screen.
+  const dirty = scrollDirty;
+  for (const fn of tickers) for (let i = 0; i < n; i++) { scrollDirty = dirty && i === 0; fn(dt / n, now); }
+  scrollDirty = dirty;
   for (const fn of painters) fn(now); // canvas drawing: once per frame, after the physics
   scrollDirty = false;
   requestAnimationFrame(frame);
