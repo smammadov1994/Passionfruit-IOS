@@ -62,6 +62,8 @@ function initPhone() {
   const herReel = reel($('#lvVid'));
   const himReel = reel($('#lvSelf'));
   const toggle = $('#motionToggle'), closeBg = $('#closeBg');
+  const grid = stage.parentElement, spacer = $('#tourSpacer');
+  let pinned = false, stageH = 0, navH = 64;
 
   let s0 = 0.8, s1 = 1.2, y0 = 0, y1 = 0; // the big slider: scale and centre line, at rest in the phone and lifted out of it
   const sizer = document.createElement('div'); // reads the width the stylesheet asks for, which is rarely a whole number
@@ -69,6 +71,7 @@ function initPhone() {
   stage.appendChild(sizer);
   const measure = () => {
     readViewH();
+    navH = $('#nav').offsetHeight || 64;
     // A phone an even number of pixels wide sits on whole pixels when centred; on a fraction of one, its edges
     // and everything inside it are redrawn slightly differently on every scroll frame.
     stage.style.setProperty('--pw-px', `${Math.max(120, Math.round(sizer.offsetWidth / 2) * 2)}px`);
@@ -77,6 +80,8 @@ function initPhone() {
     canvas.style.height = `${(screen.clientHeight / s0).toFixed(2)}px`; // the frame is a little taller than the app's 852 points
     const st = stage.getBoundingClientRect(), ph = phone.getBoundingClientRect(), sc = screen.getBoundingClientRect();
     y0 = sc.bottom - 66 * s0 - st.top; // the slider's own place: 34 points up from the bottom, 64 tall
+    stageH = stage.offsetHeight;
+    spacer.style.height = `${stageH}px`;
     y1 = ph.top - st.top + ph.height * 0.6;
     s1 = Math.max(s0, Math.min((st.width - 28) / 345, s0 * 1.85, 1.5));
     dirty = true;
@@ -168,6 +173,11 @@ function initPhone() {
     if (moved) {
       const sr = stage.getBoundingClientRect();
       const stacked = sr.width > innerWidth * 0.8; // phone layout: the stage sits above the steps
+      // Well inside the section the stage is fixed; near either end it goes back to sticking, which is what carries
+      // it in and out with the page. Both put it in the same place, so the change cannot be seen.
+      const gr = grid.getBoundingClientRect();
+      const pin = stacked && gr.top < navH - 24 && gr.bottom > navH + stageH + 24;
+      if (pin !== pinned) { pinned = pin; stage.classList.toggle('pinned', pin); }
       const mid = stacked ? (sr.bottom + viewH) / 2 : viewH / 2;
       let best = 0, bestD = Infinity;
       const rects = steps.map((s) => s.getBoundingClientRect());

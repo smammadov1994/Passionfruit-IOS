@@ -302,8 +302,13 @@
 .shotframe img{display:block;width:100%;height:auto}
 .shots-row p{color:var(--ink2);margin-top:4px;max-width:30ch}
 
+.tour-spacer{display:none}
 @media (max-width:900px){
   .tour-grid{grid-template-columns:1fr;gap:0}
+  /* On a phone the stage is held in place the way the top bar is (fixed), not stuck: a stuck element is moved by
+     the browser against the scroll on every frame, and on iPhone browsers it lands a pixel or so off each time. */
+  .tour-stage.pinned{position:fixed;left:0;right:0;top:var(--nav);margin:0}
+  .tour-stage.pinned+.tour-spacer{display:block}
   .tour-stage{top:var(--nav);height:auto;z-index:2;background:var(--paper);padding:10px 0;margin:0 calc(var(--gutter)*-1);border-bottom:1px solid var(--hair);--pw:calc((60svh - 20px)*.4613)}
   .phone{box-shadow:0 0 0 1px rgba(27,23,25,.5)}
   .step{min-height:60svh}.step-long{min-height:110svh}.step-date{min-height:180svh}
