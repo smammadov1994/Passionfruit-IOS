@@ -42,8 +42,23 @@ function fitCanvas(cv, onResize) {
 }
 let last = performance.now();
 let scrollDirty = true;
-addEventListener('scroll', () => { scrollDirty = true; }, { passive: true });
-addEventListener('resize', () => { scrollDirty = true; });
+// Height of the window with the browser's bars showing. A phone hides its address bar mid-scroll and innerHeight
+// grows with it, so anything placed against innerHeight jumps; this height stays put.
+const viewProbe = document.createElement('div');
+viewProbe.style.cssText = 'position:fixed;left:0;top:0;width:0;height:100svh;visibility:hidden;pointer-events:none';
+document.body.appendChild(viewProbe);
+let viewH = innerHeight;
+const readViewH = () => { viewH = viewProbe.offsetHeight || innerHeight; };
+readViewH();
+let scrollSpeed = 0, scrollSeenY = scrollY, scrollSeenAt = performance.now(); // pixels a second, at the last scroll event
+const flinging = () => scrollSpeed > 2200 && performance.now() - scrollSeenAt < 150;
+addEventListener('scroll', () => {
+  const t = performance.now();
+  scrollSpeed = (Math.abs(scrollY - scrollSeenY) / Math.max(8, t - scrollSeenAt)) * 1000;
+  scrollSeenY = scrollY; scrollSeenAt = t;
+  scrollDirty = true;
+}, { passive: true });
+addEventListener('resize', () => { readViewH(); scrollDirty = true; });
 
 function frame(now) {
   const dt = Math.min(0.12, (now - last) / 1000);
@@ -86,15 +101,16 @@ const BUDDY_FACE = `<svg class="face" viewBox="-150 -150 300 300" aria-hidden="t
   <g class="eyes"><g class="blink"><circle cx="-29" cy="-12" r="10" fill="#33292F"/><circle cx="29" cy="-12" r="10" fill="#33292F"/></g></g>
   <path class="mouth" d="M-19 22Q0 42 19 22" fill="none" stroke="#33292F" stroke-width="7" stroke-linecap="round"/></svg>`;
 
-const buddySVG = () => washSVG('#F2B98C', 33).replace('<svg ', '<svg class="body" ') + BUDDY_FACE;
+// A wash as a picture: the browser paints its torn edge once and from then on only slides and fades it.
+// Left as live SVG, a phone works the paper-grain filter out again whenever the wash moves or scrolls into view.
+const washImg = (color, seed, attrs = '') => `<img alt="" draggable="false" src="data:image/svg+xml;utf8,${encodeURIComponent(washSVG(color, seed).replace('<svg ', `<svg xmlns="http://www.w3.org/2000/svg" ${attrs} `))}">`;
+const buddySVG = () => washImg('#F2B98C', 33).replace('<img ', '<img class="body" ') + BUDDY_FACE;
 
 /* ───────── Hero: two people who spring toward each other ───────── */
 let mapReady = false;      // the map is drawn and may take the stage
 let playJoin = () => {};   // just signed up: the two meet, become one, then the map
 function initMeet() {
   const meet = $('#meet'), stage = $('#meetStage');
-  // A wash as a picture: the browser paints its torn edge once and from then on only slides and fades it.
-  const washImg = (color, seed) => `<img alt="" draggable="false" src="data:image/svg+xml;utf8,${encodeURIComponent(washSVG(color, seed).replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" '))}">`;
   // Coral and butter: together they make the character's peach.
   const blobs = $$('.blob', stage).map((el, i) => {
     el.innerHTML = washImg(i ? WASH.butter : '#F08F7A', i ? 21 : 8);
@@ -108,18 +124,15 @@ function initMeet() {
   stage.appendChild(buddy);
 
   let W = stage.offsetWidth, pull = 0, held = 0, near = 1, grow = 0.6, mutual = false, flipped = 0;
-  let joinAt = 0, forced = false; // a fresh sign-up plays the whole sequence on its own, then keeps the map up
+  let onMap = false, joinAt = 0, forced = false; // a fresh sign-up plays the whole sequence on its own, then keeps the map up
   playJoin = () => { joinAt = performance.now(); };
   const pin = $('#heroPin'), hero = $('.hero'), hold = $('#heroHold');
   let pinStart = 0, pinLen = 1;
-  const probe = document.createElement('div'); // as tall as the window with the browser's bars showing
-  probe.style.cssText = 'position:fixed;left:0;top:0;width:0;height:100svh;visibility:hidden;pointer-events:none';
-  document.body.appendChild(probe);
   const measure = () => {
     W = stage.offsetWidth;
     // A hero taller than the window sticks once its bottom edge reaches the bottom of the window.
-    // Measured with svh, not innerHeight: on a phone innerHeight changes mid-scroll as the address bar hides, and the hero would jump.
-    const over = Math.max(0, hero.offsetHeight - (probe.offsetHeight || innerHeight));
+    readViewH();
+    const over = Math.max(0, hero.offsetHeight - viewH);
     hero.style.setProperty('--pin-top', `${-over}px`);
     pinStart = pin.offsetTop + over; pinLen = hold.offsetHeight;
   };
@@ -142,8 +155,8 @@ function initMeet() {
     // Someone on the list gets one more act: the character gives way to the map of who else is on it.
     const joining = joinAt > 0 && now - joinAt < 2300;
     if (joinAt > 0 && !joining) forced = true;
-    const onMap = mapReady && (forced || held > 0.55);
-    if (onMap !== meet.classList.contains('mapped')) meet.classList.toggle('mapped', onMap);
+    const wantMap = mapReady && (forced || (onMap ? held > 0.42 : held > 0.58)); // a gap, so a thumb resting on the line cannot flip it
+    if (wantMap !== onMap) { onMap = wantMap; meet.classList.toggle('mapped', onMap); }
     const together = onMap || joining;
     // A wide gap between on and off, and a short rest after each change, so a fast flick never makes it flicker.
     const next = together || (mutual ? pull > 0.5 : pull > 0.8);
@@ -234,10 +247,11 @@ function initSkyline() {
     for (const b of list) b.sp.snap(1);
     for (const b of blots) b.sp.snap(1);
   } else {
+    const knock = matchMedia('(pointer:coarse)').matches ? 0.006 : 0.016; // a thumb flick is far faster than a wheel
     addEventListener('scroll', () => { // scroll speed knocks the buildings like a bar graph
       const dy = clamp(scrollY - lastY, -90, 90);
       lastY = scrollY;
-      if (visible) for (const b of list) b.sp.v -= dy * 0.016 * b.kick;
+      if (visible) for (const b of list) b.sp.v -= dy * knock * b.kick;
     }, { passive: true });
     tickers.add((dt, now) => {
       if (!visible) return;
@@ -320,6 +334,7 @@ function initReveals() {
     for (const e of entries) {
       if (!e.isIntersecting) continue;
       io.unobserve(e.target);
+      if (flinging()) { e.target.style.transform = 'none'; e.target.style.opacity = '1'; e.target.style.willChange = 'auto'; continue; }
       launch(e.target, i++ * 75, 34, 'px');
     }
   }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
@@ -352,7 +367,7 @@ function initSay() {
   tickers.add(() => {
     if (!scrollDirty) return;
     const r = el.getBoundingClientRect();
-    const p = clamp((innerHeight * 0.86 - r.top) / (r.height + innerHeight * 0.36));
+    const p = clamp((viewH * 0.86 - r.top) / (r.height + viewH * 0.36));
     const n = Math.round(p * spans.length);
     if (n === lit) return;
     lit = n;
@@ -369,7 +384,7 @@ function initDate() {
   const toggle = $('#motionToggle');
   const videos = shots.map((s) => $('video', s));
   const q = new Spring(0, 130, 23); // critically damped: follows the scroll without wobble
-  let active = 0, visible = false, paused = reduce, shown = '';
+  let active = 0, want = 0, wantAt = 0, visible = false, paused = reduce, shown = '';
 
   const syncVideos = () => {
     videos.forEach((v, i) => {
@@ -396,27 +411,29 @@ function initDate() {
     else { delete bg.dataset.visible; bg.pause(); }
   }, { threshold: 0.05 }).observe(bg);
 
-  tickers.add((dt) => {
+  tickers.add((dt, now) => {
     if (scrollDirty) {
       const sr = stage.getBoundingClientRect();
       const stacked = sr.width > innerWidth * 0.8; // phone layout: stage sits above the steps
-      const mid = stacked ? (sr.bottom + innerHeight) / 2 : innerHeight / 2;
+      const mid = stacked ? (sr.bottom + viewH) / 2 : viewH / 2;
       let best = 0, bestD = Infinity;
       steps.forEach((s, i) => {
         const r = s.getBoundingClientRect();
         const d = Math.abs((r.top + r.bottom) / 2 - mid);
         if (d < bestD) { bestD = d; best = i; }
       });
-      if (best !== active) {
-        active = best;
-        steps.forEach((s, i) => s.classList.toggle('on', i === active));
-        shots.forEach((s, i) => s.classList.toggle('on', i === active));
-        syncVideos();
-      }
+      if (best !== want) { want = best; wantAt = now; }
       const c = (el) => { const b = el.getBoundingClientRect(); return (b.top + b.bottom) / 2; };
       const c0 = c(steps[0]), c2 = c(steps[2]);
       q.t = clamp((mid - c0) / (c2 - c0 || 1)); // 0 at the middle of step one, 1 at the middle of "Answer in private"
       if (reduce) q.snap(q.t);
+    }
+    // Flung through, the chapters in between are skipped: no stack of half-faded pictures and videos starting and stopping.
+    if (want !== active && now - wantAt > 120) {
+      active = want;
+      steps.forEach((s, i) => s.classList.toggle('on', i === active));
+      shots.forEach((s, i) => s.classList.toggle('on', i === active));
+      syncVideos();
     }
     q.step(dt);
     const left = Math.round(DATE_SECONDS * (1 - clamp(q.x)));
@@ -432,13 +449,13 @@ function initDate() {
 
 /* ───────── Boroughs: names slide home on springs, rules draw across ───────── */
 function initBoroughs() {
-  const rows = $$('#boroughs li').map((li, i) => ({ li, name: $('.b-name', li), i, sp: new Spring(0, 85, 15), last: null }));
+  const rows = $$('#boroughs li').map((li, i) => ({ li, name: $('.b-name', li), i, sp: new Spring(0, 85, 19), last: null })); // critically damped: slides home, never past it
   if (reduce) return;
   tickers.add((dt) => {
     for (const r of rows) {
       if (scrollDirty) {
         const b = r.li.getBoundingClientRect();
-        r.sp.t = clamp((innerHeight * 0.96 - b.top) / (innerHeight * 0.42));
+        r.sp.t = clamp((viewH * 0.96 - b.top) / (viewH * 0.42));
       }
       r.sp.step(dt);
       const v = Math.round(r.sp.x * 1000) / 1000;
@@ -691,8 +708,8 @@ function initWaitlist() {
 
 /* ───────── Boot ───────── */
 $$('[data-wash]').forEach((el, i) => {
-  el.innerHTML = washSVG(WASH[el.dataset.wash], 33 + i * 9);
-  if ('stretch' in el.dataset) $('svg', el).setAttribute('preserveAspectRatio', 'none'); // wash spread behind a line of type
+  // 'stretch': a wash spread behind a line of type
+  el.innerHTML = washImg(WASH[el.dataset.wash], 33 + i * 9, 'stretch' in el.dataset ? 'preserveAspectRatio="none"' : '');
 });
 $$('[data-buddy]').forEach((el) => { el.innerHTML = buddySVG(); });
 const nav = $('#nav');
