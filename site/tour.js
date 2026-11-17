@@ -24,7 +24,14 @@ document.body.appendChild(probe);
 let viewH = innerHeight, dirty = true;
 const readViewH = () => { viewH = probe.offsetHeight || innerHeight; };
 readViewH();
-addEventListener('scroll', () => { dirty = true; }, { passive: true });
+let scrollRest = 0;
+addEventListener('scroll', () => {
+  dirty = true;
+  const stage = $('#tourStage');
+  if (!scrollRest) stage.classList.add('scrolling');
+  clearTimeout(scrollRest);
+  scrollRest = setTimeout(() => { scrollRest = 0; stage.classList.remove('scrolling'); }, 160);
+}, { passive: true });
 const tasks = []; // called every frame with (dt, now, dirty)
 
 /* ───────── the phone ───────── */
@@ -35,19 +42,26 @@ const COMPLETE_AT = 0.82; // SlideToStart.completeAt in the app
 function initPhone() {
   const stage = $('#tourStage'), phone = $('#phone'), screen = $('#screen'), canvas = $('#canvas');
   const steps = $$('#steps .step'), scrs = $$('.scr', canvas);
-  const big = $('#slideBig'), home = $('#slideHome'), tnBody = $('#tnBody');
+  const big = $('#slideBig'), tnBody = $('#tnBody');
   const num = $('#lvNum'), arc = $('#lvArc'), clk = $('#lvClk');
   const who = $('#lvWho'), bars = [$('#lvYou'), $('#lvThem')], secs = [$('#lvYouS'), $('#lvThemS')];
   const video = $('#dateVideo'), chat = $('#chat');
   const toggle = $('#motionToggle'), closeBg = $('#closeBg');
 
   let s0 = 0.8, s1 = 1.2, y0 = 0, y1 = 0; // the big slider: scale and centre line, at rest in the phone and lifted out of it
+  const sizer = document.createElement('div'); // reads the width the stylesheet asks for, which is rarely a whole number
+  sizer.style.cssText = 'position:absolute;visibility:hidden;pointer-events:none;height:0;width:var(--pw)';
+  stage.appendChild(sizer);
   const measure = () => {
     readViewH();
+    // A phone an even number of pixels wide sits on whole pixels when centred; on a fraction of one, its edges
+    // and everything inside it are redrawn slightly differently on every scroll frame.
+    stage.style.setProperty('--pw-px', `${Math.max(120, Math.round(sizer.offsetWidth / 2) * 2)}px`);
     s0 = screen.clientWidth / 393;
     canvas.style.setProperty('--s', s0.toFixed(4));
-    const st = stage.getBoundingClientRect(), ph = phone.getBoundingClientRect(), hm = home.getBoundingClientRect();
-    y0 = hm.top + hm.height / 2 - st.top;
+    canvas.style.height = `${(screen.clientHeight / s0).toFixed(2)}px`; // the frame is a little taller than the app's 852 points
+    const st = stage.getBoundingClientRect(), ph = phone.getBoundingClientRect(), sc = screen.getBoundingClientRect();
+    y0 = sc.bottom - 66 * s0 - st.top; // the slider's own place: 34 points up from the bottom, 64 tall
     y1 = ph.top - st.top + ph.height * 0.6;
     s1 = Math.max(s0, Math.min((st.width - 28) / 345, s0 * 1.85, 1.5));
     dirty = true;
