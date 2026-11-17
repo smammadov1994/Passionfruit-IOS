@@ -92,10 +92,11 @@
 /* live date */
 .s-live{background:#C9A99A}
 .vid{position:absolute;inset:0;overflow:hidden}
-.vid img,.selfie img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%}
-.vid-b{opacity:0;animation:talk 7s ease-in-out infinite}
-.selfie .vid-b{animation-delay:-3.500s}
-@keyframes talk{0%,38%{opacity:0}46%,84%{opacity:1}92%,100%{opacity:0}}
+.vid img,.selfie img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 0}
+/* frames of the date: the one in play fades in over the one before it */
+.fr{opacity:0;transition:opacity .5s linear}
+.fr.was{opacity:1;z-index:1;transition:none}
+.fr.on{opacity:1;z-index:2}
 .vid video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .4s}
 .vid video.ready{opacity:1}
 .scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.28) 0,transparent 22%,transparent 52%,rgba(0,0,0,.35) 100%)}
@@ -328,3 +329,4 @@
 /* a card face down: the paintings stay a surprise */
 .sets-row li i{position:absolute;inset:7%;border-radius:6%/4.3%;border:1px dashed rgba(27,23,25,.22);background:url(assets/app/BrandFruit.webp) center/38% no-repeat}
 @media (min-width:901px){.shots-row{grid-template-columns:repeat(3,minmax(0,1fr));max-width:980px}}
+.vid,.selfie{isolation:isolate}

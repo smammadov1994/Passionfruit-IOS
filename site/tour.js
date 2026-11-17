@@ -46,6 +46,21 @@ function initPhone() {
   const num = $('#lvNum'), arc = $('#lvArc'), clk = $('#lvClk');
   const who = $('#lvWho'), bars = [$('#lvYou'), $('#lvThem')], secs = [$('#lvYouS'), $('#lvThemS')];
   const video = $('#dateVideo'), chat = $('#chat');
+  // Stills from the date, picked by how many seconds have gone: [from second, picture number].
+  // You talk for the first thirty seconds, Maya for the next thirty, then you again.
+  const reel = (el, plan) => {
+    const frames = $$('.fr', el);
+    let cur = 0;
+    return (gone) => {
+      let next = 0;
+      for (const [from, n] of plan) if (gone >= from) next = n - 1;
+      if (next === cur) return;
+      frames.forEach((f, i) => { f.classList.toggle('was', i === cur); f.classList.toggle('on', i === next); });
+      cur = next;
+    };
+  };
+  const herReel = reel($('#lvVid'), [[0, 1], [9, 2], [30, 5], [39, 3], [60, 4], [80, 6]]);
+  const himReel = reel($('#lvSelf'), [[0, 1], [7, 2], [30, 3], [60, 2], [72, 4]]);
   const toggle = $('#motionToggle'), closeBg = $('#closeBg');
 
   let s0 = 0.8, s1 = 1.2, y0 = 0, y1 = 0; // the big slider: scale and centre line, at rest in the phone and lifted out of it
@@ -196,6 +211,7 @@ function initPhone() {
       clk.classList.toggle('low', left <= 30);
       const gone = Math.min(DATE_SECONDS - 1, DATE_SECONDS - left), mine = Math.floor(gone / TURN_SECONDS) % 2 === 0;
       const turnLeft = TURN_SECONDS - (gone % TURN_SECONDS);
+      herReel(DATE_SECONDS - left); himReel(DATE_SECONDS - left);
       who.textContent = mine ? 'Your turn' : 'Maya’s turn';
       bars[0].style.setProperty('--v', mine ? turnLeft / TURN_SECONDS : 0);
       bars[1].style.setProperty('--v', mine ? 0 : turnLeft / TURN_SECONDS);
