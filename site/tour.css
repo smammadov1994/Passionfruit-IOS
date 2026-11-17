@@ -202,7 +202,9 @@
 .pn-x svg{width:14px;height:14px}
 .places{display:flex;gap:10px;margin:10px -16px 0 0;overflow:hidden}
 .place{flex:none;width:210px;border-radius:16px;overflow:hidden;background:var(--a-surface);box-shadow:inset 0 0 0 1px var(--a-strong);padding-bottom:12px;transition:box-shadow .2s,background .2s}
-.pl-img{display:block;height:74px;background-size:cover;background-position:50% 42%}
+.pl-img{display:block;height:74px}
+.pl-a{background:radial-gradient(70px 50px at 30% 60%,#F3B3A2,transparent 70%),radial-gradient(80px 60px at 75% 40%,#F2D98A,transparent 70%),#FBF0D2}
+.pl-b{background:radial-gradient(70px 50px at 35% 45%,#A9D2B8,transparent 70%),radial-gradient(80px 60px at 80% 65%,#C5B4E3,transparent 70%),#E1EFE6}
 .place b{display:block;margin:10px 14px 2px;font:500 15px/1.2 var(--ui)}
 .place>span:last-child{margin:0 14px;font-size:13px;color:var(--a-ink2)}
 .pn-s{margin:12px 0 8px!important;font-size:13px;color:var(--a-ink2)}
@@ -223,7 +225,7 @@
 .composer svg{width:20px;height:20px}
 
 .motion-toggle{position:absolute;z-index:5;right:0;bottom:0;min-height:44px;padding:0 14px;border-radius:999px;border:1px solid var(--hair);background:var(--white);font:500 14px var(--ui);color:var(--ink2);cursor:pointer}
-.paused .canvas *,.paused .slide *,.paused .wall-row,.paused .drawn{animation-play-state:paused!important}
+.paused .canvas *,.paused .slide *,.paused .drawn{animation-play-state:paused!important}
 /* while the page is moving, the phone holds still: nothing inside it animates by itself until the scroll rests */
 .tour-stage.scrolling .canvas *,.tour-stage.scrolling .slide *{animation-play-state:paused!important}
 
@@ -262,40 +264,27 @@
 .pack-stage.open .pack-cut{opacity:0}
 @keyframes stripOff{to{transform:translate(40%,-160%) rotate(38deg);opacity:0}}
 @keyframes bodyOff{to{transform:translateY(60%) rotate(4deg);opacity:0}}
-.drawn{position:absolute;height:74%;aspect-ratio:5/7;border-radius:7.500%/5.360%;overflow:hidden;border:3px solid var(--c,var(--r-common));box-shadow:0 18px 30px rgba(27,23,25,.18);opacity:0;transform:translateY(8%) scale(.5);pointer-events:none;cursor:pointer}
+.drawn{position:absolute;height:74%;aspect-ratio:5/7;border-radius:7.500%/5.360%;overflow:hidden;border:3px solid var(--r-rare);box-shadow:0 18px 30px rgba(27,23,25,.18);opacity:0;transform:translateY(8%) scale(.5);pointer-events:none;cursor:pointer}
 .drawn img{display:block;width:100%;height:100%;object-fit:cover}
 .drawn i{position:absolute;inset:0;background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.5) 50%,transparent 65%);background-size:300% 100%;animation:sheen 3.600s ease-in-out infinite}
 @keyframes sheen{from{background-position:120% 0}to{background-position:-20% 0}}
 .pack-stage.open .drawn{pointer-events:auto;animation:cardOut .9s cubic-bezier(.3,1.35,.45,1) .35s both,cardSway 5s ease-in-out 1.250s infinite alternate}
 @keyframes cardOut{from{opacity:0;transform:translateY(8%) scale(.5) rotate(-8deg)}to{opacity:1;transform:none}}
 @keyframes cardSway{from{transform:perspective(900px) rotateY(-9deg) rotateX(3deg)}to{transform:perspective(900px) rotateY(9deg) rotateX(-3deg)}}
-.pack-stage.kept .drawn{animation:keep .6s var(--ease) both;border-color:#34C759}
+.pack-stage.kept .drawn{animation:keep .6s var(--ease) both}
 @keyframes keep{0%{opacity:1;transform:none}35%{opacity:1;transform:scale(1.07)}100%{opacity:0;transform:translateY(46%) scale(.3)}}
 .pack-hint{position:absolute;left:0;right:0;bottom:0;text-align:center;font-size:15px;color:var(--ink2);pointer-events:none}
 .pack-btn{position:absolute;left:50%;bottom:34px;transform:translateX(-50%);opacity:0;pointer-events:none}
 .pack-btn:focus-visible{opacity:1;pointer-events:auto}
-.shelf{grid-column:1/-1}
-.shelf-head{display:flex;justify-content:space-between;font:600 13px/1 var(--ui);letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);margin-bottom:14px}
-.shelf-head b{font-variant-numeric:tabular-nums}
-.shelf-row{display:flex;gap:14px;overflow-x:auto;padding:4px 2px 12px;scrollbar-width:none}
-.shelf-row::-webkit-scrollbar{display:none}
-.shelf-row li,.wall-row span,.sets-row li{flex:none;aspect-ratio:5/7;border-radius:7.500%/5.360%;overflow:hidden;border:2px solid var(--c,var(--r-common));background:var(--surface2)}
-.shelf-row li{width:104px;box-shadow:0 6px 12px rgba(27,23,25,.1)}
-.shelf-row li.new{animation:shelfIn .6s cubic-bezier(.3,1.4,.45,1) both}
-@keyframes shelfIn{from{opacity:0;transform:translateY(-30px) scale(.6);margin-right:-118px}to{opacity:1;transform:none;margin-right:0}}
-.shelf-row img,.wall-row img,.sets-row img,.sets-reward img{display:block;width:100%;height:100%;object-fit:cover}
-.wall{grid-column:1/-1;margin:8px calc(var(--gutter)*-1) 0;overflow:hidden;display:grid;gap:14px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
-.wall-row{display:flex;gap:14px;width:max-content;animation:wall 90s linear infinite}
-.wall-row.rev{animation-direction:reverse}
-.wall-row span{width:clamp(96px,11vw,150px)}
-@keyframes wall{to{transform:translateX(calc(-50% - 7px))}}
+.sets-row li{aspect-ratio:5/7;border-radius:7.500%/5.360%;overflow:hidden;border:2px solid var(--c,var(--r-common));background:var(--surface2)}
+.sets-reward img{display:block;width:100%;height:100%;object-fit:cover}
 
 .sets{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(24px,5vw,96px);align-items:center;margin-top:clamp(40px,7vh,88px);padding-top:clamp(40px,7vh,88px);border-top:1px solid var(--hair)}
 .sets h3{font-family:var(--serif);font-weight:340;font-variation-settings:"SOFT" 100;font-size:clamp(30px,3.200vw,46px);line-height:1.080;letter-spacing:-.022em;margin-bottom:14px}
 .sets-copy p:last-child{color:var(--ink2);font-size:18px;max-width:40ch}
 .sets-stage{position:relative}
 .sets-row{display:grid;grid-template-columns:repeat(5,1fr);gap:clamp(6px,1.200vw,14px)}
-.sets-row li{--c:var(--r-epic);opacity:.0;transform:translateY(36px) rotate(calc((var(--i) - 2)*3deg));transition:opacity .5s var(--ease),transform .7s cubic-bezier(.3,1.35,.45,1);box-shadow:0 8px 16px rgba(27,23,25,.12)}
+.sets-row li{background:#F3D9CF;border-color:rgba(27,23,25,.14);position:relative;opacity:.0;transform:translateY(36px) rotate(calc((var(--i) - 2)*3deg));transition:opacity .5s var(--ease),transform .7s cubic-bezier(.3,1.35,.45,1);box-shadow:0 8px 16px rgba(27,23,25,.12)}
 .sets-row li:nth-child(1){--i:0}.sets-row li:nth-child(2){--i:1}.sets-row li:nth-child(3){--i:2}.sets-row li:nth-child(4){--i:3}.sets-row li:nth-child(5){--i:4}
 .sets-row li.in{opacity:1;transform:none}
 .sets-stage.done .sets-row li{opacity:0;transform:translateX(calc((2 - var(--i))*104%)) scale(.7);transition:opacity .4s var(--ease) .35s,transform .6s var(--ease)}
@@ -325,7 +314,7 @@
   .shots-row li{flex:none;width:min(64vw,280px);scroll-snap-align:center}
 }
 @media (prefers-reduced-motion:reduce){
-  .canvas *,.slide *,.wall-row,.pack,.pack-glow,.drawn,.drawn i{animation:none!important}
+  .canvas *,.slide *,.pack,.pack-glow,.drawn,.drawn i{animation:none!important}
   .scr,.panel,.sets-row li,.sets-reward{transition:none}
   .mu-bud{opacity:1;transform:none}.mu-h1{display:none}.mu-h2{opacity:1}
   .sets-row li{opacity:1;transform:none}
@@ -336,3 +325,6 @@
 }
 @keyframes drift{from{transform:translate(-2%,1.500%) rotate(-4deg)}to{transform:translate(2.500%,-2%) rotate(5deg)}}
 @supports not (zoom:1){.canvas{transform-origin:0 0;transform:scale(var(--s,.8))}}
+/* a card face down: the paintings stay a surprise */
+.sets-row li i{position:absolute;inset:7%;border-radius:6%/4.3%;border:1px dashed rgba(27,23,25,.22);background:url(assets/app/BrandFruit.webp) center/38% no-repeat}
+@media (min-width:901px){.shots-row{grid-template-columns:repeat(3,minmax(0,1fr));max-width:980px}}

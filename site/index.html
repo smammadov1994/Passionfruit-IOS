@@ -191,8 +191,8 @@
                 <span class="grab"></span>
                 <p class="pn-t">Places you could go<span class="pn-x"><svg viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17"/></svg></span></p>
                 <div class="places">
-                  <div class="place" data-pick="8600"><span class="pl-img" style="background-image:url(assets/app/cards/watercolor-cafe-morning.webp)"></span><b>Corner café</b><span>Williamsburg · 0.6 km away</span></div>
-                  <div class="place"><span class="pl-img" style="background-image:url(assets/app/cards/art-nouveau-flower-market.webp)"></span><b>Flower market</b><span>Bushwick · 1.9 km away</span></div>
+                  <div class="place" data-pick="8600"><span class="pl-img pl-a"></span><b>Corner café</b><span>Williamsburg · 0.6 km away</span></div>
+                  <div class="place"><span class="pl-img pl-b"></span><b>Flower market</b><span>Bushwick · 1.9 km away</span></div>
                 </div>
                 <p class="pn-s">You’re both usually free at</p>
                 <div class="times"><span>7 PM</span><span data-pick="7600">8 PM</span><span>9 PM</span></div>
@@ -252,7 +252,7 @@
   <div class="packs-copy">
     <p class="label" data-rise>The daily pack</p>
     <h2 data-rise>Open a pack. Keep the painting.</h2>
-    <p class="packs-why" data-rise>Press and hold the home screen and today’s pack drops in. Tear it open to find one of fifty painted cards, each in its own art style. The ones you keep sit on your profile.</p>
+    <p class="packs-why" data-rise>Press and hold the home screen and today’s pack drops in. Tear it open to find one of fifty painted cards, each in its own art style. Here is one. The other forty-nine you find by opening packs, and the ones you keep sit on your profile.</p>
     <ul class="rar" data-rise>
       <li class="r-common"><i></i><b>26</b>Common</li>
       <li class="r-rare"><i></i><b>14</b>Rare</li>
@@ -267,15 +267,10 @@
       <div class="pack-strip"></div>
       <i class="pack-cut"></i>
     </div>
-    <div class="drawn" id="drawn" aria-hidden="true"><img alt=""><i></i></div>
+    <div class="drawn" id="drawn" aria-hidden="true"><img decoding="async" src="assets/app/cards/art-deco-jazz-club.webp" alt=""><i></i></div>
     <p class="pack-hint" id="packHint" aria-live="polite">Slide across the pack to tear it open.</p>
     <button class="btn btn-line btn-sm pack-btn" id="packBtn" type="button">Open the pack</button>
   </div>
-  <div class="shelf" data-rise>
-    <p class="shelf-head"><span>Your cards</span><b id="shelfCount">3</b></p>
-    <ul class="shelf-row" id="shelfRow"></ul>
-  </div>
-  <div class="wall" aria-hidden="true"><div class="wall-row" id="wallA"></div><div class="wall-row rev" id="wallB"></div></div>
 
   <div class="sets" id="sets">
     <div class="sets-copy">
@@ -284,13 +279,7 @@
       <p data-rise>A full set of five cards can be traded in for a reward card, such as extra dates for the day.</p>
     </div>
     <div class="sets-stage" id="setsStage" aria-hidden="true">
-      <ul class="sets-row">
-        <li><img loading="lazy" decoding="async" src="assets/app/cards/stained-glass-rose-window.webp" alt=""></li>
-        <li><img loading="lazy" decoding="async" src="assets/app/cards/persian-miniature-moon-garden.webp" alt=""></li>
-        <li><img loading="lazy" decoding="async" src="assets/app/cards/baroque-candlelit-feast.webp" alt=""></li>
-        <li><img loading="lazy" decoding="async" src="assets/app/cards/cloisonne-koi-pond.webp" alt=""></li>
-        <li><img loading="lazy" decoding="async" src="assets/app/cards/lacquer-crane-flight.webp" alt=""></li>
-      </ul>
+      <ul class="sets-row"><li><i></i></li><li><i></i></li><li><i></i></li><li><i></i></li><li><i></i></li></ul>
       <div class="sets-reward"><img loading="lazy" decoding="async" src="assets/app/voucher-gold.webp" alt=""></div>
     </div>
   </div>
@@ -300,13 +289,12 @@
 <section class="around" id="around">
   <div class="around-head">
     <p class="label" data-rise>Around the app</p>
-    <h2 data-rise>Three screens and a chat. No feed.</h2>
+    <h2 data-rise>Tonight, Matches and the chat. No feed.</h2>
   </div>
   <ul class="shots-row">
     <li data-rise><span class="shotframe"><img loading="lazy" decoding="async" src="assets/app/shot-tonight.webp" width="540" height="1174" alt="The Tonight screen: 34 people you could meet are online, and a slider to meet someone"></span><h3>Tonight</h3><p>Who is online, and one slider.</p></li>
     <li data-rise><span class="shotframe"><img loading="lazy" decoding="async" src="assets/app/shot-matches.webp" width="640" height="1391" alt="The Matches screen: each match has a small character that shows how the chat is going"></span><h3>Matches</h3><p>Each match has a dot. Tap it to see where the chat stands.</p></li>
     <li data-rise><span class="shotframe"><img loading="lazy" decoding="async" src="assets/app/shot-chat.webp" width="640" height="1391" alt="A chat with a match, with a video call button at the top"></span><h3>Chat</h3><p>Messages and video calls with the people you matched.</p></li>
-    <li data-rise><span class="shotframe"><img loading="lazy" decoding="async" src="assets/app/shot-you.webp" width="640" height="1391" alt="The profile screen with a row of painted cards and sliders for age and distance"></span><h3>You</h3><p>Your cards, and who you meet.</p></li>
   </ul>
 </section>
 

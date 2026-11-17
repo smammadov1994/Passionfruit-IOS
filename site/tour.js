@@ -207,63 +207,36 @@ function initPhone() {
   });
 }
 
-/* ───────── the daily pack ───────── */
-// id and rarity of the fifty cards, as in server/src/cards/catalog.ts
-const CARDS = `watercolor-cafe-morning gouache-picnic-hill crayon-kite-day colored-pencil-tandem-ride storybook-one-umbrella risograph-record-shop linocut-lighthouse-walk paper-cut-paper-boats pixel-art-arcade-night chalk-pastel-sunset-swing ink-wash-misty-bridge claymation-pottery-class felt-snow-day cross-stitch-garden-gate botanical-passionflower-vine flat-vector-rooftop-stars charcoal-late-train pointillism-rowboat-lake mid-century-roller-rink ligne-claire-scooter-getaway kawaii-bubble-tea low-poly-camping-trip collage-balloon-ride batik-tide-pools cyanotype-fern-hunt scratchboard-firefly-field|ukiyo-e-moonlit-walk art-nouveau-flower-market impressionist-lily-pond impasto-swirling-stars mosaic-fountain-square embroidery-orchard-harvest art-deco-jazz-club fauvist-beach-day delft-windmill-canal rosemaling-midsummer-dance cubist-two-guitars synthwave-neon-drive travel-poster-alpine-cable-car marquetry-sailing-home|stained-glass-rose-window persian-miniature-moon-garden baroque-candlelit-feast cloisonne-koi-pond tapestry-enchanted-forest lacquer-crane-flight rococo-cloud-waltz|gold-leaf-golden-embrace byzantine-golden-fruit rinpa-golden-blossom`
-  .split('|').map((group) => group.split(' '));
-const RARITY = ['common', 'rare', 'epic', 'gold'];
-const ODDS = [0.7, 0.22, 0.065, 0.015]; // the chance of each rarity in a pack (server/src/pack/cards.ts)
-const cardSrc = (id) => `assets/app/cards/${id}.webp`;
-const cardLi = (id, r, cls = '') => `<li class="${cls}" style="--c:var(--r-${RARITY[r]})"><img loading="lazy" decoding="async" src="${cardSrc(id)}" alt=""></li>`;
-
+/* ───────── the daily pack ─────────
+   One pack, one card. The page shows a single painting on purpose: the other forty-nine are for opening packs. */
 function initPack() {
-  const stage = $('#packStage'), pack = $('#pack3d'), drawn = $('#drawn'), img = $('img', drawn);
-  const hint = $('#packHint'), btn = $('#packBtn'), row = $('#shelfRow'), count = $('#shelfCount');
-  let owned = 3, state = 'closed', down = null, held = null;
-  row.innerHTML = cardLi('art-deco-jazz-club', 1) + cardLi('art-nouveau-flower-market', 1) + cardLi('baroque-candlelit-feast', 2);
-
-  const wall = (el, from) => {
-    const ids = [];
-    for (let i = 0; i < 12; i++) { const r = [0, 1, 0, 2, 0, 1, 3, 0, 1, 0, 2, 1][i]; ids.push([CARDS[r][(from + i * 3) % CARDS[r].length], r]); }
-    const html = ids.map(([id, r]) => `<span style="--c:var(--r-${RARITY[r]})"><img loading="lazy" decoding="async" src="${cardSrc(id)}" alt=""></span>`).join('');
-    el.innerHTML = html + html; // twice over, so the row loops without a seam
-  };
-  wall($('#wallA'), 0); wall($('#wallB'), 1);
+  const stage = $('#packStage'), pack = $('#pack3d'), drawn = $('#drawn');
+  const hint = $('#packHint'), btn = $('#packBtn');
+  let state = 'closed', down = null;
 
   const open = () => {
     if (state !== 'closed') return;
     state = 'open';
-    let roll = Math.random(), r = 0;
-    while (r < 3 && roll >= ODDS[r]) roll -= ODDS[r++];
-    const id = CARDS[r][Math.floor(Math.random() * CARDS[r].length)];
-    held = { id, r };
-    img.src = cardSrc(id);
-    drawn.style.setProperty('--c', `var(--r-${RARITY[r]})`);
     stage.style.setProperty('--t', 1);
     stage.classList.add('open');
-    hint.textContent = `${RARITY[r][0].toUpperCase()}${RARITY[r].slice(1)}. Tap the card to keep it.`;
-    btn.textContent = 'Keep the card';
+    hint.textContent = 'Jazz Club, a rare one. Tap it for a new pack.';
+    btn.textContent = 'New pack';
   };
-  const keep = () => {
+  const again = () => { // the card goes, a new pack drops in
     if (state !== 'open') return;
     state = 'kept';
     stage.classList.add('kept');
     setTimeout(() => {
-      row.insertAdjacentHTML('afterbegin', cardLi(held.id, held.r, 'new'));
-      row.scrollTo({ left: 0, behavior: 'smooth' });
-      count.textContent = String(++owned);
-    }, 350);
-    setTimeout(() => { // a new pack drops in
       stage.classList.remove('open', 'kept');
       stage.style.setProperty('--t', 0);
       pack.style.animation = 'none'; void pack.offsetWidth; pack.style.animation = '';
       hint.textContent = 'Slide across the pack to tear it open.';
       btn.textContent = 'Open the pack';
       state = 'closed';
-    }, 1100);
+    }, 700);
   };
-  btn.addEventListener('click', () => (state === 'closed' ? open() : keep()));
-  drawn.addEventListener('click', keep);
+  btn.addEventListener('click', () => (state === 'closed' ? open() : again()));
+  drawn.addEventListener('click', again);
 
   // The cut follows the finger from left to right; past halfway it finishes by itself.
   stage.addEventListener('pointerdown', (e) => { if (state === 'closed') down = { x: e.clientX, box: pack.getBoundingClientRect() }; });
