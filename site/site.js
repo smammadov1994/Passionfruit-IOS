@@ -108,68 +108,13 @@ const buddySVG = () => washImg('#F2B98C', 33).replace('<img ', '<img class="body
 
 /* ───────── Hero: two people who spring toward each other ───────── */
 let mapReady = false;      // the map is drawn and may take the stage
-let playJoin = () => {};   // just signed up: the two meet, become one, then the map
 function initMeet() {
-  const meet = $('#meet'), stage = $('#meetStage');
-  // Coral and butter: together they make the character's peach.
-  const blobs = $$('.blob', stage).map((el, i) => {
-    el.innerHTML = washImg(i ? WASH.butter : '#F08F7A', i ? 21 : 8);
-    const base = i ? { x: 0.21, y: 0.06 } : { x: -0.21, y: -0.05 };
-    return { el, base, x: base.x, y: base.y };
-  });
-  // The one the two become: a single wash that opens its eyes, like the match screen in the app.
-  const buddy = document.createElement('div');
-  buddy.className = 'buddy';
-  buddy.innerHTML = washImg('#F2B98C', 33) + BUDDY_FACE;
-  stage.appendChild(buddy);
-
-  let W = stage.offsetWidth, pull = 0, held = 0, near = 1, grow = 0.6, mutual = false, flipped = 0;
-  let onMap = false, joinAt = 0, forced = false; // a fresh sign-up plays the whole sequence on its own, then keeps the map up
-  playJoin = () => { joinAt = performance.now(); };
-  const pin = $('#heroPin'), hero = $('.hero'), hold = $('#heroHold');
-  let pinStart = 0, pinLen = 1;
-  const measure = () => {
-    W = stage.offsetWidth;
-    // A hero taller than the window sticks once its bottom edge reaches the bottom of the window.
-    readViewH();
-    const over = Math.max(0, hero.offsetHeight - viewH);
-    hero.style.setProperty('--pin-top', `${-over}px`);
-    pinStart = pin.offsetTop + over; pinLen = hold.offsetHeight;
-  };
-  new ResizeObserver(measure).observe(hero);
-  addEventListener('resize', measure);
-  new ResizeObserver(measure).observe(stage);
-
-  const draw = () => {
-    for (const b of blobs) b.el.style.transform = `translate3d(${(b.x * W).toFixed(1)}px,${(b.y * W).toFixed(1)}px,0)`;
-    buddy.style.transform = `scale(${grow.toFixed(3)})`;
-  };
-  if (reduce) { draw(); return; }
-
-  // One motion, driven by the scroll: the two slide toward the middle, and past a point they are one.
-  tickers.add((dt, now) => {
-    if (scrollDirty) {
-      held = clamp((scrollY - pinStart) / (pinLen || 1)) || 0; // how far through the hold
-      pull = clamp(held / 0.3); // they have met in the first third of it; the rest is for watching
-    }
-    // Someone on the list gets one more act: the character gives way to the map of who else is on it.
-    const joining = joinAt > 0 && now - joinAt < 2300;
-    if (joinAt > 0 && !joining) forced = true;
-    const wantMap = mapReady && (forced || (onMap ? held > 0.42 : held > 0.58)); // a gap, so a thumb resting on the line cannot flip it
-    if (wantMap !== onMap) { onMap = wantMap; meet.classList.toggle('mapped', onMap); }
-    const together = onMap || joining;
-    // A wide gap between on and off, and a short rest after each change, so a fast flick never makes it flicker.
-    const next = together || (mutual ? pull > 0.5 : pull > 0.8);
-    if (next !== mutual && now - flipped > 450) { flipped = now; mutual = next; meet.classList.toggle('mutual', mutual); }
-    const ease = 1 - Math.exp(-dt * 12); // follows the scroll closely, without a bounce
-    near += ((together || mutual ? 0 : 1 - pull) - near) * ease;
-    grow += ((mutual ? 1 : 0.6) - grow) * ease;
-    for (const b of blobs) { b.x = b.base.x * near; b.y = b.base.y * near; }
-  });
-  painters.add(draw);
+  // The hero shows the app. Once this visitor is on the list, the map of who else is on it takes its place.
+  const meet = $('#meet');
+  tickers.add(() => { if (mapReady && !meet.classList.contains('mapped')) meet.classList.add('mapped'); });
 }
 
-/* ───────── Manhattan skyline: watercolor buildings on springs, driven by scroll ───────── */
+/* ───────── Manhattan skyline: watercolor buildings that spring up once and then stand ───────── */
 function initSkyline() {
   const cv = $('#skyline');
   const ctx = cv.getContext('2d');
@@ -236,7 +181,8 @@ function initSkyline() {
 
   const size = fitCanvas(cv);
   const t0 = performance.now();
-  let p = 0, visible = true, lastY = scrollY, band = 1;
+  const p = 0; // the skyline no longer follows the scroll
+  let visible = true;
   new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(cv);
   const geo = () => {
     const s = Math.max(size.w / 1000, 0.62); // phones see a crop of midtown, not a squeezed city
@@ -247,15 +193,8 @@ function initSkyline() {
     for (const b of list) b.sp.snap(1);
     for (const b of blots) b.sp.snap(1);
   } else {
-    const knock = matchMedia('(pointer:coarse)').matches ? 0.006 : 0.016; // a thumb flick is far faster than a wheel
-    addEventListener('scroll', () => { // scroll speed knocks the buildings like a bar graph
-      const dy = clamp(scrollY - lastY, -90, 90);
-      lastY = scrollY;
-      if (visible) for (const b of list) b.sp.v -= dy * knock * b.kick;
-    }, { passive: true });
     tickers.add((dt, now) => {
       if (!visible) return;
-      if (scrollDirty) { band = cv.offsetTop + size.h || 1; p = clamp(scrollY / band); }
       const { s, ox } = geo();
       const r = cv.getBoundingClientRect();
       const near = pointer.y > r.top - 40 && pointer.y < r.bottom + 60;
@@ -621,7 +560,6 @@ function initWaitlist() {
         const mine = { borough: data.borough, position: data.position, boroughPosition: data.boroughPosition, zip: zip.value };
         save(mine);
         showJoined({ ...data, ...mine }, form.parentElement);
-        playJoin();
         renderStats(data.stats, data.borough);
         const stage = $('#meetStage').getBoundingClientRect();
         if (stage.top < 0 || stage.bottom > innerHeight) $('#meetStage').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });

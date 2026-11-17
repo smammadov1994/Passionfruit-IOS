@@ -55,8 +55,6 @@ h3{font-size:19px;line-height:1.300;font-weight:600;letter-spacing:-.01em}
 /* hero */
 /* the hero holds still while the two washes meet: it sticks for the height of .hero-hold */
 .hero-pin{position:relative}
-.hero-pin .hero{position:sticky;top:var(--pin-top,0px)}
-.hero-hold{height:170svh}
 .hero{min-height:100svh;padding:calc(var(--nav) + 4px) var(--gutter) 48px;display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);grid-template-rows:auto 1fr;gap:clamp(20px,3.500vh,44px) clamp(24px,4vw,72px);align-items:center}
 .skyline{grid-column:1/-1;display:block;width:calc(100% + 2*var(--gutter));margin:0 calc(var(--gutter)*-1);height:clamp(140px,23vh,260px);mix-blend-mode:multiply}
 h1{position:relative;z-index:0;width:fit-content;font-size:clamp(44px,6.200vw,100px);font-weight:300;line-height:1.02;letter-spacing:-.03em;margin-bottom:28px}
@@ -96,7 +94,7 @@ h1 .line>span{display:inline-block;will-change:transform}
 .blob{position:absolute;left:50%;top:50%;width:58%;aspect-ratio:1;margin:-29% 0 0 -29%;will-change:transform,opacity;pointer-events:none}
 .blob img,.buddy img{position:absolute;inset:-22%;width:144%;height:144%;max-width:none;pointer-events:none;-webkit-user-select:none;user-select:none}
 /* never wider than the screen, so it cannot push the page sideways on a phone */
-.meet-cap{position:relative;text-align:center;font-size:15px;color:var(--ink2);min-height:44px;margin-top:4px}
+.meet-cap{position:relative;text-align:center;font-size:15px;color:var(--ink2);min-height:44px;margin-top:44px}
 .meet-cap span{position:absolute;inset:0 0 auto;transition:opacity .4s var(--ease),transform .4s var(--ease)}
 .meet-cap [data-cap=mutual]{font-size:34px;line-height:1.100;color:var(--ink);opacity:0;transform:translateY(8px)}
 .meet.mutual [data-cap=apart]{opacity:0;transform:translateY(-8px)}
@@ -141,6 +139,26 @@ h1 .line>span{display:inline-block;will-change:transform}
 .meet-cap [data-cap=map]{opacity:0;transform:translateY(8px);font-size:16px;color:var(--ink)}
 .meet.mapped [data-cap=apart],.meet.mapped [data-cap=mutual]{opacity:0}
 .meet.mapped [data-cap=map]{opacity:1;transform:none}
+
+/* the hero shows the app: a live date, with the home screen's count and slider beside it */
+.hero-art{position:absolute;inset:0;transition:opacity .6s var(--ease)}
+.hero-phone{position:absolute;left:62%;top:0;height:100%;width:auto;transform:translateX(-50%)}
+.meet.mapped .hero-art{opacity:0;pointer-events:none}
+.hero-chip{position:absolute;left:0;top:27%;width:40%;min-width:150px;padding:14px 16px 16px;border-radius:24px;background:var(--white);border:1px solid var(--hair);box-shadow:var(--float);overflow:hidden;animation:heroFloat 6s ease-in-out infinite alternate}
+.hero-chip img{position:absolute;width:74%;right:-22%;top:-12%;mix-blend-mode:multiply}
+.hero-chip img+img{width:56%;right:-12%;top:38%}
+.hero-chip span{position:relative;display:block;font:600 11px/1.3 var(--ui);letter-spacing:.07em;text-transform:uppercase;color:var(--ink2);margin-bottom:10px}
+.hero-chip b{position:relative;display:block;font:500 clamp(40px,4.200vw,56px)/1 ui-serif,"New York",NewsreaderLocal,Georgia,serif;font-variant-numeric:tabular-nums}
+.hero-chip p{position:relative;font:500 15px/1.25 ui-serif,"New York",NewsreaderLocal,Georgia,serif;max-width:12ch;margin-top:4px}
+.slide.hero-slide{position:absolute;left:2%;bottom:-5%;width:280px;animation:heroFloat 7s ease-in-out -2s infinite alternate}
+.hero-slide .slide-knob{animation:heroKnob 5.500s var(--ease) 1.200s infinite}
+.hero-slide .slide-label{animation:heroLabel 5.500s var(--ease) 1.200s infinite}
+@keyframes heroFloat{from{translate:0 -5px}to{translate:0 5px}}
+@keyframes heroKnob{0%,8%{transform:none}38%,74%{transform:translateX(216px)}90%,100%{transform:none}}
+@keyframes heroLabel{0%,8%{opacity:1}26%,78%{opacity:0}94%,100%{opacity:1}}
+@media (max-width:900px){.slide.hero-slide{width:240px;left:0;bottom:-9%}.hero-chip span{font-size:10px;letter-spacing:.04em;white-space:nowrap}.hero-slide .slide-label{font-size:15px;padding-left:44px}
+  @keyframes heroKnob{0%,8%{transform:none}38%,74%{transform:translateX(176px)}90%,100%{transform:none}}}
+@media (prefers-reduced-motion:reduce){.hero-chip,.hero-slide,.hero-slide *{animation:none!important}}
 
 /* statement */
 .say{padding:clamp(96px,18vh,200px) var(--gutter)}

@@ -64,14 +64,16 @@
   </div>
 
   <div class="meet" id="meet" data-rise>
-    <div class="meet-stage" id="meetStage" aria-hidden="true">
-      <div class="blob" data-blob="a"></div>
-      <div class="blob" data-blob="b"></div>
+    <div class="meet-stage" id="meetStage" role="img" aria-label="The app during a live video date: a woman waving hello, a clock at 1:24 and a question card. Beside it, the home screen count of 34 people online and the Slide to meet someone slider.">
+      <div class="hero-art">
+        <img class="hero-phone" src="assets/app/hero-phone.webp" width="720" height="1561" alt="">
+        <div class="hero-chip"><img src="assets/app/BlotBlush.webp" alt=""><img src="assets/app/BlotButter.webp" alt=""><span>Right now · Busy</span><b>34</b><p>people you could meet are online.</p></div>
+        <div class="slide hero-slide"><div class="slide-paint"><img src="assets/app/BlotBlush.webp" alt=""><img src="assets/app/BlotButter.webp" alt=""><img src="assets/app/BlotSage.webp" alt=""><img src="assets/app/BlotLilac.webp" alt=""></div><span class="slide-label">Slide to meet someone<svg viewBox="0 0 24 24"><path d="M6 6l6 6-6 6M13 6l6 6-6 6"/></svg></span><span class="slide-knob"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="3"/><path d="M16 10l5-3v10l-5-3"/></svg></span></div>
+      </div>
     </div>
-    <p class="meet-cap" id="meetCap" aria-live="off"><span data-cap="apart">Two people, online at the same moment.</span><span data-cap="mutual">It’s mutual.</span><span data-cap="map"></span></p>
+    <p class="meet-cap" id="meetCap" aria-live="off"><span data-cap="apart">A live date, as it looks in the app.</span><span data-cap="map"></span></p>
   </div>
 </section>
-<div class="hero-hold" id="heroHold" aria-hidden="true"></div>
 </div>
 
 <!-- ───────── Statement ───────── -->
@@ -122,11 +124,8 @@
             <div class="scr s-live" data-scr="1">
               <div class="vid" id="lvVid">
                 <img class="fr on" decoding="async" src="assets/app/date-her-1.webp" alt="">
-                <img class="fr" decoding="async" src="assets/app/date-her-2.webp" alt="">
                 <img class="fr" decoding="async" src="assets/app/date-her-3.webp" alt="">
                 <img class="fr" decoding="async" src="assets/app/date-her-4.webp" alt="">
-                <img class="fr" decoding="async" src="assets/app/date-her-5.webp" alt="">
-                <img class="fr" decoding="async" src="assets/app/date-her-6.webp" alt="">
                 <video id="dateVideo" muted loop playsinline preload="none"></video>
               </div>
               <div class="scrim"></div>
@@ -134,7 +133,7 @@
                 <div class="lv-who"><b>Maya, 29</b><span>Brooklyn</span></div>
                 <div class="clk" id="lvClk"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7.6" class="clk-tr"/><circle cx="10" cy="10" r="7.6" class="clk-arc" id="lvArc" pathLength="100"/></svg><span id="lvNum">1:30</span></div>
               </div>
-              <div class="selfie" id="lvSelf"><img class="fr on" decoding="async" src="assets/app/date-him-1.webp" alt=""><img class="fr" decoding="async" src="assets/app/date-him-2.webp" alt=""><img class="fr" decoding="async" src="assets/app/date-him-3.webp" alt=""><img class="fr" decoding="async" src="assets/app/date-him-4.webp" alt=""></div>
+              <div class="selfie" id="lvSelf"><img class="fr on" decoding="async" src="assets/app/date-him-1.webp" alt=""><img class="fr" decoding="async" src="assets/app/date-him-3.webp" alt=""><img class="fr" decoding="async" src="assets/app/date-him-4.webp" alt=""></div>
               <p class="lv-pill"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 5-3.5 8-7 10-3.500-2-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>Safety check on</p>
               <div class="turn">
                 <p class="eb">Question 1<span id="lvWho">Your turn</span></p>
@@ -227,7 +226,7 @@
         <h3>Slide to meet someone.</h3>
         <p>The home screen shows how many people you could meet are online right now. Slide, and Passionfruit pairs you with one of them. Keep scrolling, or drag the slider yourself.</p>
       </li>
-      <li class="step step-long">
+      <li class="step step-long step-date">
         <span class="step-n">1:30 on the clock</span>
         <h3>Ninety seconds, face to face.</h3>
         <p>You are on video straight away. A question card gives each of you a thirty-second turn, so nobody has to carry the conversation, and either of you can leave at any time.</p>
