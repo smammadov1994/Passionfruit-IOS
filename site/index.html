@@ -16,6 +16,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..500,0..100&display=swap">
 <link rel="stylesheet" href="site.css">
+<link rel="stylesheet" href="tour.css">
 <link rel="stylesheet" href="legal.css">
 <script>if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('js')</script>
 </head>
@@ -78,81 +79,235 @@
   <p class="say-text" id="say">No swiping for weeks. No pen pals. You go online, you meet a real person for ninety seconds, and by the end you both know.</p>
 </section>
 
-<!-- ───────── The date, scroll-driven ───────── -->
-<section class="date" id="date">
-  <div class="date-head">
-    <p class="label" data-rise>How a date goes</p>
-    <h2 data-rise>Scroll through ninety seconds.</h2>
+<!-- ───────── The app, one evening: a phone that follows the scroll ───────── -->
+<section class="tour" id="tour">
+  <div class="tour-head">
+    <p class="label" data-rise>Inside the app</p>
+    <h2 data-rise>One evening, start to finish.</h2>
   </div>
-  <div class="date-grid">
-    <div class="date-stage" id="stage">
-      <div class="plate">
-        <div class="clock" aria-hidden="true">
-          <span class="clock-bar"><i id="clockArc"></i></span>
-          <span id="clockNum">1:30</span>
-        </div>
-        <button class="motion-toggle" id="motionToggle" type="button" aria-pressed="false">Pause motion</button>
+  <div class="tour-grid">
+    <div class="tour-stage" id="tourStage">
+      <div class="phone" id="phone">
+        <div class="screen" id="screen" aria-hidden="true">
+          <div class="canvas" id="canvas">
 
-        <div class="shot on" data-shot="0">
-          <div class="scene go" role="img" aria-label="A soft Go online button resting on watercolor washes">
-            <div class="sw sw-1" data-wash="blush"></div><div class="sw sw-2" data-wash="butter"></div><div class="sw sw-3" data-wash="lilac"></div>
-            <div class="go-btn">Go online</div>
-          </div>
-        </div>
-        <div class="shot" data-shot="1">
-          <video muted loop playsinline preload="none" poster="assets/TurnCard.jpg" src="assets/TurnCard.mp4" aria-label="A question card with a two-sided clock that drains as each person takes a turn"></video>
-        </div>
-        <div class="shot" data-shot="2">
-          <div class="verdict" role="img" aria-label="A card asking whether you would like to see Maya again, with a No button and a Yes button">
-            <div class="verdict-wash vw-a" data-wash="lilac"></div><div class="verdict-wash vw-b" data-wash="butter"></div>
-            <div class="verdict-card">
-              <p class="verdict-q">Would you like to see Maya again?</p>
-              <div class="verdict-row">
-                <span class="vbtn vno"><svg viewBox="0 0 24 24" width="26" height="26"><path d="M6 6l12 12M18 6L6 18"/></svg></span>
-                <span class="vbtn vyes"><svg viewBox="0 0 24 24" width="28" height="28"><path d="M12 20s-7-4.4-7-9.6A4 4 0 0 1 12 8a4 4 0 0 1 7 2.4C19 15.600 12 20 12 20z"/></svg></span>
+            <!-- Tonight -->
+            <div class="scr s-tonight on" data-scr="0">
+              <div class="tn-body" id="tnBody">
+                <p class="eb tn-date">Tonight · Friday</p>
+                <span class="circ tn-heart"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-9.6A4 4 0 0 1 12 8a4 4 0 0 1 7 2.4C19 15.6 12 20 12 20z"/></svg><i></i></span>
+                <p class="tn-hi">Good evening, <em>Alex.</em></p>
+                <p class="tn-pill"><span class="pips"><i></i><i></i><i></i><i></i><i></i></span>5 dates left today</p>
+                <div class="tn-hero">
+                  <div class="tn-blots"><img decoding="async" src="assets/app/BlotBlush.webp" alt=""><img decoding="async" src="assets/app/BlotSky.webp" alt=""><img decoding="async" src="assets/app/BlotLilac.webp" alt=""><img decoding="async" src="assets/app/BlotButter.webp" alt=""><img decoding="async" src="assets/app/BlotSage.webp" alt=""></div>
+                  <p class="eb">Right now · Busy</p>
+                  <b class="tn-count">34</b>
+                  <p class="tn-line">people you could meet are online.</p>
+                </div>
+                <div class="tn-card">
+                  <p class="eb">1 new message</p><span class="tn-see">See all</span>
+                  <div class="tn-avs">
+                    <span class="av a-sky">M<i></i><small>Maya</small></span>
+                    <span class="av a-sage">O<small>Omar</small></span>
+                    <span class="av a-sky">J<small>June</small></span>
+                  </div>
+                </div>
+                <p class="eb tn-from">From your dots<span>1 of 3</span></p>
+                <div class="tn-dot"><span class="bud" data-bud="Lilac" data-top="antenna"></span><div><p class="eb">Bisa on Maya</p><p class="tn-dot-t">Maya wrote 25 minutes ago</p></div></div>
               </div>
-              <p class="verdict-note">Your answer stays sealed unless you both say yes.</p>
+              <div class="slide-home" id="slideHome"></div>
             </div>
-          </div>
-        </div>
-        <div class="shot" data-shot="3">
-          <div class="chat" role="img" aria-label="A chat with Maya opened by a match: two short messages and a Call again button">
-            <div class="verdict-wash vw-a" data-wash="sky"></div><div class="verdict-wash vw-b" data-wash="blush"></div>
-            <div class="chat-card">
-              <div class="chat-head"><span class="dot-guy" data-buddy></span><span><b>Maya</b><i>Matched just now</i></span></div>
-              <p class="msg them">That went fast.</p>
-              <p class="msg me">Same time tomorrow?</p>
-              <p class="msg them">Yes. Call me.</p>
-              <span class="chat-call">Call again</span>
+
+            <!-- Live date -->
+            <div class="scr s-live" data-scr="1">
+              <div class="vid">
+                <div class="room"></div>
+                <span class="bud vid-bud" data-bud="Rose" data-face="grin"></span>
+                <video id="dateVideo" muted loop playsinline preload="none"></video>
+              </div>
+              <div class="scrim"></div>
+              <div class="lv-top">
+                <div class="lv-who"><b>Maya, 29</b><span>Brooklyn</span></div>
+                <div class="clk" id="lvClk"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7.6" class="clk-tr"/><circle cx="10" cy="10" r="7.6" class="clk-arc" id="lvArc" pathLength="100"/></svg><span id="lvNum">1:30</span></div>
+              </div>
+              <div class="selfie"><div class="room me"></div><span class="bud" data-bud="Periwinkle"></span></div>
+              <p class="lv-pill"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 5-3.5 8-7 10-3.500-2-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>Safety check on</p>
+              <div class="turn">
+                <p class="eb">Question 1<span id="lvWho">Your turn</span></p>
+                <p class="turn-q">What would your perfect Sunday look like?</p>
+                <div class="turn-bar"><i id="lvYou"></i><i id="lvThem"></i></div>
+                <p class="turn-lab"><span>You <b id="lvYouS">0:30</b></span><span>Maya <b id="lvThemS">0:30</b></span></p>
+                <span class="turn-done">Done<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+              </div>
+              <div class="ctl">
+                <span><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></span>
+                <span><svg viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="3"/><path d="M16 10l5-3v10l-5-3"/></svg></span>
+                <span><svg viewBox="0 0 24 24"><path d="M5 21V4M5 5h12l-2 4 2 4H5"/></svg></span>
+                <span class="ctl-leave"><svg viewBox="0 0 24 24"><path d="M3 15c5-5 13-5 18 0l-2.500 2.500-3.500-2v-2.600a10 10 0 0 0-6 0v2.600l-3.500 2z"/></svg></span>
+              </div>
             </div>
+
+            <!-- Private answer -->
+            <div class="scr s-verdict" data-scr="2">
+              <div class="pair"><span class="pb pb-you"><img decoding="async" src="assets/app/BuddyRose.webp" alt=""><small>You</small></span><span class="pb pb-them"><img decoding="async" src="assets/app/BuddyPeriwinkle.webp" alt=""><small>Maya</small></span></div>
+              <p class="eb">Time’s up</p>
+              <p class="disp">See Maya again?</p>
+              <p class="bodyt">Slide to say yes. Maya only finds out if it’s mutual.</p>
+              <p class="vd-count">12 seconds left. No answer counts as no.</p>
+              <div class="slide slide-auto"><div class="slide-paint"><img decoding="async" src="assets/app/BlotBlush.webp" alt=""><img decoding="async" src="assets/app/BlotButter.webp" alt=""><img decoding="async" src="assets/app/BlotSage.webp" alt=""><img decoding="async" src="assets/app/BlotLilac.webp" alt=""><img decoding="async" src="assets/app/BlotBlush.webp" alt=""></div><span class="slide-label">Slide to say yes<svg viewBox="0 0 24 24"><path d="M6 6l6 6-6 6M13 6l6 6-6 6"/></svg></span><span class="slide-knob"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-9.6A4 4 0 0 1 12 8a4 4 0 0 1 7 2.4C19 15.6 12 20 12 20z"/></svg></span></div>
+              <span class="btn2">Not this time</span>
+              <span class="btn3">Make this my last one tonight</span>
+            </div>
+
+            <!-- Mutual -->
+            <div class="scr s-mutual" data-scr="3">
+              <div class="specks"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+              <div class="mu-stage"><img class="mu-a" decoding="async" src="assets/app/BuddyRose.webp" alt=""><img class="mu-b" decoding="async" src="assets/app/BuddyPeriwinkle.webp" alt=""><span class="bud mu-bud" data-bud="Lilac" data-top="antenna" data-face="grin"></span></div>
+              <p class="disp xl mu-h1">It’s <em>mutual.</em></p>
+              <p class="disp xl mu-h2">Meet <em>Bisa.</em></p>
+              <p class="bodyt">You and Maya made Bisa. It comes with you into the chat and helps with what to say next.</p>
+              <span class="btn1">Say hello</span>
+              <span class="btn3">Keep dating</span>
+            </div>
+
+            <!-- Chat with the dot -->
+            <div class="scr s-chat" data-scr="4" id="chat">
+              <div class="ch-head">
+                <span class="circ"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></span>
+                <span class="av a-sky sm">M</span>
+                <div><b>Maya</b><span>29 · 1 km away</span></div>
+                <span class="ch-acts"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="3"/><path d="M16 10l5-3v10l-5-3"/></svg><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="19" cy="12" r="1.4"/></svg></span>
+              </div>
+              <div class="ch-list">
+                <p class="ch-yes">You both said yes.<span>Today</span></p>
+                <p class="cm them" data-at="400">Ninety seconds was not enough.</p>
+                <p class="cm me" data-at="1700">Agreed. You never finished the story about the ferry.</p>
+                <p class="cm them" data-at="3200">It gets worse. Coffee on Saturday and I’ll tell you?</p>
+                <p class="cm think" data-at="4300" data-until="5600"><span class="bud" data-bud="Lilac" data-top="antenna"></span><i></i><i></i><i></i></p>
+                <p class="cm me" data-at="10600">Yes, let’s do it. Saturday at 8?</p>
+                <p class="cm them" data-at="12200">It’s a date.</p>
+              </div>
+              <div class="panel" data-at="5600" data-until="10400">
+                <span class="grab"></span>
+                <p class="pn-t">Places you could go<span class="pn-x"><svg viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17"/></svg></span></p>
+                <div class="places">
+                  <div class="place" data-pick="8600"><span class="pl-img" style="background-image:url(assets/app/cards/watercolor-cafe-morning.webp)"></span><b>Corner café</b><span>Williamsburg · 0.6 km away</span></div>
+                  <div class="place"><span class="pl-img" style="background-image:url(assets/app/cards/art-nouveau-flower-market.webp)"></span><b>Flower market</b><span>Bushwick · 1.9 km away</span></div>
+                </div>
+                <p class="pn-s">You’re both usually free at</p>
+                <div class="times"><span>7 PM</span><span data-pick="7600">8 PM</span><span>9 PM</span></div>
+                <div class="ideas"><span class="bud" data-bud="Lilac" data-top="antenna"></span><span class="idea" data-pick="9500">Yes, let’s do it. Saturday at 8?</span><span class="idea">That works for me.</span></div>
+              </div>
+              <p class="fold" data-at="10400"><span class="bud" data-bud="Lilac" data-top="antenna"></span><span data-at="0" data-until="12600">Bisa has reply ideas</span><span data-at="12600">It’s a date: Saturday, 8 PM<b>Add to calendar</b></span></p>
+              <div class="composer"><span>Message Maya, or @Bisa</span><i><svg viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></svg></i></div>
+            </div>
+
+            <div class="sbar"><span>9:41</span><i class="island"></i><svg viewBox="0 0 60 14"><path d="M1 12h3V8H1zM6 12h3V6H6zM11 12h3V3h-3zM16 12h3V1h-3z"/><rect x="29" y="2" width="22" height="10" rx="3" fill="none" stroke-width="1.2"/><rect x="31" y="4" width="16" height="6" rx="1.5"/></svg></div>
+            <i class="homebar"></i>
           </div>
         </div>
       </div>
+
+      <!-- The slider lifts out of the phone and grows as the page scrolls; it can be dragged. -->
+      <div class="slide slide-big" id="slideBig" role="slider" tabindex="0" aria-label="Slide to meet someone" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div class="slide-paint"><img decoding="async" src="assets/app/BlotBlush.webp" alt=""><img decoding="async" src="assets/app/BlotButter.webp" alt=""><img decoding="async" src="assets/app/BlotSage.webp" alt=""><img decoding="async" src="assets/app/BlotLilac.webp" alt=""><img decoding="async" src="assets/app/BlotBlush.webp" alt=""></div>
+        <span class="slide-label">Slide to meet someone<svg viewBox="0 0 24 24"><path d="M6 6l6 6-6 6M13 6l6 6-6 6"/></svg></span>
+        <span class="slide-knob"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="3"/><path d="M16 10l5-3v10l-5-3"/></svg></span>
+      </div>
+      <button class="motion-toggle" id="motionToggle" type="button" aria-pressed="false">Pause motion</button>
     </div>
 
     <ol class="steps" id="steps">
-      <li class="step on">
-        <span class="step-n">1:30 on the clock</span>
-        <h3>Go online.</h3>
-        <p>One button. Passionfruit pairs you with someone compatible who is also online right now, so there is no inbox to manage and nobody to chase.</p>
+      <li class="step step-long on">
+        <span class="step-n">Tonight</span>
+        <h3>Slide to meet someone.</h3>
+        <p>The home screen shows how many people you could meet are online right now. Slide, and Passionfruit pairs you with one of them. Keep scrolling, or drag the slider yourself.</p>
       </li>
-      <li class="step">
-        <span class="step-n">0:45 on the clock</span>
-        <h3>Take turns.</h3>
-        <p>An optional question card works like a chess clock. You each get thirty seconds on the same question, and either of you can pass.</p>
+      <li class="step step-long">
+        <span class="step-n">1:30 on the clock</span>
+        <h3>Ninety seconds, face to face.</h3>
+        <p>You are on video straight away. A question card gives each of you a thirty-second turn, so nobody has to carry the conversation, and either of you can leave at any time.</p>
       </li>
       <li class="step">
         <span class="step-n">0:00 on the clock</span>
         <h3>Answer in private.</h3>
-        <p>When the clock runs out you each choose yes or no. You have twenty seconds, and a no is never shown to the other person.</p>
+        <p>Slide to say yes, or tap Not this time. You have twenty seconds, and the other person only finds out if you both said yes.</p>
       </li>
       <li class="step">
-        <span class="step-n">After</span>
-        <h3>Two yeses make a match.</h3>
-        <p>You can message each other and video call again. If it was not mutual, the next person is a few seconds away.</p>
+        <span class="step-n">Two yeses</span>
+        <h3>It’s mutual. Meet your dot.</h3>
+        <p>Every match makes a small character out of your two colours. It comes with you into the chat.</p>
+      </li>
+      <li class="step">
+        <span class="step-n">In the chat</span>
+        <h3>It helps with what to say next.</h3>
+        <p>Your dot reads where the conversation stands and offers reply ideas, places you could go and the hours you are both usually free. You choose what to send.</p>
       </li>
     </ol>
   </div>
+</section>
+
+<!-- ───────── The daily pack ───────── -->
+<section class="packs" id="pack">
+  <div class="packs-copy">
+    <p class="label" data-rise>The daily pack</p>
+    <h2 data-rise>Open a pack. Keep the painting.</h2>
+    <p class="packs-why" data-rise>Press and hold the home screen and today’s pack drops in. Tear it open to find one of fifty painted cards, each in its own art style. The ones you keep sit on your profile.</p>
+    <ul class="rar" data-rise>
+      <li class="r-common"><i></i><b>26</b>Common</li>
+      <li class="r-rare"><i></i><b>14</b>Rare</li>
+      <li class="r-epic"><i></i><b>7</b>Epic</li>
+      <li class="r-gold"><i></i><b>3</b>Gold</li>
+    </ul>
+  </div>
+  <div class="pack-stage" id="packStage" data-rise>
+    <div class="pack-glow" aria-hidden="true"></div>
+    <div class="pack" id="pack3d" aria-hidden="true">
+      <div class="pack-body"></div>
+      <div class="pack-strip"></div>
+      <i class="pack-cut"></i>
+    </div>
+    <div class="drawn" id="drawn" aria-hidden="true"><img alt=""><i></i></div>
+    <p class="pack-hint" id="packHint" aria-live="polite">Slide across the pack to tear it open.</p>
+    <button class="btn btn-line btn-sm pack-btn" id="packBtn" type="button">Open the pack</button>
+  </div>
+  <div class="shelf" data-rise>
+    <p class="shelf-head"><span>Your cards</span><b id="shelfCount">3</b></p>
+    <ul class="shelf-row" id="shelfRow"></ul>
+  </div>
+  <div class="wall" aria-hidden="true"><div class="wall-row" id="wallA"></div><div class="wall-row rev" id="wallB"></div></div>
+
+  <div class="sets" id="sets">
+    <div class="sets-copy">
+      <p class="f-tag" data-rise>Coming after launch</p>
+      <h3 data-rise>Finish a set, trade it in.</h3>
+      <p data-rise>A full set of five cards can be traded in for a reward card, such as extra dates for the day.</p>
+    </div>
+    <div class="sets-stage" id="setsStage" aria-hidden="true">
+      <ul class="sets-row">
+        <li><img loading="lazy" decoding="async" src="assets/app/cards/stained-glass-rose-window.webp" alt=""></li>
+        <li><img loading="lazy" decoding="async" src="assets/app/cards/persian-miniature-moon-garden.webp" alt=""></li>
+        <li><img loading="lazy" decoding="async" src="assets/app/cards/baroque-candlelit-feast.webp" alt=""></li>
+        <li><img loading="lazy" decoding="async" src="assets/app/cards/cloisonne-koi-pond.webp" alt=""></li>
+        <li><img loading="lazy" decoding="async" src="assets/app/cards/lacquer-crane-flight.webp" alt=""></li>
+      </ul>
+      <div class="sets-reward"><img loading="lazy" decoding="async" src="assets/app/voucher-gold.webp" alt=""></div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────── Around the app: real screens ───────── -->
+<section class="around" id="around">
+  <div class="around-head">
+    <p class="label" data-rise>Around the app</p>
+    <h2 data-rise>Three screens and a chat. No feed.</h2>
+  </div>
+  <ul class="shots-row">
+    <li data-rise><span class="shotframe"><img loading="lazy" decoding="async" src="assets/app/shot-tonight.webp" width="540" height="1174" alt="The Tonight screen: 34 people you could meet are online, and a slider to meet someone"></span><h3>Tonight</h3><p>Who is online, and one slider.</p></li>
+    <li data-rise><span class="shotframe"><img loading="lazy" decoding="async" src="assets/app/shot-matches.webp" width="640" height="1391" alt="The Matches screen: each match has a small character that shows how the chat is going"></span><h3>Matches</h3><p>Each match has a dot. Tap it to see where the chat stands.</p></li>
+    <li data-rise><span class="shotframe"><img loading="lazy" decoding="async" src="assets/app/shot-chat.webp" width="640" height="1391" alt="A chat with a match, with a video call button at the top"></span><h3>Chat</h3><p>Messages and video calls with the people you matched.</p></li>
+    <li data-rise><span class="shotframe"><img loading="lazy" decoding="async" src="assets/app/shot-you.webp" width="640" height="1391" alt="The profile screen with a row of painted cards and sliders for age and distance"></span><h3>You</h3><p>Your cards, and who you meet.</p></li>
+  </ul>
 </section>
 
 <!-- ───────── New York ───────── -->
@@ -263,5 +418,6 @@
 </footer>
 
 <script type="module" src="site.js"></script>
+<script type="module" src="tour.js"></script>
 </body>
 </html>

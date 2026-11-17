@@ -375,78 +375,6 @@ function initSay() {
   });
 }
 
-/* ───────── The date: sticky stage, four chapters, a clock that drains with scroll ───────── */
-const DATE_SECONDS = 90; // how long a date lasts in the app (DATE_DURATION_SEC on the server)
-function initDate() {
-  const stage = $('#stage'), stepsEl = $('#steps');
-  const steps = $$('.step', stepsEl), shots = $$('.shot', stage);
-  const arc = $('#clockArc'), num = $('#clockNum'), clock = $('.clock', stage);
-  const toggle = $('#motionToggle');
-  const videos = shots.map((s) => $('video', s));
-  const q = new Spring(0, 130, 23); // critically damped: follows the scroll without wobble
-  let active = 0, want = 0, wantAt = 0, visible = false, paused = reduce, shown = '';
-
-  const syncVideos = () => {
-    videos.forEach((v, i) => {
-      if (!v) return;
-      if (visible && !paused && i === active) v.play().catch(() => {});
-      else v.pause();
-    });
-  };
-  const setPaused = (p) => {
-    paused = p;
-    toggle.textContent = p ? 'Play motion' : 'Pause motion';
-    toggle.setAttribute('aria-pressed', String(p));
-    syncVideos();
-    const bg = $('#closeBg');
-    if (p) bg.pause(); else if (bg.dataset.visible) bg.play().catch(() => {});
-  };
-  toggle.addEventListener('click', () => setPaused(!paused));
-  setPaused(paused);
-
-  new IntersectionObserver(([e]) => { visible = e.isIntersecting; syncVideos(); }, { threshold: 0.2 }).observe(stage);
-  const bg = $('#closeBg');
-  new IntersectionObserver(([e]) => {
-    if (e.isIntersecting) { bg.dataset.visible = '1'; if (!paused) bg.play().catch(() => {}); }
-    else { delete bg.dataset.visible; bg.pause(); }
-  }, { threshold: 0.05 }).observe(bg);
-
-  tickers.add((dt, now) => {
-    if (scrollDirty) {
-      const sr = stage.getBoundingClientRect();
-      const stacked = sr.width > innerWidth * 0.8; // phone layout: stage sits above the steps
-      const mid = stacked ? (sr.bottom + viewH) / 2 : viewH / 2;
-      let best = 0, bestD = Infinity;
-      steps.forEach((s, i) => {
-        const r = s.getBoundingClientRect();
-        const d = Math.abs((r.top + r.bottom) / 2 - mid);
-        if (d < bestD) { bestD = d; best = i; }
-      });
-      if (best !== want) { want = best; wantAt = now; }
-      const c = (el) => { const b = el.getBoundingClientRect(); return (b.top + b.bottom) / 2; };
-      const c0 = c(steps[0]), c2 = c(steps[2]);
-      q.t = clamp((mid - c0) / (c2 - c0 || 1)); // 0 at the middle of step one, 1 at the middle of "Answer in private"
-      if (reduce) q.snap(q.t);
-    }
-    // Flung through, the chapters in between are skipped: no stack of half-faded pictures and videos starting and stopping.
-    if (want !== active && now - wantAt > 120) {
-      active = want;
-      steps.forEach((s, i) => s.classList.toggle('on', i === active));
-      shots.forEach((s, i) => s.classList.toggle('on', i === active));
-      syncVideos();
-    }
-    q.step(dt);
-    const left = Math.round(DATE_SECONDS * (1 - clamp(q.x)));
-    const text = `${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}`;
-    if (text !== shown) {
-      shown = text;
-      num.textContent = text;
-      arc.style.transform = `scaleX(${left / DATE_SECONDS})`;
-      clock.classList.toggle('low', left <= 15);
-    }
-  });
-}
-
 /* ───────── Boroughs: names slide home on springs, rules draw across ───────── */
 function initBoroughs() {
   const rows = $$('#boroughs li').map((li, i) => ({ li, name: $('.b-name', li), i, sp: new Spring(0, 85, 19), last: null })); // critically damped: slides home, never past it
@@ -718,7 +646,6 @@ initSkyline();
 initMeet();
 initReveals();
 initSay();
-initDate();
 initBoroughs();
 initWaitlist();
 requestAnimationFrame(frame);

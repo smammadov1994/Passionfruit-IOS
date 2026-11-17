@@ -148,73 +148,6 @@ h1 .line>span{display:inline-block;will-change:transform}
 .say-text .w{opacity:.16;transition:opacity .25s linear}
 .say-text .w.lit{opacity:1}
 
-/* the date */
-.date{padding:clamp(72px,12vh,120px) var(--gutter) 0}
-.date-head{margin-bottom:clamp(32px,6vh,72px)}
-.date-grid{display:grid;grid-template-columns:minmax(0,6fr) minmax(0,5fr);gap:clamp(32px,6vw,112px);align-items:start}
-.date-stage{position:sticky;top:calc(var(--nav) + 24px);height:calc(100svh - var(--nav) - 48px);display:flex;align-items:center;justify-content:center}
-.plate{position:relative;width:min(100%,calc(100svh - var(--nav) - 48px));aspect-ratio:1;border-radius:28px;overflow:hidden;background:var(--paper);border:1px solid var(--hair)}
-.shot{position:absolute;inset:0;opacity:0;transform:scale(1.035);filter:blur(14px) saturate(.6);transition:opacity .6s var(--ease),transform .9s var(--ease),filter .6s var(--ease);pointer-events:none}
-.shot.on{opacity:1;transform:none;filter:none}
-.shot video{width:100%;height:100%;object-fit:cover;display:block}
-.scene{position:absolute;inset:0;display:grid;place-items:center;align-content:center;text-align:center}
-.sw{position:absolute;aspect-ratio:1}
-.sw img{display:block;width:100%;height:100%;mix-blend-mode:multiply}
-.sw-1{width:70%;left:2%;top:10%;animation:drift 9s ease-in-out infinite alternate}
-.sw-2{width:48%;right:4%;top:8%;animation:drift 11s ease-in-out -3s infinite alternate-reverse}
-.sw-3{width:46%;right:14%;bottom:6%;animation:drift 10s ease-in-out -6s infinite alternate}
-@keyframes drift{from{transform:translate(-2%,1.500%) rotate(-4deg)}to{transform:translate(2.500%,-2%) rotate(5deg)}}
-.go-btn{position:relative;width:46%;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.94);box-shadow:0 18px 50px rgba(120,80,70,.16);font-family:var(--serif);font-weight:340;font-variation-settings:"SOFT" 100;font-size:clamp(22px,2.600vw,36px);letter-spacing:-.02em;animation:breathe 4s ease-in-out infinite}
-@keyframes breathe{50%{transform:scale(1.035)}}
-/* after a match: the chat, with the pair's little character in it */
-.chat{position:absolute;inset:0;display:grid;place-items:center}
-.chat-card{position:relative;margin-top:56px;width:min(74%,400px);padding:18px 20px 20px;border-radius:28px;background:var(--white);box-shadow:var(--float);border:1px solid var(--hair);display:flex;flex-direction:column;gap:10px}
-.chat-head{display:flex;align-items:center;gap:12px;padding-bottom:12px;margin-bottom:4px;border-bottom:1px solid var(--hair)}
-.chat-head b{display:block;font:600 17px/1.200 var(--ui)}
-.chat-head i{display:block;font:400 13px/1.300 var(--ui);color:var(--ink3)}
-.dot-guy{position:relative;flex:none;width:52px;aspect-ratio:1;animation:bob 2.800s ease-in-out infinite}
-.dot-guy svg,.dot-guy img{position:absolute;inset:-22%;width:144%;height:144%;max-width:none;overflow:visible}
-.dot-guy .body{mix-blend-mode:multiply}
-.dot-guy .blink{transform-box:fill-box;transform-origin:center;animation:blink 4.200s linear infinite}
-@keyframes bob{50%{transform:translateY(-3px)}}
-.msg{max-width:78%;padding:10px 14px;border-radius:18px;font-size:clamp(14px,1.300vw,16px);line-height:1.350;opacity:0;transform:translateY(8px);transition:opacity .5s var(--ease),transform .5s var(--ease)}
-.msg.them{align-self:flex-start;background:var(--surface2);border-bottom-left-radius:6px}
-.msg.me{align-self:flex-end;background:var(--accent-soft);border-bottom-right-radius:6px}
-.shot.on .msg{opacity:1;transform:none}
-.shot.on .msg:nth-of-type(1){transition-delay:.35s}.shot.on .msg:nth-of-type(2){transition-delay:.9s}.shot.on .msg:nth-of-type(3){transition-delay:1.450s}
-.chat-call{align-self:center;margin-top:8px;min-height:44px;padding:0 22px;border-radius:999px;background:var(--ink);color:#fff;font:600 15px/44px var(--ui)}
-.clock{position:absolute;z-index:3;top:16px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:8px;height:44px;padding:0 16px 0 14px;border-radius:999px;background:var(--white);border:1px solid var(--hair);box-shadow:var(--float);font:600 17px/1 var(--ui);font-variant-numeric:tabular-nums}
-/* the countdown changes many times a second while scrolling: keep that from re-laying-out the stuck stage around it */
-.clock{contain:layout}
-#clockNum{display:inline-block;min-width:2.700em;text-align:right}
-.clock-bar{width:44px;height:6px;border-radius:3px;background:var(--surface2);overflow:hidden}
-.clock-bar i{display:block;height:100%;border-radius:3px;background:#E99B86;transform-origin:0 50%}
-.clock.low .clock-bar i{background:#D9A441}
-.clock.low{color:#8A5200}
-.motion-toggle{position:absolute;z-index:3;right:12px;bottom:12px;min-height:44px;padding:0 14px;border-radius:999px;border:1px solid var(--hair);background:var(--white);font:500 14px var(--ui);color:var(--ink2);cursor:pointer}
-
-.verdict{position:absolute;inset:0;display:grid;place-items:center}
-.verdict-wash{position:absolute;width:62%;aspect-ratio:1}
-.vw-a{left:-4%;top:2%}.vw-b{right:-6%;bottom:0}
-.verdict-wash img{display:block;width:100%;height:100%;mix-blend-mode:multiply}
-.verdict-card{position:relative;width:min(72%,380px);padding:28px 28px 22px;border-radius:28px;background:var(--white);box-shadow:var(--float);border:1px solid var(--hair);text-align:center}
-.verdict-q{font-size:clamp(22px,2.400vw,30px);line-height:1.150;margin-bottom:22px;text-wrap:balance}
-.verdict-row{display:flex;justify-content:center;gap:24px;margin-bottom:18px}
-.vbtn{width:76px;height:76px;border-radius:50%;display:grid;place-items:center}
-.vbtn svg{fill:none;stroke-width:1.700;stroke-linecap:round;stroke-linejoin:round}
-.vno{border:1px solid var(--hair);background:var(--white)}.vno svg{stroke:var(--ink2)}
-.vyes{background:var(--accent)}.vyes svg{stroke:#fff}
-.shot.on .vyes{animation:beat 3.200s var(--ease) infinite}
-@keyframes beat{0%,70%,100%{transform:none}80%{transform:scale(1.07)}}
-.verdict-note{font-size:14px;color:var(--ink2)}
-
-.steps{padding-bottom:18vh}
-.step{min-height:74svh;display:flex;flex-direction:column;justify-content:center;opacity:.28;transition:opacity .4s var(--ease)}
-.step.on{opacity:1}
-.step-n{font:600 15px/1 var(--ui);font-variant-numeric:tabular-nums;color:var(--accent-tx);margin-bottom:16px}
-.step h3{font-family:var(--serif);font-weight:340;font-variation-settings:"SOFT" 100;font-size:clamp(32px,3.400vw,50px);line-height:1.080;letter-spacing:-.022em;margin-bottom:16px}
-.step p{font-size:18px;color:var(--ink2);max-width:40ch}
-
 /* boroughs */
 .nyc{padding:clamp(96px,14vh,160px) var(--gutter) clamp(72px,10vh,120px);background:var(--white);border-block:1px solid var(--hair)}
 .nyc-head{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);column-gap:clamp(24px,4vw,72px);align-items:end;margin-bottom:clamp(40px,7vh,88px)}
@@ -293,18 +226,11 @@ h1 .line>span{display:inline-block;will-change:transform}
 /* Phones: effects that cost a redraw every frame are swapped for ones the screen can simply slide and fade. */
 @media (max-width:900px),(pointer:coarse){
   .dot-guy .body{mix-blend-mode:normal}
-  .date-stage{will-change:transform}
-  .shot{filter:none;transform:scale(1.02);transition:opacity .45s var(--ease),transform .6s var(--ease)}
 }
 @media (max-width:900px){
   .hero{grid-template-columns:1fr;grid-template-rows:none;align-items:start;padding-bottom:32px}
   .meet-stage{max-width:380px}
   .skyline{height:150px}
-  .date-grid{grid-template-columns:1fr;gap:0}
-  .date-stage{top:var(--nav);height:auto;z-index:2;background:var(--paper);padding:12px 0;margin:0 calc(var(--gutter)*-1);border-bottom:1px solid var(--hair)}
-  .plate{width:min(100vw - 2*var(--gutter),46svh);border-radius:20px}
-  .step{min-height:52svh}
-  .step p{font-size:17px}
   .nyc-head,.rules,.faq{grid-template-columns:1fr}
   .nyc-head h2{margin-bottom:20px}
   .rules-head{position:static}
@@ -318,8 +244,6 @@ h1 .line>span{display:inline-block;will-change:transform}
   .join{grid-template-columns:1fr}
   .join .btn{width:100%}
   .rule-list,.faq-list{grid-template-columns:1fr}
-  .motion-toggle{right:8px;bottom:8px;font-size:13px}
-  .clock{top:10px;height:40px}
   .joined .place{gap:20px}
 }
 @media (prefers-reduced-motion:reduce){
