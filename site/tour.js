@@ -24,13 +24,17 @@ document.body.appendChild(probe);
 let viewH = innerHeight, dirty = true;
 const readViewH = () => { viewH = probe.offsetHeight || innerHeight; };
 readViewH();
-let scrollRest = 0;
+let scrollRest = 0, seenY = scrollY, seenAt = performance.now(), flung = false;
+const tourStage = $('#tourStage');
 addEventListener('scroll', () => {
   dirty = true;
-  const stage = $('#tourStage');
-  if (!scrollRest) stage.classList.add('scrolling');
+  const t = performance.now(), y = scrollY;
+  const speed = (Math.abs(y - seenY) / Math.max(8, t - seenAt)) * 1000; // pixels a second
+  seenY = y; seenAt = t;
+  if (!scrollRest) tourStage.classList.add('scrolling');
+  if (speed > 2600 && !flung) { flung = true; tourStage.classList.add('fling'); }
   clearTimeout(scrollRest);
-  scrollRest = setTimeout(() => { scrollRest = 0; stage.classList.remove('scrolling'); }, 160);
+  scrollRest = setTimeout(() => { scrollRest = 0; flung = false; tourStage.classList.remove('scrolling', 'fling'); }, 160);
 }, { passive: true });
 const tasks = []; // called every frame with (dt, now, dirty)
 
@@ -64,6 +68,7 @@ function initPhone() {
   const toggle = $('#motionToggle'), closeBg = $('#closeBg');
   const grid = stage.parentElement, spacer = $('#tourSpacer');
   let pinned = false, stageH = 0, navH = 64;
+  const geo = { stacked: false, gridTop: 0, gridBottom: 0, steps: steps.map(() => ({ top: 0, h: 1 })) }; // page positions
 
   let s0 = 0.8, s1 = 1.2, y0 = 0, y1 = 0; // the big slider: scale and centre line, at rest in the phone and lifted out of it
   const sizer = document.createElement('div'); // reads the width the stylesheet asks for, which is rarely a whole number
@@ -84,14 +89,24 @@ function initPhone() {
     spacer.style.height = `${stageH}px`;
     y1 = ph.top - st.top + ph.height * 0.6;
     s1 = Math.max(s0, Math.min((st.width - 28) / 345, s0 * 1.85, 1.5));
+    // Where the section and its chapters sit on the page. Read here, when something changes size, so that a scroll
+    // frame only has to subtract the scroll position: no measuring of the page while it is moving.
+    const y = scrollY, gr = grid.getBoundingClientRect();
+    geo.stacked = st.width > innerWidth * 0.8; // phone layout: the stage sits above the steps
+    geo.gridTop = gr.top + y; geo.gridBottom = gr.bottom + y;
+    geo.steps = steps.map((s) => { const r = s.getBoundingClientRect(); return { top: r.top + y, h: r.height }; });
     dirty = true;
   };
   new ResizeObserver(measure).observe(stage);
+  new ResizeObserver(measure).observe(document.body); // anything above that grows or shrinks moves the section
   addEventListener('resize', measure);
+  addEventListener('load', measure);
   measure();
 
   let active = 0, want = 0, wantAt = 0, visible = false, paused = reduce;
-  let p0 = 0, p1 = 0, p2 = 0; // how far through the first three chapters
+  let p0 = 0, p1 = 0, p2 = 0, p3 = 0, p4 = 0; // how far through each chapter
+  const mutual = $('#mutual'), muA = $('.mu-a', mutual), muB = $('.mu-b', mutual), muBud = $('.mu-bud', mutual), specks = $('.specks', mutual);
+  let lastM = -1, met = false, lastChat = -1;
   const vdSlide = $('#vdSlide'), vdKnob = $('.slide-knob', vdSlide), vdYou = $('#vdYou');
   let lastV = -1;
   let k = 0, drag = null, done = false; // the knob: 0 to 1
@@ -110,11 +125,10 @@ function initPhone() {
     }).catch(() => {});
   };
 
-  /* chat: a short scripted exchange, on a loop */
+  /* chat: a short scripted exchange, played by the scroll */
   const timed = $$('[data-at]', chat).map((el) => ({ el, at: +el.dataset.at, until: +(el.dataset.until || Infinity), on: null }));
   const picks = $$('[data-pick]', chat).map((el) => ({ el, at: +el.dataset.pick, on: null }));
-  const LOOP = 16500;
-  let chatT0 = 0;
+  const CHAT_END = 13600; // the last beat of the script
   const chatAt = (t) => {
     for (const it of timed) { const on = t >= it.at && t < it.until; if (on !== it.on) { it.on = on; it.el.classList.toggle('in', on); } }
     for (const it of picks) { const on = t >= it.at; if (on !== it.on) { it.on = on; it.el.classList.toggle('picked', on); } }
@@ -132,7 +146,6 @@ function initPhone() {
     canvas.classList.toggle('dark', i === 1);
     big.classList.toggle('off', i !== 0);
     if (i === 1) askVideo();
-    if (i === 4 && !reduce) { chatT0 = performance.now(); chatAt(0); }
     sync();
   };
   const setPaused = (p) => {
@@ -173,20 +186,20 @@ function initPhone() {
 
   tasks.push((dt, now, moved) => {
     if (moved) {
-      const sr = stage.getBoundingClientRect();
-      const stacked = sr.width > innerWidth * 0.8; // phone layout: the stage sits above the steps
+      const y = scrollY, stacked = geo.stacked;
       // Well inside the section the stage is fixed; near either end it goes back to sticking, which is what carries
       // it in and out with the page. Both put it in the same place, so the change cannot be seen.
-      const gr = grid.getBoundingClientRect();
+      const gr = { top: geo.gridTop - y, bottom: geo.gridBottom - y };
       const pin = stacked && gr.top < navH - 24 && gr.bottom > navH + stageH + 24;
       if (pin !== pinned) { pinned = pin; stage.classList.toggle('pinned', pin); }
-      const mid = stacked ? (sr.bottom + viewH) / 2 : viewH / 2;
+      const mid = stacked ? (Math.max(navH, gr.top) + stageH + viewH) / 2 : viewH / 2;
       let best = 0, bestD = Infinity;
-      const rects = steps.map((s) => s.getBoundingClientRect());
-      rects.forEach((r, i) => { const d = Math.abs((r.top + r.bottom) / 2 - mid); if (d < bestD) { bestD = d; best = i; } });
+      const rects = geo.steps.map((s) => ({ top: s.top - y, height: s.h }));
+      rects.forEach((r, i) => { const d = Math.abs(r.top + r.height / 2 - mid); if (d < bestD) { bestD = d; best = i; } });
       if (best !== want) { want = best; wantAt = now; }
       const through = (r) => clamp((mid - r.top - r.height * 0.12) / (r.height * 0.7));
-      p0 = through(rects[0]); p1 = through(rects[1]); p2 = through(rects[2]);
+      p0 = through(rects[0]); p1 = through(rects[1]); p2 = through(rects[2]); p3 = through(rects[3]);
+      p4 = clamp((mid - rects[4].top - rects[4].height * 0.1) / (rects[4].height * 0.6));
       if (p0 < 0.25 && done && !drag) done = false; // scrolled back up: the slider is ready again
     }
     // Flung through, the chapters in between are skipped.
@@ -240,7 +253,26 @@ function initPhone() {
       vdYou.style.transform = `translateX(${(v * 66).toFixed(1)}px)`;
     }
     if (active === 1) { herReel(DATE_SECONDS - shownLeft, now); himReel(DATE_SECONDS - shownLeft, now); }
-    if (active === 4 && !reduce && !paused && visible) chatAt((now - chatT0) % LOOP);
+    // The match: the two washes run together, become one, and the one opens its eyes.
+    const mm = Math.round((reduce ? 1 : p3) * 300) / 300;
+    if (mm !== lastM) {
+      lastM = mm;
+      const near = smooth(clamp(mm / 0.42)), one = smooth(clamp((mm - 0.42) / 0.2)), burst = clamp((mm - 0.5) / 0.3);
+      muA.style.transform = `translateX(${lerp(-44, 46, near).toFixed(1)}px) scale(${(1 - 0.1 * one).toFixed(3)})`;
+      muB.style.transform = `translateX(${lerp(44, -46, near).toFixed(1)}px) scale(${(1 - 0.1 * one).toFixed(3)})`;
+      muA.style.opacity = muB.style.opacity = (1 - one).toFixed(3);
+      muBud.style.opacity = one.toFixed(3);
+      muBud.style.transform = `scale(${(0.3 + 0.7 * one + 0.12 * Math.sin(one * Math.PI)).toFixed(3)})`; // swells a little past its size, then settles
+      specks.style.setProperty('--k', (1 - (1 - burst) ** 2).toFixed(3));
+      specks.style.setProperty('--o', (burst <= 0 || burst >= 1 ? 0 : Math.min(1, burst * 5, (1 - burst) * 2.5)).toFixed(3));
+      const next = met ? mm > 0.66 : mm > 0.76; // a gap, so the headline cannot flicker on the line
+      if (next !== met) { met = next; mutual.classList.toggle('met', met); }
+    }
+    // The chat: the script moves with the scroll, forward and back.
+    if (!reduce) {
+      const beat = Math.round(p4 * CHAT_END / 50) * 50;
+      if (beat !== lastChat) { lastChat = beat; chatAt(beat); }
+    }
   });
 }
 

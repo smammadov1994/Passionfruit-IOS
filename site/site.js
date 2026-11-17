@@ -388,9 +388,9 @@ function wavesSVG() {
     let d = `M-150 ${y}`;
     for (let x = -150; x < 450; x += 150) d += `q37.5 ${-amp} 75 0t75 0`;
     d += `V${y + 90}H-150Z`;
-    return `<div class="wave" style="--secs:${secs}s;--to:${dir * 25}%"><svg viewBox="-150 0 600 300" preserveAspectRatio="none" aria-hidden="true"><defs>
-      <filter id="clay${n}" x="-5%" y="-30%" width="110%" height="160%" color-interpolation-filters="sRGB"><feDropShadow dx="0" dy="-2.5" stdDeviation="3" flood-color="#7E9CC2" flood-opacity=".2"/></filter>
-      </defs><path d="${d}" fill="${fill}" filter="url(#clay${n})"/></svg></div>`;
+    // No drop shadow filter here: these bands slide for ever, and a filter on a moving thing is worked out again
+    // on every frame. A faint line along each crest does the job.
+    return `<div class="wave" style="--secs:${secs}s;--to:${dir * 25}%"><svg viewBox="-150 0 600 300" preserveAspectRatio="none" aria-hidden="true"><path d="${d}" fill="${fill}" stroke="#7E9CC2" stroke-opacity=".16" stroke-width="1.5"/></svg></div>`;
   }).join('');
 }
 
@@ -435,7 +435,7 @@ function renderMap(stats) {
   map.innerHTML = `<svg viewBox="0 0 300 300" role="img" aria-label="Map of New York City with a dot for each person on the list"><defs>
     <filter id="nycTorn0" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="3" seed="12"/><feDisplacementMap in="SourceGraphic" scale="9" xChannelSelector="R" yChannelSelector="G"/><feGaussianBlur stdDeviation=".7"/></filter>
     <filter id="nycTorn1" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".04" numOctaves="3" seed="41"/><feDisplacementMap in="SourceGraphic" scale="8" xChannelSelector="G" yChannelSelector="B"/><feGaussianBlur stdDeviation=".7"/></filter>
-    </defs><g class="under">${land}</g><g class="land">${land}</g>${names_}${dots}
+    </defs><g class="under">${land}</g><g class="land">${land}</g></svg><svg viewBox="0 0 300 300" aria-hidden="true">${names_}${dots}
     <circle class="you" cx="${mx.toFixed(1)}" cy="${my.toFixed(1)}" r="4.2"/>
     <text class="you-label" x="${lx.toFixed(1)}" y="${(my + 3.6).toFixed(1)}" text-anchor="${anchor}">You</text></svg>`;
 

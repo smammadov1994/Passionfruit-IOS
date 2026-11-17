@@ -145,31 +145,22 @@
 /* mutual */
 .s-mutual{padding:110px 24px 44px;display:flex;flex-direction:column}
 .mu-stage{position:relative;flex:none;height:290px;margin-bottom:8px}
-.mu-stage>img{position:absolute;top:50px;width:190px;mix-blend-mode:multiply;opacity:0}
+.mu-stage>img{position:absolute;top:50px;width:190px;mix-blend-mode:multiply;will-change:transform,opacity}
 .mu-a{left:36px}.mu-b{right:36px}
-.mu-bud{position:absolute;left:50%;top:50px;width:190px;margin-left:-95px;transform:scale(0);opacity:0}
-.s-mutual.on .mu-a{animation:joinA 1.300s var(--ease) .15s both}
-.s-mutual.on .mu-b{animation:joinB 1.300s var(--ease) .15s both}
-.s-mutual.on .mu-bud{animation:born .9s cubic-bezier(.3,1.5,.45,1) 1.150s both,bob 2.800s ease-in-out 2.100s infinite}
-@keyframes joinA{0%{opacity:0;transform:translateX(-30px)}25%{opacity:1;transform:none}75%{opacity:1;transform:translateX(44px)}100%{opacity:0;transform:translateX(44px) scale(.9)}}
-@keyframes joinB{0%{opacity:0;transform:translateX(30px)}25%{opacity:1;transform:none}75%{opacity:1;transform:translateX(-44px)}100%{opacity:0;transform:translateX(-44px) scale(.9)}}
-@keyframes born{from{opacity:0;transform:scale(.3)}to{opacity:1;transform:none}}
+.mu-bud{position:absolute;left:50%;top:50px;width:190px;margin-left:-95px;transform:scale(.3);opacity:0;will-change:transform,opacity}
 .mu-h1,.mu-h2{position:absolute;left:24px;top:416px}
 .s-mutual .bodyt{margin-top:64px!important}
-.mu-h2{opacity:0}
-.s-mutual.on .mu-h1{animation:h1out .5s var(--ease) 3.200s both}
-.s-mutual.on .mu-h2{animation:h2in .6s var(--ease) 3.500s both}
-@keyframes h1out{to{opacity:0;transform:translateY(-8px)}}
-@keyframes h2in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.mu-h1,.mu-h2{transition:opacity .35s var(--ease),transform .35s var(--ease)}
+.mu-h2{opacity:0;transform:translateY(8px)}
+.s-mutual.met .mu-h1{opacity:0;transform:translateY(-8px)}
+.s-mutual.met .mu-h2{opacity:1;transform:none}
 .s-mutual .btn1{flex:none;margin:auto 0 6px}
-.specks i{position:absolute;top:150px;left:50%;width:9px;height:9px;border-radius:50% 60% 40% 55%;opacity:0}
-.s-mutual.on .specks i{animation:speck 1.500s var(--ease) 1.250s both}
+.specks i{position:absolute;top:150px;left:50%;width:9px;height:9px;border-radius:50% 60% 40% 55%;opacity:var(--o,0);transform:translate(calc(var(--x)*var(--k,0)),calc(var(--y)*var(--k,0)))}
 .specks i:nth-child(1){background:#F3B3A2;--x:-130px;--y:-90px}.specks i:nth-child(2){background:#F2D98A;--x:120px;--y:-110px}
 .specks i:nth-child(3){background:#A9D2B8;--x:-90px;--y:60px}.specks i:nth-child(4){background:#C5B4E3;--x:140px;--y:30px}
 .specks i:nth-child(5){background:#A9C6E8;--x:-40px;--y:-130px}.specks i:nth-child(6){background:#F08F7A;--x:60px;--y:-140px}
 .specks i:nth-child(7){background:#EBA6C6;--x:-150px;--y:-10px}.specks i:nth-child(8){background:#F2D98A;--x:30px;--y:100px}
 .specks i:nth-child(9){background:#9FB0EC;--x:160px;--y:-50px}.specks i:nth-child(10){background:#8FD6C4;--x:-110px;--y:-140px}
-@keyframes speck{0%{opacity:0;transform:none}20%{opacity:1}100%{opacity:0;transform:translate(var(--x),var(--y)) scale(1.6)}}
 
 /* chat */
 .s-chat{display:flex;flex-direction:column;padding:58px 0 26px}
@@ -181,7 +172,7 @@
 .ch-yes{text-align:center;font:500 20px/1.2 var(--a-serif);margin-bottom:14px!important}
 .ch-yes span{display:block;margin-top:14px;font:600 12px/1 var(--ui);letter-spacing:.8px;text-transform:uppercase;color:var(--a-ink2)}
 .cm{display:none;max-width:82%;padding:9px 14px;border-radius:19px;font-size:17px;line-height:1.3}
-.cm.in{display:block;animation:cmIn .4s var(--ease) both}
+.cm.in{display:block;animation:cmIn .28s var(--ease) both}
 .cm.them{align-self:flex-start;background:#E9E9EB;border-bottom-left-radius:5px}
 .cm.me{align-self:flex-end;background:#007AFF;color:#fff;border-bottom-right-radius:5px}
 .cm.think.in{display:flex;align-items:center;gap:5px;align-self:flex-start;background:var(--a-surface);padding:7px 12px}
@@ -223,7 +214,9 @@
 .motion-toggle{position:absolute;z-index:5;right:0;bottom:0;min-height:44px;padding:0 14px;border-radius:999px;border:1px solid var(--hair);background:var(--white);font:500 14px var(--ui);color:var(--ink2);cursor:pointer}
 .paused .canvas *,.paused .slide *,.paused .drawn{animation-play-state:paused!important}
 /* while the page is moving, the phone holds still: nothing inside it animates by itself until the scroll rests */
-.tour-stage.scrolling .canvas *,.tour-stage.scrolling .slide *{animation-play-state:paused!important}
+.tour-stage.scrolling .canvas *:not(.cm),.tour-stage.scrolling .slide *{animation-play-state:paused!important}
+/* flung through: nothing fades or slides, each screen is simply in its state */
+.tour-stage.fling .canvas *,.tour-stage.fling .scr{transition-duration:.01s!important;animation-duration:.01s!important}
 
 .steps{padding-bottom:18vh}
 .step{min-height:78svh;display:flex;flex-direction:column;justify-content:center;opacity:.28;transition:opacity .4s var(--ease)}
@@ -318,7 +311,6 @@
 @media (prefers-reduced-motion:reduce){
   .canvas *,.slide *,.pack,.pack-glow,.drawn,.drawn i{animation:none!important}
   .scr,.panel,.sets-row li,.sets-reward{transition:none}
-  .mu-bud{opacity:1;transform:none}.mu-h1{display:none}.mu-h2{opacity:1}
   .sets-row li{opacity:1;transform:none}
   .step{opacity:1}
   .pack-stage.open .drawn{opacity:1;transform:none}
@@ -334,3 +326,4 @@
 /* The section that holds the pinned stage must not clip: on iPhone browsers a pinned element inside a clipped
    box is moved against the scroll on every frame and lands a pixel off each time. The page itself still clips sideways. */
 .tour{overflow-x:visible}
+.canvas .mu-bud{margin-left:-95px}
