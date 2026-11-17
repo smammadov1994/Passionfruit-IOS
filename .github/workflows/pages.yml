@@ -26,7 +26,7 @@ jobs:
       - name: Collect the static files
         run: |
           mkdir _site
-          cp site/index.html site/privacy.html site/terms.html site/community.html site/support.html site/site.css site/legal.css site/site.js site/nyc.mjs site/config.js _site/
+          cp site/index.html site/privacy.html site/terms.html site/community.html site/support.html site/site.css site/legal.css site/site.js site/tour.css site/tour.js site/nyc.mjs site/config.js _site/
           cp -R site/assets _site/assets
           touch _site/.nojekyll
       - uses: actions/configure-pages@v5
