@@ -140,12 +140,7 @@
 .s-verdict .slide{flex:none;margin:auto 0 14px}
 .s-verdict .btn2,.s-verdict .btn3{flex:none}
 .pair{flex:none}
-.s-verdict.on .slide-knob{animation:say 4.800s var(--ease) .9s infinite}
-.s-verdict.on .slide-label{animation:sayL 4.800s var(--ease) .9s infinite}
-.s-verdict.on .pb-you{animation:lean 4.800s var(--ease) .9s infinite}
-@keyframes say{0%{transform:none}32%,78%{transform:translateX(281px)}92%,100%{transform:none}}
-@keyframes sayL{0%{opacity:1}18%,80%{opacity:0}95%,100%{opacity:1}}
-@keyframes lean{0%{transform:none}32%,78%{transform:translateX(66px)}92%,100%{transform:none}}
+.pb-you{will-change:transform}
 
 /* mutual */
 .s-mutual{padding:110px 24px 44px;display:flex;flex-direction:column}
@@ -336,3 +331,6 @@
 .sets-row li i{position:absolute;inset:7%;border-radius:6%/4.3%;border:1px dashed rgba(27,23,25,.22);background:url(assets/app/BrandFruit.webp) center/38% no-repeat}
 @media (min-width:901px){.shots-row{grid-template-columns:repeat(3,minmax(0,1fr));max-width:980px}}
 .vid,.selfie{isolation:isolate}
+/* The section that holds the pinned stage must not clip: on iPhone browsers a pinned element inside a clipped
+   box is moved against the scroll on every frame and lands a pixel off each time. The page itself still clips sideways. */
+.tour{overflow-x:visible}

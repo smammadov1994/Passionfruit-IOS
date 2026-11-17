@@ -91,7 +91,9 @@ function initPhone() {
   measure();
 
   let active = 0, want = 0, wantAt = 0, visible = false, paused = reduce;
-  let p0 = 0, p1 = 0; // how far through the first two chapters
+  let p0 = 0, p1 = 0, p2 = 0; // how far through the first three chapters
+  const vdSlide = $('#vdSlide'), vdKnob = $('.slide-knob', vdSlide), vdYou = $('#vdYou');
+  let lastV = -1;
   let k = 0, drag = null, done = false; // the knob: 0 to 1
   let shownLeft = -1, lastTx = -1, lastG = -1;
 
@@ -184,7 +186,7 @@ function initPhone() {
       rects.forEach((r, i) => { const d = Math.abs((r.top + r.bottom) / 2 - mid); if (d < bestD) { bestD = d; best = i; } });
       if (best !== want) { want = best; wantAt = now; }
       const through = (r) => clamp((mid - r.top - r.height * 0.12) / (r.height * 0.7));
-      p0 = through(rects[0]); p1 = through(rects[1]);
+      p0 = through(rects[0]); p1 = through(rects[1]); p2 = through(rects[2]);
       if (p0 < 0.25 && done && !drag) done = false; // scrolled back up: the slider is ready again
     }
     // Flung through, the chapters in between are skipped.
@@ -228,6 +230,15 @@ function initPhone() {
       secs[1].textContent = mine ? '' : `0:${String(turnLeft).padStart(2, '0')}`;
     }
 
+    // The private answer: the scroll slides the yes across, and your wash leans toward theirs as it goes.
+    const v = Math.round((reduce ? 0 : smooth(clamp((p2 - 0.15) / 0.6))) * 400) / 400;
+    if (v !== lastV) {
+      lastV = v;
+      vdSlide.style.setProperty('--tx', `${v >= 1 ? 400 : (v * TRAVEL).toFixed(1)}px`);
+      vdSlide.style.setProperty('--p', v.toFixed(3));
+      vdKnob.style.transform = `translateX(${(v * TRAVEL).toFixed(1)}px)`;
+      vdYou.style.transform = `translateX(${(v * 66).toFixed(1)}px)`;
+    }
     if (active === 1) { herReel(DATE_SECONDS - shownLeft, now); himReel(DATE_SECONDS - shownLeft, now); }
     if (active === 4 && !reduce && !paused && visible) chatAt((now - chatT0) % LOOP);
   });
