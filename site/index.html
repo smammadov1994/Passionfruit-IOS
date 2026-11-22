@@ -10,378 +10,169 @@
 <meta property="og:title" content="Passionfruit. 90-second video dates, opening in New York City">
 <meta property="og:description" content="Live video speed dating. The waitlist is open for the five boroughs only.">
 <meta property="og:type" content="website">
-<meta property="og:image" content="assets/HeroBackground.jpg">
-<meta name="theme-color" content="#F6F5F3">
+<meta property="og:image" content="assets/Park.jpg">
+<meta name="theme-color" content="#F8FAFD">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..500,0..100&display=swap">
-<link rel="stylesheet" href="site.css?v=1117d">
-<link rel="stylesheet" href="tour.css?v=1117d">
-<link rel="stylesheet" href="legal.css?v=1117d">
-<script>if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('js')</script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..600,0..100&display=swap">
+<link rel="stylesheet" href="home.css">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 
 <header class="nav" id="nav">
-  <a class="wordmark" href="#top" aria-label="Passionfruit, back to top"><img class="logo" src="assets/logo.png" width="40" height="40" alt="">Passionfruit</a>
-  <p class="city"><i class="live" aria-hidden="true"></i>New York City only</p>
-  <a class="btn btn-line btn-sm" href="#join">Join the list</a>
+  <a class="wordmark" href="#top" aria-label="Passionfruit, back to top"><img src="assets/logo.png" width="36" height="36" alt="">Passionfruit</a>
+  <p class="city"><i aria-hidden="true"></i>New York City only</p>
+  <a class="btn btn-ink btn-sm" href="#top" data-to-join>Join the waitlist</a>
 </header>
 
 <main id="main">
 
-<!-- ───────── Hero ───────── -->
-<div class="hero-pin" id="heroPin">
+<!-- ───────── The whole pitch and the form, on the first screen ───────── -->
 <section class="hero" id="top">
-  <canvas class="skyline" id="skyline" role="img" aria-label="The Manhattan skyline painted in soft watercolor"></canvas>
   <div class="hero-copy">
-    <p class="label" data-rise>Live video speed dating · iPhone</p>
-    <h1 aria-label="Ninety seconds, face to face.">
-      <span class="h1-wash hw-a" data-wash="blush" data-stretch aria-hidden="true"></span>
-      <span class="h1-wash hw-b" data-wash="sage" data-stretch aria-hidden="true"></span>
-      <span class="line" aria-hidden="true"><span data-line>Ninety seconds,</span></span>
-      <span class="line" aria-hidden="true"><span data-line>face to face.</span></span>
-    </h1>
-    <p class="lede" data-rise>Go online and meet someone who is online right now. You talk for 90 seconds, then you each answer yes or no in private. Passionfruit opens in New York City first, and the list is for the five boroughs only.</p>
+    <p class="label">Live video speed dating · iPhone</p>
+    <h1>Ninety seconds, <span>face to face.</span></h1>
+    <p class="lede">Go online and meet someone who is online right now. Talk for 90 seconds, then you each answer yes or no in private.</p>
 
-    <a class="founder-pill" href="#founders" data-rise><b>Founder rate</b>The first 1,000 members keep Premium at $4.99 a month</a>
-    <form class="join" data-join novalidate data-rise>
-      <div class="field">
-        <label for="h-email">Email</label>
-        <input id="h-email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" required>
-      </div>
-      <div class="field field-zip">
-        <label for="h-zip">NYC ZIP code</label>
-        <input id="h-zip" name="zip" type="text" autocomplete="postal-code" inputmode="numeric" pattern="\d{5}" maxlength="5" placeholder="11211" required>
-      </div>
-      <div class="hp" aria-hidden="true"><label>Leave this empty<input name="website" type="text" tabindex="-1" autocomplete="off"></label></div>
-      <button class="btn btn-ink" type="submit">Join the list</button>
-      <p class="hint" data-hint role="status" aria-live="polite">Your ZIP tells us which borough you are in.</p>
-    </form>
-    <div class="joined" data-joined hidden tabindex="-1"></div>
-    <p class="launch-note"><b>5,000</b>Passionfruit launches once 5,000 people are on the list.</p>
-  </div>
-
-  <div class="meet" id="meet" data-rise>
-    <div class="meet-stage" id="meetStage" role="img" aria-label="The app during a live video date: a woman waving hello, a clock at 1:24 and a question card. Beside it, the home screen count of 34 people online and the Slide to meet someone slider.">
-      <div class="hero-art">
-        <img class="hero-phone" src="assets/app/hero-phone.webp" width="720" height="1561" alt="">
-        <div class="hero-chip"><img src="assets/app/BlotBlush.webp" alt=""><img src="assets/app/BlotButter.webp" alt=""><span>Right now · Busy</span><b>34</b><p>people you could meet are online.</p></div>
-        <div class="slide hero-slide"><div class="slide-paint"><img src="assets/app/BlotBlush.webp" alt=""><img src="assets/app/BlotButter.webp" alt=""><img src="assets/app/BlotSage.webp" alt=""><img src="assets/app/BlotLilac.webp" alt=""></div><span class="slide-label">Slide to meet someone<svg viewBox="0 0 24 24"><path d="M6 6l6 6-6 6M13 6l6 6-6 6"/></svg></span><span class="slide-knob"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="3"/><path d="M16 10l5-3v10l-5-3"/></svg></span></div>
-      </div>
+    <div class="join-card" id="join">
+      <form class="join" data-join novalidate>
+        <div class="field">
+          <label for="h-email">Email</label>
+          <input id="h-email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" required>
+        </div>
+        <div class="field field-zip">
+          <label for="h-zip">NYC ZIP code</label>
+          <input id="h-zip" name="zip" type="text" autocomplete="postal-code" inputmode="numeric" pattern="\d{5}" maxlength="5" placeholder="11211" required>
+        </div>
+        <div class="hp" aria-hidden="true"><label>Leave this empty<input name="website" type="text" tabindex="-1" autocomplete="off"></label></div>
+        <button class="btn btn-ink" type="submit">Join the waitlist</button>
+        <p class="hint" data-hint role="status" aria-live="polite">Free. One email when your borough opens.</p>
+      </form>
+      <div class="joined" data-joined hidden tabindex="-1"></div>
     </div>
-    <p class="meet-cap" id="meetCap" aria-live="off"><span data-cap="apart">A live date, as it looks in the app.</span><span data-cap="map"></span></p>
+    <p class="count" data-count hidden></p>
+  </div>
+
+  <div class="hero-art" aria-hidden="true">
+    <img class="scene" src="assets/Park.jpg" alt="" width="1300" height="605">
+    <div class="phone"><img src="assets/AppHome.jpg" alt="" width="598" height="1300"></div>
   </div>
 </section>
-</div>
 
-<!-- ───────── Statement ───────── -->
-<section class="say" aria-label="Why Passionfruit">
-  <p class="say-text" id="say">No swiping for weeks. No pen pals. You go online, you meet a real person for ninety seconds, and by the end you both know.</p>
-</section>
-
-<!-- ───────── The app, one evening: a phone that follows the scroll ───────── -->
-<section class="tour" id="tour">
-  <div class="tour-head">
-    <p class="label" data-rise>Inside the app</p>
-    <h2 data-rise>One evening, start to finish.</h2>
+<!-- ───────── How it works: three steps, no scrolling story ───────── -->
+<section class="how" id="how" aria-labelledby="how-title">
+  <div class="how-head rise">
+    <p class="label">How it works</p>
+    <h2 id="how-title">One evening, three small steps.</h2>
   </div>
-  <div class="tour-grid">
-    <div class="tour-stage" id="tourStage">
-      <div class="phone" id="phone">
-        <div class="screen" id="screen" aria-hidden="true">
-          <div class="canvas" id="canvas">
-
-            <!-- Tonight -->
-            <div class="scr s-tonight on" data-scr="0">
-              <div class="tn-body" id="tnBody">
-                <p class="eb tn-date">Tonight · Friday</p>
-                <span class="circ tn-heart"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-9.6A4 4 0 0 1 12 8a4 4 0 0 1 7 2.4C19 15.6 12 20 12 20z"/></svg><i></i></span>
-                <p class="tn-hi">Good evening, <em>Alex.</em></p>
-                <p class="tn-pill"><span class="pips"><i></i><i></i><i></i><i></i><i></i></span>5 dates left today</p>
-                <div class="tn-hero">
-                  <div class="tn-blots"><img decoding="async" src="assets/app/BlotBlush.webp" alt=""><img decoding="async" src="assets/app/BlotSky.webp" alt=""><img decoding="async" src="assets/app/BlotLilac.webp" alt=""><img decoding="async" src="assets/app/BlotButter.webp" alt=""><img decoding="async" src="assets/app/BlotSage.webp" alt=""></div>
-                  <p class="eb">Right now · Busy</p>
-                  <b class="tn-count">34</b>
-                  <p class="tn-line">people you could meet are online.</p>
-                </div>
-                <div class="tn-card">
-                  <p class="eb">1 new message</p><span class="tn-see">See all</span>
-                  <div class="tn-avs">
-                    <span class="av a-sky">M<i></i><small>Maya</small></span>
-                    <span class="av a-sage">O<small>Omar</small></span>
-                    <span class="av a-sky">J<small>June</small></span>
-                  </div>
-                </div>
-                <p class="eb tn-from">From your dots<span>1 of 3</span></p>
-                <div class="tn-dot"><span class="bud" data-bud="Lilac" data-top="antenna"></span><div><p class="eb">Bisa on Maya</p><p class="tn-dot-t">Maya wrote 25 minutes ago</p></div></div>
-              </div>
-              <div class="slide-home" id="slideHome"></div>
-            </div>
-
-            <!-- Live date -->
-            <div class="scr s-live" data-scr="1">
-              <div class="vid" id="lvVid">
-                <img class="fr on" decoding="async" src="assets/app/date-her-1.webp" alt="">
-                <img class="fr" decoding="async" src="assets/app/date-her-3.webp" alt="">
-                <img class="fr" decoding="async" src="assets/app/date-her-4.webp" alt="">
-                <video id="dateVideo" muted loop playsinline preload="none"></video>
-              </div>
-              <div class="scrim"></div>
-              <div class="lv-top">
-                <div class="lv-who"><b>Maya, 29</b><span>Brooklyn</span></div>
-                <div class="clk" id="lvClk"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7.6" class="clk-tr"/><circle cx="10" cy="10" r="7.6" class="clk-arc" id="lvArc" pathLength="100"/></svg><span id="lvNum">1:30</span></div>
-              </div>
-              <div class="selfie" id="lvSelf"><img class="fr on" decoding="async" src="assets/app/date-him-1.webp" alt=""><img class="fr" decoding="async" src="assets/app/date-him-3.webp" alt=""><img class="fr" decoding="async" src="assets/app/date-him-4.webp" alt=""></div>
-              <p class="lv-pill"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 5-3.5 8-7 10-3.500-2-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>Safety check on</p>
-              <div class="turn">
-                <p class="eb">Question 1<span id="lvWho">Your turn</span></p>
-                <p class="turn-q">What would your perfect Sunday look like?</p>
-                <div class="turn-bar"><i id="lvYou"></i><i id="lvThem"></i></div>
-                <p class="turn-lab"><span>You <b id="lvYouS">0:30</b></span><span>Maya <b id="lvThemS">0:30</b></span></p>
-                <span class="turn-done">Done<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-              </div>
-              <div class="ctl">
-                <span><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></span>
-                <span><svg viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="3"/><path d="M16 10l5-3v10l-5-3"/></svg></span>
-                <span><svg viewBox="0 0 24 24"><path d="M5 21V4M5 5h12l-2 4 2 4H5"/></svg></span>
-                <span class="ctl-leave"><svg viewBox="0 0 24 24"><path d="M3 15c5-5 13-5 18 0l-2.500 2.500-3.500-2v-2.600a10 10 0 0 0-6 0v2.600l-3.500 2z"/></svg></span>
-              </div>
-            </div>
-
-            <!-- Private answer -->
-            <div class="scr s-verdict" data-scr="2">
-              <div class="pair"><span class="pb pb-you" id="vdYou"><img decoding="async" src="assets/app/BuddyRose.webp" alt=""><small>You</small></span><span class="pb pb-them"><img decoding="async" src="assets/app/BuddyPeriwinkle.webp" alt=""><small>Maya</small></span></div>
-              <p class="eb">Time’s up</p>
-              <p class="disp">See Maya again?</p>
-              <p class="bodyt">Slide to say yes. Maya only finds out if it’s mutual.</p>
-              <p class="vd-count">12 seconds left. No answer counts as no.</p>
-              <div class="slide slide-auto" id="vdSlide"><div class="slide-paint"><img decoding="async" src="assets/app/BlotBlush.webp" alt=""><img decoding="async" src="assets/app/BlotButter.webp" alt=""><img decoding="async" src="assets/app/BlotSage.webp" alt=""><img decoding="async" src="assets/app/BlotLilac.webp" alt=""><img decoding="async" src="assets/app/BlotBlush.webp" alt=""></div><span class="slide-label">Slide to say yes<svg viewBox="0 0 24 24"><path d="M6 6l6 6-6 6M13 6l6 6-6 6"/></svg></span><span class="slide-knob"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-9.6A4 4 0 0 1 12 8a4 4 0 0 1 7 2.4C19 15.6 12 20 12 20z"/></svg></span></div>
-              <span class="btn2">Not this time</span>
-              <span class="btn3">Make this my last one tonight</span>
-            </div>
-
-            <!-- Mutual -->
-            <div class="scr s-mutual" data-scr="3" id="mutual">
-              <div class="specks"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-              <div class="mu-stage"><img class="mu-a" decoding="async" src="assets/app/BuddyRose.webp" alt=""><img class="mu-b" decoding="async" src="assets/app/BuddyPeriwinkle.webp" alt=""><span class="bud mu-bud" data-bud="Lilac" data-top="antenna" data-face="grin"></span></div>
-              <p class="disp xl mu-h1">It’s <em>mutual.</em></p>
-              <p class="disp xl mu-h2">Meet <em>Bisa.</em></p>
-              <p class="bodyt">You and Maya made Bisa. It comes with you into the chat and helps with what to say next.</p>
-              <span class="btn1">Say hello</span>
-              <span class="btn3">Keep dating</span>
-            </div>
-
-            <!-- Chat with the dot -->
-            <div class="scr s-chat" data-scr="4" id="chat">
-              <div class="ch-head">
-                <span class="circ"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></span>
-                <span class="av a-sky sm">M</span>
-                <div><b>Maya</b><span>29 · 1 km away</span></div>
-                <span class="ch-acts"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="3"/><path d="M16 10l5-3v10l-5-3"/></svg><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="19" cy="12" r="1.4"/></svg></span>
-              </div>
-              <div class="ch-list">
-                <p class="ch-yes">You both said yes.<span>Today</span></p>
-                <p class="cm them" data-at="400">Ninety seconds was not enough.</p>
-                <p class="cm me" data-at="1700">Agreed. You never finished the story about the ferry.</p>
-                <p class="cm them" data-at="3200">It gets worse. Coffee on Saturday and I’ll tell you?</p>
-                <p class="cm think" data-at="4300" data-until="5600"><span class="bud" data-bud="Lilac" data-top="antenna"></span><i></i><i></i><i></i></p>
-                <p class="cm me" data-at="10600">Yes, let’s do it. Saturday at 8?</p>
-                <p class="cm them" data-at="12200">It’s a date.</p>
-              </div>
-              <div class="panel" data-at="5600" data-until="10400">
-                <span class="grab"></span>
-                <p class="pn-t">Places you could go<span class="pn-x"><svg viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17"/></svg></span></p>
-                <div class="places">
-                  <div class="place" data-pick="8600"><span class="pl-img pl-a"></span><b>Corner café</b><span>Williamsburg · 0.6 km away</span></div>
-                  <div class="place"><span class="pl-img pl-b"></span><b>Flower market</b><span>Bushwick · 1.9 km away</span></div>
-                </div>
-                <p class="pn-s">You’re both usually free at</p>
-                <div class="times"><span>7 PM</span><span data-pick="7600">8 PM</span><span>9 PM</span></div>
-                <div class="ideas"><span class="bud" data-bud="Lilac" data-top="antenna"></span><span class="idea" data-pick="9500">Yes, let’s do it. Saturday at 8?</span><span class="idea">That works for me.</span></div>
-              </div>
-              <p class="fold" data-at="10400"><span class="bud" data-bud="Lilac" data-top="antenna"></span><span data-at="0" data-until="12600">Bisa has reply ideas</span><span data-at="12600">It’s a date: Saturday, 8 PM<b>Add to calendar</b></span></p>
-              <div class="composer"><span>Message Maya, or @Bisa</span><i><svg viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></svg></i></div>
-            </div>
-
-            <div class="sbar"><span>9:41</span><i class="island"></i><svg viewBox="0 0 60 14"><path d="M1 12h3V8H1zM6 12h3V6H6zM11 12h3V3h-3zM16 12h3V1h-3z"/><rect x="29" y="2" width="22" height="10" rx="3" fill="none" stroke-width="1.2"/><rect x="31" y="4" width="16" height="6" rx="1.5"/></svg></div>
-            <i class="homebar"></i>
-          </div>
+  <ol class="steps">
+    <li class="step rise">
+      <figure class="shot">
+        <img src="assets/Step1.jpg" alt="" width="800" height="1000" loading="lazy">
+        <div class="prop prop-slide" aria-hidden="true">
+          <span class="knob"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6.5" width="12" height="11" rx="2.5"/><path d="M15 10.5l5-3v9l-5-3z"/></svg></span>
+          <span class="say">Slide to meet someone</span>
+        </div>
+      </figure>
+      <div class="step-copy">
+        <span class="n" aria-hidden="true">1</span>
+        <div>
+          <h3>Go online</h3>
+          <p>Slide to meet someone who is online at the same moment as you. No swiping, no waiting for a reply.</p>
         </div>
       </div>
-
-      <!-- The slider lifts out of the phone and grows as the page scrolls; it can be dragged. -->
-      <div class="slide slide-big" id="slideBig" role="slider" tabindex="0" aria-label="Slide to meet someone" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-        <div class="slide-paint"><img decoding="async" src="assets/app/BlotBlush.webp" alt=""><img decoding="async" src="assets/app/BlotButter.webp" alt=""><img decoding="async" src="assets/app/BlotSage.webp" alt=""><img decoding="async" src="assets/app/BlotLilac.webp" alt=""><img decoding="async" src="assets/app/BlotBlush.webp" alt=""></div>
-        <span class="slide-label">Slide to meet someone<svg viewBox="0 0 24 24"><path d="M6 6l6 6-6 6M13 6l6 6-6 6"/></svg></span>
-        <span class="slide-knob"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="3"/><path d="M16 10l5-3v10l-5-3"/></svg></span>
+    </li>
+    <li class="step rise">
+      <figure class="shot">
+        <img src="assets/Step2.jpg" alt="" width="800" height="1000" loading="lazy">
+        <div class="prop prop-talk" aria-hidden="true">
+          <span class="clock" data-clock>1:30</span>
+          <span class="q"><b>Your turn</b>What made you laugh this week?</span>
+        </div>
+      </figure>
+      <div class="step-copy">
+        <span class="n" aria-hidden="true">2</span>
+        <div>
+          <h3>Talk for 90 seconds</h3>
+          <p>A live video date. A question card gives each of you a turn, so nobody has to carry it.</p>
+        </div>
       </div>
-      <button class="motion-toggle" id="motionToggle" type="button" aria-pressed="false">Pause motion</button>
-    </div>
-
-    <div class="tour-spacer" id="tourSpacer" aria-hidden="true"></div>
-    <ol class="steps" id="steps">
-      <li class="step step-long on">
-        <span class="step-n">Tonight</span>
-        <h3>Slide to meet someone.</h3>
-        <p>The home screen shows how many people you could meet are online right now. Slide, and Passionfruit pairs you with one of them. Keep scrolling, or drag the slider yourself.</p>
-      </li>
-      <li class="step step-long step-date">
-        <span class="step-n">1:30 on the clock</span>
-        <h3>Ninety seconds, face to face.</h3>
-        <p>You are on video straight away. A question card gives each of you a thirty-second turn, so nobody has to carry the conversation, and either of you can leave at any time.</p>
-      </li>
-      <li class="step">
-        <span class="step-n">0:00 on the clock</span>
-        <h3>Answer in private.</h3>
-        <p>Slide to say yes, or tap Not this time. You have twenty seconds, and the other person only finds out if you both said yes.</p>
-      </li>
-      <li class="step step-long">
-        <span class="step-n">Two yeses</span>
-        <h3>It’s mutual. Meet your dot.</h3>
-        <p>Your two colours run together and make a small character. It comes with you into the chat.</p>
-      </li>
-      <li class="step step-long step-date">
-        <span class="step-n">In the chat</span>
-        <h3>It helps with what to say next.</h3>
-        <p>Your dot reads where the conversation stands and offers reply ideas, places you could go and the hours you are both usually free. You choose what to send.</p>
-      </li>
-    </ol>
-  </div>
+    </li>
+    <li class="step rise">
+      <figure class="shot">
+        <img src="assets/Step3.jpg" alt="" width="800" height="1000" loading="lazy">
+        <div class="prop prop-yes" aria-hidden="true">
+          <span class="yes y1">You said yes</span>
+          <svg class="heart" viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M12 20.5s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.9a4.3 4.3 0 0 1 7.5 2.6c0 5.4-7.5 10-7.5 10z"/></svg>
+          <span class="yes y2">They said yes</span>
+        </div>
+      </figure>
+      <div class="step-copy">
+        <span class="n" aria-hidden="true">3</span>
+        <div>
+          <h3>Both say yes, in private</h3>
+          <p>Two yeses make a match. Then you can message, call again, and plan the real date.</p>
+        </div>
+      </div>
+    </li>
+  </ol>
 </section>
 
-<!-- ───────── The daily pack ───────── -->
-<section class="packs" id="pack">
-  <div class="packs-copy">
-    <p class="label" data-rise>The daily pack</p>
-    <h2 data-rise>Open a pack. Keep the painting.</h2>
-    <p class="packs-why" data-rise>Press and hold the home screen and today’s pack drops in. Tear it open to find one of fifty painted cards, each in its own art style. Here is one. The other forty-nine you find by opening packs, and the ones you keep sit on your profile.</p>
-    <ul class="rar" data-rise>
-      <li class="r-common"><i></i><b>26</b>Common</li>
-      <li class="r-rare"><i></i><b>14</b>Rare</li>
-      <li class="r-epic"><i></i><b>7</b>Epic</li>
-      <li class="r-gold"><i></i><b>3</b>Gold</li>
+<!-- ───────── The city: five boroughs, painted ───────── -->
+<section class="city-sec" id="city" aria-labelledby="city-title">
+  <div class="city-head rise">
+    <p class="label">New York City first</p>
+    <h2 id="city-title">Five boroughs, one evening.</h2>
+    <p>Live dates need people online together, so Passionfruit opens in one city, borough by borough.</p>
+  </div>
+  <ul class="boros" data-boros>
+    <li class="rise" data-boro="Manhattan"><img src="assets/BoroManhattan.jpg" alt="" width="640" height="640" loading="lazy"><h3>Manhattan</h3></li>
+    <li class="rise" data-boro="Brooklyn"><img src="assets/BoroBrooklyn.jpg" alt="" width="640" height="640" loading="lazy"><h3>Brooklyn</h3></li>
+    <li class="rise" data-boro="Queens"><img src="assets/BoroQueens.jpg" alt="" width="640" height="640" loading="lazy"><h3>Queens</h3></li>
+    <li class="rise" data-boro="The Bronx"><img src="assets/BoroBronx.jpg" alt="" width="640" height="640" loading="lazy"><h3>The Bronx</h3></li>
+    <li class="rise" data-boro="Staten Island"><img src="assets/BoroStatenIsland.jpg" alt="" width="640" height="640" loading="lazy"><h3>Staten Island</h3></li>
+  </ul>
+</section>
+
+<!-- ───────── After a match ───────── -->
+<section class="after" aria-labelledby="after-title">
+  <div class="after-shots rise" aria-hidden="true">
+    <div class="phone small"><img src="assets/AppPlan.jpg" alt="" width="598" height="1300" loading="lazy"></div>
+    <div class="phone small tilt"><img src="assets/AppDate.jpg" alt="" width="598" height="1300" loading="lazy"></div>
+  </div>
+  <div class="after-copy rise">
+    <p class="label">After a match</p>
+    <h2 id="after-title">From yes to a real date, in a few taps.</h2>
+    <p>Passionfruit suggests a place near you both and a time that suits you. Send the plan, they say yes, and it is in your calendar.</p>
+    <ul class="facts">
+      <li>Five dates a day, free</li>
+      <li>18 and over</li>
+      <li>iPhone</li>
+      <li>Report or block from any call</li>
     </ul>
+    <a class="btn btn-ink" href="#top" data-to-join>Join the waitlist</a>
   </div>
-  <div class="pack-stage" id="packStage" data-rise>
-    <div class="pack-glow" aria-hidden="true"></div>
-    <div class="pack" id="pack3d" aria-hidden="true">
-      <div class="pack-body"></div>
-      <div class="pack-strip"></div>
-      <i class="pack-cut"></i>
-    </div>
-    <div class="drawn" id="drawn" aria-hidden="true"><img decoding="async" src="assets/app/cards/art-deco-jazz-club.webp" alt=""><i></i></div>
-    <p class="pack-hint" id="packHint" aria-live="polite">Slide across the pack to tear it open.</p>
-    <button class="btn btn-line btn-sm pack-btn" id="packBtn" type="button">Open the pack</button>
-  </div>
-
-  <div class="sets" id="sets">
-    <div class="sets-copy">
-      <p class="f-tag" data-rise>Coming after launch</p>
-      <h3 data-rise>Finish a set, trade it in.</h3>
-      <p data-rise>A full set of five cards can be traded in for a reward card, such as extra dates for the day.</p>
-    </div>
-    <div class="sets-stage" id="setsStage" aria-hidden="true">
-      <ul class="sets-row"><li><i></i></li><li><i></i></li><li><i></i></li><li><i></i></li><li><i></i></li></ul>
-      <div class="sets-reward"><img loading="lazy" decoding="async" src="assets/app/voucher-gold.webp" alt=""></div>
-    </div>
-  </div>
-</section>
-
-<!-- ───────── Around the app: real screens ───────── -->
-<section class="around" id="around">
-  <div class="around-head">
-    <p class="label" data-rise>Around the app</p>
-    <h2 data-rise>Tonight, Matches and the chat. No feed.</h2>
-  </div>
-  <ul class="shots-row">
-    <li data-rise><span class="shotframe"><img loading="lazy" decoding="async" src="assets/app/shot-tonight.webp" width="540" height="1174" alt="The Tonight screen: 34 people you could meet are online, and a slider to meet someone"></span><h3>Tonight</h3><p>Who is online, and one slider.</p></li>
-    <li data-rise><span class="shotframe"><img loading="lazy" decoding="async" src="assets/app/shot-matches.webp" width="640" height="1391" alt="The Matches screen: each match has a small character that shows how the chat is going"></span><h3>Matches</h3><p>Each match has a dot. Tap it to see where the chat stands.</p></li>
-    <li data-rise><span class="shotframe"><img loading="lazy" decoding="async" src="assets/app/shot-chat.webp" width="640" height="1391" alt="A chat with a match, with a video call button at the top"></span><h3>Chat</h3><p>Messages and video calls with the people you matched.</p></li>
-  </ul>
-</section>
-
-<!-- ───────── New York ───────── -->
-<section class="nyc" id="nyc">
-  <div class="nyc-head">
-    <p class="label" data-rise>The list</p>
-    <h2 data-rise>Five boroughs. <em>One</em> list.</h2>
-    <p class="nyc-why" data-rise>A date needs two people online at the same moment. That only works when enough of them live near each other, so Passionfruit is opening in one city and doing it properly before the next. It launches once 5,000 people are on the list.</p>
-  </div>
-  <ul class="boroughs" id="boroughs">
-    <li data-b="Manhattan"><span class="b-name">Manhattan</span><span class="b-span">Inwood to the Battery</span><span class="b-count" data-count>&nbsp;</span></li>
-    <li data-b="Brooklyn"><span class="b-name">Brooklyn</span><span class="b-span">Greenpoint to Coney Island</span><span class="b-count" data-count>&nbsp;</span></li>
-    <li data-b="Queens"><span class="b-name">Queens</span><span class="b-span">Astoria to the Rockaways</span><span class="b-count" data-count>&nbsp;</span></li>
-    <li data-b="The Bronx"><span class="b-name">The Bronx</span><span class="b-span">Riverdale to City Island</span><span class="b-count" data-count>&nbsp;</span></li>
-    <li data-b="Staten Island"><span class="b-name">Staten Island</span><span class="b-span">St. George to Tottenville</span><span class="b-count" data-count>&nbsp;</span></li>
-  </ul>
-</section>
-
-<!-- ───────── Founding members ───────── -->
-<section class="founder" id="founders">
-  <div class="founder-head">
-    <p class="label" data-rise>Founding members</p>
-    <h2 data-rise>The first 1,000 keep Premium at <em>$4.99</em> a month.</h2>
-    <p class="founder-why" data-rise>Joining the list is free and does not start a subscription. Founding members are the first 1,000 verified people who complete a profile and attend a launch session.</p>
-    <ol class="founder-steps">
-      <li data-rise><span class="f-n">1</span><div><h3>Join the list</h3><p>Free. No card, and nothing is billed.</p></div></li>
-      <li data-rise><span class="f-n">2</span><div><h3>Show up at launch</h3><p>When your borough opens, verify your account, complete your profile and attend a launch session.</p></div></li>
-      <li data-rise><span class="f-n">3</span><div><h3>Try Premium</h3><p>A short Premium trial starts once your local launch is up and running.</p></div></li>
-      <li data-rise><span class="f-n">4</span><div><h3>Claim your rate</h3><p>You get a set window to start Premium at $4.99 a month. Its closing date is shown in the app before the window opens.</p></div></li>
-    </ol>
-  </div>
-  <div class="founder-card" data-rise>
-    <p class="f-tag">Founder rate</p>
-    <p class="f-price"><b>$4.99</b><span>a month</span></p>
-    <p class="f-was">Premium is $14.99 a month for everyone else.</p>
-    <ul class="f-list">
-      <li>No daily limit on dates. Free members get five a day.</li>
-      <li>Dealbreaker filters.</li>
-      <li>Queue priority.</li>
-    </ul>
-    <p class="f-keep">Once claimed, the rate stays on your account for as long as Passionfruit operates, including if you cancel and come back later.</p>
-    <p class="f-fine">A monthly subscription, billed through Apple until you cancel. Limited to the first 1,000 who qualify.</p>
-  </div>
-</section>
-
-<!-- ───────── Rules ───────── -->
-<section class="rules" id="rules">
-  <div class="rules-head">
-    <p class="label" data-rise>House rules</p>
-    <h2 data-rise>Short dates, clear answers.</h2>
-  </div>
-  <ul class="rule-list">
-    <li data-rise><span class="tile t-blush"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.500 2M9 2h6"/></svg></span><div><h3>Ninety seconds a date</h3><p>Long enough to know, short enough to stay kind. Leaving early counts as a no from you.</p></div></li>
-    <li data-rise><span class="tile t-butter"><svg viewBox="0 0 24 24"><path d="M4 6h16v10H9l-5 4z"/><path d="M8 10h8M8 13h5"/></svg></span><div><h3>Thirty-second turns</h3><p>The question card gives each of you the floor in turn, so nobody has to carry the conversation.</p></div></li>
-    <li data-rise><span class="tile t-lilac"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 8l9 6 9-6"/></svg></span><div><h3>Sealed answers</h3><p>Yes or no, chosen privately. No answer in twenty seconds counts as a no.</p></div></li>
-    <li data-rise><span class="tile t-sage"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H10l-4 4v-4H4z"/></svg></span><div><h3>A match opens the door</h3><p>Message each other, or video call again whenever you both like.</p></div></li>
-    <li data-rise><span class="tile t-sky"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 5-3.500 8-7 10-3.500-2-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg></span><div><h3>Adults only</h3><p>Passionfruit is for people aged 18 and over. You can report or block someone from inside any call.</p></div></li>
-    <li data-rise><span class="tile t-blush"><svg viewBox="0 0 24 24"><path d="M12 3l2.700 5.600 6.100.800-4.500 4.200 1.200 6L12 16.700 6.500 19.600l1.200-6L3.200 9.400l6.100-.800z"/></svg></span><div><h3>Five dates a day, free</h3><p>Passionfruit Premium is $14.99 a month. It lifts the daily limit and adds dealbreaker filters and queue priority.</p></div></li>
-  </ul>
 </section>
 
 <!-- ───────── Questions ───────── -->
-<section class="faq" id="questions">
-  <div class="faq-head">
-    <p class="label" data-rise>Questions</p>
-    <h2 data-rise>Before you join.</h2>
+<section class="faq" id="questions" aria-labelledby="faq-title">
+  <h2 id="faq-title">Questions</h2>
+  <div class="faq-list rise">
+    <details><summary>Why only New York City?</summary><p>Live dating needs people online together. One dense city gives everyone a real chance of being paired the moment they go online.</p></details>
+    <details><summary>When does it open?</summary><p>No date is set yet. People on the list hear first, by email, borough by borough.</p></details>
+    <details><summary>What do I need?</summary><p>An iPhone. Passionfruit is an iOS app, and dates happen over video.</p></details>
+    <details><summary>I live outside the five boroughs.</summary><p>Not yet. The list checks your ZIP code and only accepts New York City addresses for now.</p></details>
+    <details><summary>What do you do with my email and ZIP?</summary><p>We use them to tell you when Passionfruit opens where you live. Nothing else.</p></details>
+    <details><summary>Does it cost anything?</summary><p>Joining the list is free, and so are five dates a day once Passionfruit opens. Passionfruit Premium is $14.99 a month: it lifts the daily limit and adds dealbreaker filters and queue priority.</p></details>
   </div>
-  <dl class="faq-list">
-    <div data-rise><dt>Why only New York City?</dt><dd>Live dating needs people online together. One dense city gives everyone a real chance of being paired the moment they go online.</dd></div>
-    <div data-rise><dt>When does it open?</dt><dd>Once 5,000 people are on the list. People on the list hear first, by email, borough by borough.</dd></div>
-    <div data-rise><dt>What do I need?</dt><dd>An iPhone. Passionfruit is an iOS app, and dates happen over video.</dd></div>
-    <div data-rise><dt>I live outside the five boroughs.</dt><dd>Not yet. The list checks your ZIP code and only accepts New York City addresses for now.</dd></div>
-    <div data-rise><dt>What do you do with my email and ZIP?</dt><dd>We use them to tell you when Passionfruit opens where you live. Nothing else.</dd></div>
-    <div data-rise><dt>Does it cost anything?</dt><dd>Joining the list is free and does not start a subscription. Five dates a day are free once Passionfruit opens. Premium is $14.99 a month, or $4.99 for <a href="#founders">founding members</a>.</dd></div>
-  </dl>
 </section>
 
-<!-- ───────── Close ───────── -->
-<section class="close" id="join">
-  <video class="close-bg" id="closeBg" muted loop playsinline preload="none" poster="assets/HeroBackground.jpg" src="assets/HeroBackground.mp4" aria-hidden="true"></video>
-  <div class="close-card" data-rise>
-    <h2>Be on the list when New York goes <em>online.</em></h2>
+<!-- ───────── The form again, for whoever read to the end ───────── -->
+<section class="close" aria-labelledby="close-title">
+  <img class="skyline" src="assets/Skyline.jpg" alt="" width="2172" height="724" loading="lazy" aria-hidden="true" data-skyline>
+  <div class="close-card rise">
+    <h2 id="close-title">Be on the list when New York goes online.</h2>
     <form class="join" data-join novalidate>
       <div class="field">
         <label for="c-email">Email</label>
@@ -392,11 +183,10 @@
         <input id="c-zip" name="zip" type="text" autocomplete="postal-code" inputmode="numeric" pattern="\d{5}" maxlength="5" placeholder="10027" required>
       </div>
       <div class="hp" aria-hidden="true"><label>Leave this empty<input name="website" type="text" tabindex="-1" autocomplete="off"></label></div>
-      <button class="btn btn-ink" type="submit">Join the list</button>
+      <button class="btn btn-ink" type="submit">Join the waitlist</button>
       <p class="hint" data-hint role="status" aria-live="polite">Five boroughs only. One email when your borough opens.</p>
     </form>
     <div class="joined" data-joined hidden tabindex="-1"></div>
-    <p class="launch-note"><b>5,000</b>Passionfruit launches once 5,000 people are on the list.</p>
   </div>
 </section>
 
@@ -409,7 +199,11 @@
   <span>© 2026 Passionfruit</span>
 </footer>
 
-<script type="module" src="site.js?v=1117d"></script>
-<script type="module" src="tour.js?v=1117d"></script>
+<!-- Always in reach: once the first form has scrolled away, one button brings it back. -->
+<div class="dock" id="dock" hidden>
+  <a class="btn btn-ink" href="#top" data-to-join>Join the waitlist</a>
+</div>
+
+<script type="module" src="home.js"></script>
 </body>
 </html>
