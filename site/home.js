@@ -147,7 +147,9 @@ function initJoinLinks() {
 function initDock() {
   const dock = $('#dock');
   const seen = new Set();
-  const update = () => { dock.hidden = joined || seen.size > 0; };
+  // Shown and put away with a class, so it can glide up and down instead of appearing at once.
+  if (!joined) dock.hidden = false;
+  const update = () => { dock.classList.toggle('show', !joined && seen.size === 0); };
   const watch = new IntersectionObserver((entries) => {
     for (const entry of entries) {
       if (entry.isIntersecting) seen.add(entry.target); else seen.delete(entry.target);
