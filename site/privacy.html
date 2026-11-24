@@ -23,7 +23,7 @@
 <main class="doc">
   <p class="label">Privacy</p>
   <h1>Privacy policy</h1>
-  <p class="when">In effect from 16 November 2026.</p>
+  <p class="when">In effect from 24 November 2026.</p>
 
   <div class="short">
     <h2>The short version</h2>
@@ -41,12 +41,16 @@
     <tr><th>What</th><th>Why</th></tr>
     <tr><td>Your Apple sign-in identifier</td><td>To know it is you when you sign in. We use Sign in with Apple and never see your Apple password.</td></tr>
     <tr><td>First name, birthdate, gender, who you want to meet</td><td>To show your first name and age to the person you are paired with, to pair you with people who fit, and to keep the app to adults. Gender and who you want to meet can reveal sexual orientation; we use them only for pairing.</td></tr>
-    <tr><td>Photos, bio and other things you add to your profile</td><td>Shown to your matches.</td></tr>
-    <tr><td>Location and city</td><td>To pair you with people nearby. The app asks for your location once to set your city. You can decline.</td></tr>
+    <tr><td>Photos, bio and other things you add to your profile</td><td>Shown to your matches. If you turn on "Open tonight" in Settings, your first name, age and first photo are also shown to Premium members who could be paired with you, while you have the app open. It is off unless you turn it on, and you can turn it off at any time.</td></tr>
+    <tr><td>More about you, if you add it</td><td>What you are looking for, whether you have or want children, religion, education, smoking and drinking, your usual day, and questions you like to be asked with your own answers. Every one of these is optional. They are used for pairing and shown to your matches. Religion is sensitive information; leave it empty if you would rather not say.</td></tr>
+    <tr><td>Location and city</td><td>To pair you with people nearby. The app asks for your location to set your city, and checks it again each time you go online, to see that you are in New York City. You can decline, but you cannot go online for a date without it.</td></tr>
     <tr><td>Your preferences</td><td>Age range, distance and other filters you set, used for pairing.</td></tr>
     <tr><td>Dates, answers and matches</td><td>Who you were paired with, whether each of you said yes, and your matches. A no is never shown to the other person.</td></tr>
-    <tr><td>Messages</td><td>To deliver chat between you and a match.</td></tr>
-    <tr><td>Reports, blocks and strikes</td><td>To act on reports and to make sure blocked people are never paired with you again.</td></tr>
+    <tr><td>Messages</td><td>To deliver chat between you and a match. Each message is checked on our server for sexual or abusive language, links and requests for money before it is delivered; one that fails is not sent and not kept.</td></tr>
+    <tr><td>Meetups and group rooms</td><td>Which meetups you took a place at and which group video rooms you joined, so the people who are also going can see your first name, age and first photo, and so a place can be held for you.</td></tr>
+    <tr><td>Packs and vouchers</td><td>Which days you opened the app's daily pack, the vouchers that came out of them, and when you used each one, so the app can show them to you and give you the extra dates a voucher is for. The art cards you have collected are shown on your profile to your matches; your vouchers are not shown to anyone.</td></tr>
+    <tr><td>Reports, blocks and strikes</td><td>To act on reports and to make sure blocked people are never paired with you again. An account reported by several different people is paused until a person on our team has reviewed it.</td></tr>
+    <tr><td>Notification address</td><td>If you turn notifications on, a token Apple gives your phone, so we can tell you about a new match or message. Turning notifications off removes it.</td></tr>
     <tr><td>Purchases</td><td>If you buy Premium, Apple tells us that the purchase is valid and when it ends. We never see your card.</td></tr>
   </table>
 
@@ -54,12 +58,21 @@
   <ul>
     <li><b>Video and sound</b> travel between your phone and the other person's phone. We do not record them and they are not stored on our servers. As with any direct call, the two phones exchange network addresses to connect.</li>
     <li><b>Nudity check.</b> While you are on a date, a still frame from your own camera is checked for nudity every few seconds. The check runs on your phone. The picture is not kept. If the check finds nudity, the result is sent to our server, the date ends for both people, and a strike is added to the account.</li>
-    <li><b>Language check.</b> What you say is turned into text on your phone and checked for sexual language. We keep a record that a check failed, not the words.</li>
+    <li><b>Language check.</b> What you say is turned into text on your phone. The text is sent to our server, checked there for sexual or abusive language, and then discarded. We keep a record that a check failed, not the words.</li>
     <li>The app tells you about both checks and asks for your agreement before your first date, and shows a "Safety check on" mark during every date.</li>
   </ul>
 
+  <h2>Calendar and dictation</h2>
+  <p>If you add an agreed date to your calendar, the app asks for permission to add events only. It cannot read your calendar, and nothing from it is sent to us. If you dictate a message, your speech is turned into text on your phone; only the message you then send reaches us.</p>
+
   <h2>The helper in your chats</h2>
-  <p>Each match has a small character that can suggest things, such as a place to meet. It runs on your phone using Apple's on-device model. Your messages are not sent to an outside AI service. When it looks up a place, the search words and area are sent to Apple Maps.</p>
+  <p>Each match has a small character that can suggest things, such as a reply or a place to meet. When it looks up a place, the search words and area are sent to Apple Maps.</p>
+  <p><b>Smarter chat help (off until you turn it on).</b> The first time you open a chat, the app asks whether to turn it on. If you say yes, then while you have a chat open, the last few messages in it, yours and your match's, together with first names, ages, profile text and usual free hours for the two of you, are sent to our server and from there to Anthropic's Claude, an AI service, to write the suggestion. We do not send account ids, email addresses, photos or locations. Anthropic processes the text to produce the answer; we do not use it for advertising, and we do not sell it.</p>
+  <p><b>Choosing what to suggest.</b> With smarter chat help on for both of you, the last eight messages of the open chat and your two first names are also sent to TypeSafe, a classification service, each time a new message arrives. It answers only with which kind of suggestion fits (a place, a time, a call, a question) and, if a day, time or kind of food was mentioned, which one. It writes nothing, and we do not let it use the text for anything else.</p>
+  <p><b>Turning it off.</b> You can turn smarter chat help off at any time in You, under Account. The character then works on your phone using Apple's on-device model, and your messages are not sent to an outside AI service, for your own suggestions or for your match's. If you answer "Not now" when the app asks, it stays off for you until you turn it on.</p>
+  <p><b>If your match has not turned it on.</b> Smarter chat help does not work in that chat for you either: a chat is sent only when both of you have said yes.</p>
+  <p><b>Notes the character keeps.</b> With smarter chat help on, the character keeps short notes about each chat on our server (for example a plan you made, or a food someone likes) so its suggestions fit. It does not keep contact details, last names, or anything about health, money, politics or religion. Beside the notes it keeps how warm the chat seemed (a number), where it stands (one word, such as "talking"), and the day and hour of a date you agreed, so it can offer help at the right moment. You can read the notes on your match's profile and erase them there. Things you ask it to remember are shown to you only. The notes are deleted when the match or your account is deleted.</p>
+  <p><b>Safety notes.</b> If a message suggests that someone is under 18 or is asking for money, a note is recorded for a person on our team to review. The words of the message are not stored in that note, and nothing happens to an account automatically.</p>
 
   <h2>What we collect on this website</h2>
   <ul>
@@ -74,7 +87,9 @@
     <tr><th>Company</th><th>What for</th></tr>
     <tr><td>Fly.io</td><td>Runs our server.</td></tr>
     <tr><td>Supabase</td><td>Holds our database, including the waitlist.</td></tr>
-    <tr><td>Apple</td><td>Sign in with Apple, in-app purchases, and Apple Maps place search.</td></tr>
+    <tr><td>Apple</td><td>Sign in with Apple, in-app purchases, Apple Maps place search, and delivering notifications to your phone.</td></tr>
+    <tr><td>Anthropic</td><td>Writes chat suggestions, only for people who turned smarter chat help on. Receives the last few messages of the open chat and the first names, ages and profile text of the two people in it.</td></tr>
+    <tr><td>TypeSafe</td><td>Decides which kind of chat suggestion fits, only in chats where both people turned smarter chat help on. Receives the last eight messages of the open chat and the two first names.</td></tr>
     <tr><td>Google</td><td>A connection service that helps two phones find each other at the start of a call. It does not carry your video.</td></tr>
     <tr><td>GitHub</td><td>Hosts this website.</td></tr>
   </table>
@@ -83,7 +98,7 @@
   <h2>How long we keep it</h2>
   <ul>
     <li>Account and profile data is kept while you have an account.</li>
-    <li>When you delete your account, your profile, photos, preferences, matches and messages are deleted.</li>
+    <li>When you delete your account, your profile, photos, preferences, matches and messages are deleted. A Premium subscription bought through Apple is not cancelled by deleting the account; cancel it in your Apple account settings.</li>
     <li>We may keep the minimum needed to honour blocks and bans, and to meet legal duties, after an account is deleted.</li>
     <li>Waitlist entries are kept until Passionfruit has opened in your borough and you have been told, or until you ask us to remove you.</li>
   </ul>
