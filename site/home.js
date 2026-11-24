@@ -23,11 +23,29 @@ async function rpc(fn, args = {}) {
   if (!res.ok) throw new Error(`waitlist ${res.status}`);
   return res.json();
 }
+// Where this visitor came from, kept with the sign-up so an ad's clicks can be told apart from
+// word of mouth. A `from` or `utm_source` in the link wins; Facebook and Instagram add `fbclid`
+// to every link they send here; otherwise the site that linked here, or "direct". Worked out
+// once per visit and remembered, because the address can lose its extras while someone reads.
+const SOURCE_KEY = 'tempo.source';
+function visitSource() {
+  try { const kept = sessionStorage.getItem(SOURCE_KEY); if (kept) return kept; } catch { /* private window */ }
+  const q = new URLSearchParams(location.search);
+  let from = q.get('from') || q.get('utm_source') || (q.has('fbclid') ? 'meta' : '');
+  if (!from) {
+    try { const host = document.referrer && new URL(document.referrer).hostname; if (host && host !== location.hostname) from = host; } catch { /* odd referrer */ }
+  }
+  from = (from || 'direct').toLowerCase().replace(/[^a-z0-9._-]/g, '').slice(0, 40) || 'direct';
+  try { sessionStorage.setItem(SOURCE_KEY, from); } catch { /* private window */ }
+  return from;
+}
+const source = visitSource();
+
 const api = {
   ready: hosted || local,
   stats: () => (hosted ? rpc('waitlist_stats') : fetch('api/waitlist/stats').then((r) => (r.ok ? r.json() : null))),
   async join({ email, zip, website }) {
-    if (hosted) return rpc('waitlist_join', { p_email: email, p_zip: zip, p_website: website });
+    if (hosted) return rpc('waitlist_join', { p_email: email, p_zip: zip, p_website: website, p_source: source });
     const res = await fetch('api/waitlist', {
       method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email, zip, website }),
     });
