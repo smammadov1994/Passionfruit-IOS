@@ -33,5 +33,9 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
+      # The deploy step asks GitHub for the artifact just uploaded, and has been told "none
+      # found" when it asked in the same second. A short wait lets it register.
+      - name: Let the upload register
+        run: sleep 20
       - id: deployment
         uses: actions/deploy-pages@v4
